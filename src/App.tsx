@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import utmLogo from '/images/UTM_Logo.png'
+import utmLogo from './assets/UTM_Logo.png'
 import './App.css'
 
 function App() {
