@@ -1,34 +1,7 @@
-import { useState } from 'react'
-import utmLogo from './assets/UTM_Logo.png'
-import './App.css'
+import Home from './pages/Home'
 
 function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <>
-      <div>
-        <a href="https://utm.md/" target="_blank">
-          <img src={utmLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://utm.md/" target="_blank">
-          <img src={utmLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>UTM + UTM</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count * 2)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+  return <Home />
 }
 
 export default App

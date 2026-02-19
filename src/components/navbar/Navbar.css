@@ -1,0 +1,227 @@
+.navbar {
+  background: rgba(255, 255, 255, 0.95);
+  border-bottom: 1px solid #e5e7eb;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.04);
+  position: sticky;
+  top: 0;
+  z-index: 1200;
+}
+
+.navbar-inner {
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  margin: 0 auto;
+  padding: 0.85rem 0;
+  width: min(1140px, 92vw);
+}
+
+.navbar-brand {
+  color: #111827;
+  font-size: 1.12rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  transition: color 0.2s ease;
+}
+
+.navbar-brand:hover {
+  color: #f97316;
+}
+
+.navbar-links {
+  align-items: center;
+  display: flex;
+  gap: 1.7rem;
+}
+
+.navbar-link {
+  color: #4b5563;
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 0.35rem 0;
+  position: relative;
+  transition: color 0.2s ease;
+}
+
+.navbar-link::after {
+  background: #f97316;
+  border-radius: 999px;
+  bottom: 0;
+  content: '';
+  height: 2px;
+  left: 0;
+  position: absolute;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.2s ease;
+  width: 100%;
+}
+
+.navbar-link:hover,
+.navbar-link.is-active {
+  color: #111827;
+}
+
+.navbar-link:hover::after,
+.navbar-link.is-active::after {
+  transform: scaleX(1);
+}
+
+.navbar-actions {
+  align-items: center;
+  display: flex;
+  gap: 0.8rem;
+}
+
+.favorites-btn {
+  align-items: center;
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  border-radius: 999px;
+  color: #f97316;
+  cursor: pointer;
+  display: inline-flex;
+  height: 36px;
+  justify-content: center;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+  width: 36px;
+}
+
+.favorites-btn:hover {
+  background: #fff7ed;
+  border-color: #fed7aa;
+}
+
+.favorites-btn svg {
+  fill: none;
+  height: 17px;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  width: 17px;
+}
+
+.navbar-login {
+  border-radius: 10px;
+  color: #374151;
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 0.45rem 0.6rem;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.navbar-login:hover {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.navbar-signup {
+  background: #f97316;
+  border-radius: 12px;
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 0.55rem 0.95rem;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.navbar-signup:hover {
+  background: #ea580c;
+  transform: translateY(-1px);
+}
+
+.navbar-menu-btn {
+  align-items: center;
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  cursor: pointer;
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  height: 38px;
+  justify-content: center;
+  width: 38px;
+}
+
+.navbar-menu-btn span {
+  background: #1f2937;
+  border-radius: 999px;
+  display: block;
+  height: 2px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  width: 16px;
+}
+
+.navbar-menu-btn.is-open span:nth-child(1) {
+  transform: translateY(6px) rotate(45deg);
+}
+
+.navbar-menu-btn.is-open span:nth-child(2) {
+  opacity: 0;
+}
+
+.navbar-menu-btn.is-open span:nth-child(3) {
+  transform: translateY(-6px) rotate(-45deg);
+}
+
+.navbar-mobile-menu {
+  background: #ffffff;
+  border-top: 1px solid #e5e7eb;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.28s ease, opacity 0.2s ease, padding 0.2s ease;
+}
+
+.navbar-mobile-menu.is-open {
+  max-height: 320px;
+  opacity: 1;
+  padding: 0.35rem 0 1rem;
+}
+
+.mobile-links {
+  display: grid;
+  gap: 0.3rem;
+  margin: 0 auto;
+  width: min(1140px, 92vw);
+}
+
+.mobile-link {
+  border-radius: 10px;
+  color: #374151;
+  font-weight: 600;
+  padding: 0.65rem 0.75rem;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.mobile-link:hover,
+.mobile-link.is-active {
+  background: #fff7ed;
+  color: #c2410c;
+}
+
+.mobile-actions {
+  align-items: center;
+  display: flex;
+  gap: 0.6rem;
+  margin: 0.75rem auto 0;
+  width: min(1140px, 92vw);
+}
+
+@media (max-width: 900px) {
+  .navbar-links,
+  .navbar-actions {
+    display: none;
+  }
+
+  .navbar-menu-btn {
+    display: inline-flex;
+  }
+}
+
+@media (min-width: 901px) {
+  .navbar-mobile-menu {
+    display: none;
+  }
+}
