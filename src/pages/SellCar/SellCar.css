@@ -21,9 +21,7 @@
   border: 1px solid #ffedd5;
   border-radius: 28px;
   box-shadow: 0 24px 48px rgba(15, 23, 42, 0.08);
-  display: grid;
-  gap: 2rem;
-  grid-template-columns: 1.2fr 1fr;
+  display: block;
   padding: 2.5rem;
 }
 
@@ -64,30 +62,6 @@
   padding: 0.7rem 1.2rem;
 }
 
-.sell-hero-badges {
-  display: grid;
-  gap: 0.8rem;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-.sell-hero-badge {
-  background: #fff;
-  border: 1px solid #f1f5f9;
-  border-radius: 16px;
-  padding: 1rem;
-  text-align: center;
-}
-
-.sell-hero-badge strong {
-  display: block;
-  font-size: 1.2rem;
-  font-weight: 700;
-}
-
-.sell-hero-badge span {
-  color: var(--text-muted);
-  font-size: 0.85rem;
-}
 
 .sell-steps-header {
   margin-bottom: 1.6rem;
@@ -135,11 +109,7 @@
 
 @media (max-width: 960px) {
   .sell-hero-card {
-    grid-template-columns: 1fr;
-  }
-
-  .sell-hero-badges {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    padding: 2.2rem;
   }
 }
 
@@ -150,10 +120,6 @@
 
   .sell-hero {
     padding-top: 4.5rem;
-  }
-
-  .sell-hero-badges {
-    grid-template-columns: 1fr;
   }
 
   .sell-steps-grid {

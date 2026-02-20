@@ -2,13 +2,11 @@ import FeaturedCarsSection from '../../components/home/FeaturedCarsSection.tsx'
 import HeroSection from '../../components/home/HeroSection.tsx'
 import Navbar from '../../components/navbar/Navbar.tsx'
 import SiteFooter from '../../components/home/SiteFooter.tsx'
-import StatsSection from '../../components/home/StatsSection.tsx'
 import WhyChooseUsSection from '../../components/home/WhyChooseUsSection.tsx'
 import type {
   FeatureItem,
   FeaturedCar,
   SocialItem,
-  StatItem,
 } from '../../components/home/types.ts'
 import './Home.css'
 
@@ -118,11 +116,6 @@ const features: FeatureItem[] = [
   },
 ]
 
-const stats: StatItem[] = [
-  { id: 1, value: '12,000+', label: 'Cars' },
-  { id: 2, value: '5,000+', label: 'Sellers' },
-  { id: 3, value: '98%', label: 'Satisfaction' },
-]
 
 const socialLinks: SocialItem[] = [
   { platform: 'facebook', href: '#' },
@@ -139,7 +132,6 @@ function Home() {
         <HeroSection />
         <FeaturedCarsSection cars={featuredCars} />
         <WhyChooseUsSection features={features} />
-        <StatsSection stats={stats} />
       </main>
 
       <SiteFooter socialLinks={socialLinks} />
