@@ -34,20 +34,6 @@ function SellCar() {
                   </button>
                 </div>
               </div>
-              <div className="sell-hero-badges">
-                <div className="sell-hero-badge">
-                  <strong>2.4k+</strong>
-                  <span>Active buyers</span>
-                </div>
-                <div className="sell-hero-badge">
-                  <strong>36h</strong>
-                  <span>Avg. time to sell</span>
-                </div>
-                <div className="sell-hero-badge">
-                  <strong>98%</strong>
-                  <span>Seller satisfaction</span>
-                </div>
-              </div>
             </div>
           </div>
         </section>
