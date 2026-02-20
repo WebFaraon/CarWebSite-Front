@@ -1,6 +1,7 @@
 import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom'
 import Home from './pages/Home/Home.tsx'
 import SellCar from './pages/SellCar/SellCar.tsx'
+import Login from './pages/Auth/Login.tsx'
 
 function AppRoutes() {
   const location = useLocation()
@@ -10,6 +11,7 @@ function AppRoutes() {
       <Routes location={location}>
         <Route path="/" element={<Home />} />
         <Route path="/sell" element={<SellCar />} />
+        <Route path="login" element={<Login />} />
       </Routes>
     </div>
   )
