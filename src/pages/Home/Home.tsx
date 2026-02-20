@@ -1,20 +1,16 @@
-import FeaturedCarsSection from '../components/home/FeaturedCarsSection'
-import HeroSection from '../components/home/HeroSection'
-import Navbar from '../components/navbar/Navbar'
-import SellYourCarSection from '../components/home/SellYourCarSection'
-import SiteFooter from '../components/home/SiteFooter'
-import StatsSection from '../components/home/StatsSection'
-import WhyChooseUsSection from '../components/home/WhyChooseUsSection'
+import FeaturedCarsSection from '../../components/home/FeaturedCarsSection.tsx'
+import HeroSection from '../../components/home/HeroSection.tsx'
+import Navbar from '../../components/navbar/Navbar.tsx'
+import SiteFooter from '../../components/home/SiteFooter.tsx'
+import StatsSection from '../../components/home/StatsSection.tsx'
+import WhyChooseUsSection from '../../components/home/WhyChooseUsSection.tsx'
 import type {
   FeatureItem,
   FeaturedCar,
   SocialItem,
   StatItem,
-} from '../components/home/types'
+} from '../../components/home/types.ts'
 import './Home.css'
-
-const brands = ['BMW', 'Audi', 'Tesla', 'Toyota', 'Mercedes-Benz', 'Honda']
-const models = ['Sedan', 'SUV', 'Coupe', 'Hatchback', 'Truck', 'Electric']
 
 const featuredCars: FeaturedCar[] = [
   {
@@ -140,10 +136,9 @@ function Home() {
     <>
       <Navbar />
       <main className="home-page">
-        <HeroSection brands={brands} models={models} />
+        <HeroSection />
         <FeaturedCarsSection cars={featuredCars} />
         <WhyChooseUsSection features={features} />
-        <SellYourCarSection image="https://placehold.co/800x520/F8FAFC/111827?text=Car+Listing+Image" />
         <StatsSection stats={stats} />
       </main>
 

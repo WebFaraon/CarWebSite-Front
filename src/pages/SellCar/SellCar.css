@@ -1,0 +1,162 @@
+.sell-car-page {
+  background: var(--bg);
+  color: var(--text);
+}
+
+.container {
+  width: min(1140px, 92vw);
+  margin: 0 auto;
+}
+
+.section-spacer {
+  padding: 4rem 0;
+}
+
+.sell-hero {
+  padding-top: 5.5rem;
+}
+
+.sell-hero-card {
+  background: linear-gradient(135deg, #fff7ed 0%, #fff 55%, #f8fafc 100%);
+  border: 1px solid #ffedd5;
+  border-radius: 28px;
+  box-shadow: 0 24px 48px rgba(15, 23, 42, 0.08);
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: 1.2fr 1fr;
+  padding: 2.5rem;
+}
+
+.sell-hero-copy h1 {
+  font-size: clamp(2rem, 3.5vw, 3rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin: 0.4rem 0 1rem;
+}
+
+.sell-hero-copy p {
+  color: var(--text-muted);
+  margin: 0 0 1.6rem;
+  max-width: 520px;
+}
+
+.sell-hero-eyebrow {
+  color: #f97316;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.sell-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.ghost-btn {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  color: #475569;
+  cursor: pointer;
+  font-weight: 600;
+  padding: 0.7rem 1.2rem;
+}
+
+.sell-hero-badges {
+  display: grid;
+  gap: 0.8rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.sell-hero-badge {
+  background: #fff;
+  border: 1px solid #f1f5f9;
+  border-radius: 16px;
+  padding: 1rem;
+  text-align: center;
+}
+
+.sell-hero-badge strong {
+  display: block;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.sell-hero-badge span {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.sell-steps-header {
+  margin-bottom: 1.6rem;
+  text-align: center;
+}
+
+.sell-steps-header h2 {
+  font-size: clamp(1.6rem, 2.6vw, 2.2rem);
+  margin-bottom: 0.5rem;
+}
+
+.sell-steps-header p {
+  color: var(--text-muted);
+  margin: 0 auto;
+  max-width: 520px;
+}
+
+.sell-steps-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.sell-step-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 1.4rem;
+}
+
+.sell-step-card span {
+  color: #f97316;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.sell-step-card h3 {
+  margin: 0.7rem 0 0.6rem;
+}
+
+.sell-step-card p {
+  color: var(--text-muted);
+  margin: 0;
+}
+
+@media (max-width: 960px) {
+  .sell-hero-card {
+    grid-template-columns: 1fr;
+  }
+
+  .sell-hero-badges {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .section-spacer {
+    padding: 3rem 0;
+  }
+
+  .sell-hero {
+    padding-top: 4.5rem;
+  }
+
+  .sell-hero-badges {
+    grid-template-columns: 1fr;
+  }
+
+  .sell-steps-grid {
+    grid-template-columns: 1fr;
+  }
+}

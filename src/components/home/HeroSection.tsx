@@ -1,20 +1,13 @@
-import type { FormEvent } from 'react'
+import SmartSearchBar from '../search/SmartSearchBar.tsx'
 
-interface HeroSectionProps {
-  brands: string[]
-  models: string[]
-}
-
-function HeroSection({ brands, models }: HeroSectionProps) {
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-  }
-
+function HeroSection() {
   return (
     <section className="hero-section">
-      <div className="hero-orb hero-orb-one" aria-hidden="true" />
-      <div className="hero-orb hero-orb-two" aria-hidden="true" />
-      <div className="hero-orb hero-orb-three" aria-hidden="true" />
+      <div className="hero-orbs" aria-hidden="true">
+        <div className="hero-orb hero-orb-one" />
+        <div className="hero-orb hero-orb-two" />
+        <div className="hero-orb hero-orb-three" />
+      </div>
       <div className="hero-float-card hero-float-left" aria-hidden="true">
         <span>Hot Deal</span>
         <strong>BMW X5</strong>
@@ -36,49 +29,7 @@ function HeroSection({ brands, models }: HeroSectionProps) {
           </p>
         </div>
 
-        <form className="search-card" onSubmit={handleSubmit}>
-          <label className="field">
-            <span>Brand</span>
-            <select defaultValue="">
-              <option value="" disabled>
-                Select brand
-              </option>
-              {brands.map((brand) => (
-                <option key={brand} value={brand}>
-                  {brand}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <label className="field">
-            <span>Model</span>
-            <select defaultValue="">
-              <option value="" disabled>
-                Select model
-              </option>
-              {models.map((model) => (
-                <option key={model} value={model}>
-                  {model}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <label className="field">
-            <span>Price Range</span>
-            <input type="text" placeholder="$10,000 - $35,000" />
-          </label>
-
-          <label className="field">
-            <span>Location</span>
-            <input type="text" placeholder="City or ZIP code" />
-          </label>
-
-          <button className="primary-btn search-btn" type="submit">
-            Search
-          </button>
-        </form>
+        <SmartSearchBar />
       </div>
     </section>
   )

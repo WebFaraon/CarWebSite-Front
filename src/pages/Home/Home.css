@@ -1,18 +1,7 @@
-:root {
-  --bg: #f7f9fc;
-  --surface: #ffffff;
-  --surface-soft: #f1f4f8;
-  --text: #111827;
-  --text-muted: #6b7280;
-  --border: #e5e7eb;
-  --accent: #f97316;
-  --accent-hover: #ea580c;
-  --shadow-soft: 0 16px 36px rgba(15, 23, 42, 0.08);
-}
-
 .home-page {
   background: var(--bg);
   color: var(--text);
+  overflow-x: hidden;
 }
 
 .container {
@@ -47,9 +36,16 @@
 .hero-section {
   background: linear-gradient(160deg, #f8fbff 0%, #eff5ff 52%, #f9fcff 100%);
   isolation: isolate;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: visible;
   padding: 5rem 0 4.2rem;
   position: relative;
+  z-index: 2;
+}
+
+.hero-section .container {
+  position: relative;
+  z-index: 2;
 }
 
 .hero-orb {
@@ -58,6 +54,14 @@
   pointer-events: none;
   position: absolute;
   transform-style: preserve-3d;
+  z-index: 0;
+}
+
+.hero-orbs {
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  position: absolute;
   z-index: 0;
 }
 
@@ -210,24 +214,6 @@
   outline: none;
 }
 
-.primary-btn {
-  background: var(--accent);
-  border: none;
-  border-radius: 12px;
-  color: #fff;
-  cursor: pointer;
-  display: inline-flex;
-  font-weight: 700;
-  justify-content: center;
-  padding: 0.75rem 1.25rem;
-  transition: background-color 0.2s ease, transform 0.2s ease;
-}
-
-.primary-btn:hover {
-  background: var(--accent-hover);
-  transform: translateY(-1px);
-}
-
 .search-btn {
   align-items: center;
   height: 44px;
@@ -236,6 +222,8 @@
 
 .featured-section {
   background: var(--surface);
+  position: relative;
+  z-index: 1;
 }
 
 .cars-grid {

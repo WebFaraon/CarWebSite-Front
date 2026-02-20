@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { NavLink } from 'react-router-dom'
 import './Navbar.css'
 
 interface NavItem {
@@ -12,28 +13,41 @@ interface NavbarProps {
 }
 
 const defaultNavItems: NavItem[] = [
+  { label: 'Home', href: '/' },
   { label: 'Offers', href: '#offers' },
-  { label: 'Sell', href: '#sell' },
+  { label: 'Sell', href: '/sell' },
   { label: 'Help', href: '#help' },
   { label: 'Contact', href: '#contact' },
 ]
 
 function Navbar({ brandName = 'AutoMarket', navItems = defaultNavItems }: NavbarProps) {
-  const [activeHref, setActiveHref] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const matchingHash = navItems.find((item) => item.href === window.location.hash)
-      if (matchingHash) {
-        return matchingHash.href
-      }
-    }
-
-    return navItems[0]?.href ?? '#offers'
-  })
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
-  const handleLinkClick = (href: string) => {
-    setActiveHref(href)
+  const handleLinkClick = () => {
     setIsMenuOpen(false)
+  }
+
+  const renderLink = (item: NavItem, className: string) => {
+    if (item.href.startsWith('/')) {
+      return (
+        <NavLink
+          key={item.label}
+          to={item.href}
+          className={({ isActive }) =>
+            `${className} ${isActive ? 'is-active' : ''}`
+          }
+          onClick={handleLinkClick}
+        >
+          {item.label}
+        </NavLink>
+      )
+    }
+
+    return (
+      <a key={item.label} href={item.href} className={className} onClick={handleLinkClick}>
+        {item.label}
+      </a>
+    )
   }
 
   return (
@@ -44,16 +58,7 @@ function Navbar({ brandName = 'AutoMarket', navItems = defaultNavItems }: Navbar
         </a>
 
         <nav className="navbar-links" aria-label="Primary">
-          {navItems.map((item) => (
-            <a
-              key={item.label}
-              href={item.href}
-              className={`navbar-link ${activeHref === item.href ? 'is-active' : ''}`}
-              onClick={() => handleLinkClick(item.href)}
-            >
-              {item.label}
-            </a>
-          ))}
+          {navItems.map((item) => renderLink(item, 'navbar-link'))}
         </nav>
 
         <div className="navbar-actions">
@@ -85,16 +90,7 @@ function Navbar({ brandName = 'AutoMarket', navItems = defaultNavItems }: Navbar
 
       <div className={`navbar-mobile-menu ${isMenuOpen ? 'is-open' : ''}`}>
         <nav aria-label="Mobile primary navigation" className="mobile-links">
-          {navItems.map((item) => (
-            <a
-              key={item.label}
-              href={item.href}
-              className={`mobile-link ${activeHref === item.href ? 'is-active' : ''}`}
-              onClick={() => handleLinkClick(item.href)}
-            >
-              {item.label}
-            </a>
-          ))}
+          {navItems.map((item) => renderLink(item, 'mobile-link'))}
         </nav>
 
         <div className="mobile-actions">
