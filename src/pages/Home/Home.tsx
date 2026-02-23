@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+import FavoritesPanel from '../../components/home/FavoritesPanel.tsx'
 import FeaturedCarsSection from '../../components/home/FeaturedCarsSection.tsx'
 import HeroSection from '../../components/home/HeroSection.tsx'
 import Navbar from '../../components/navbar/Navbar.tsx'
@@ -125,16 +127,50 @@ const socialLinks: SocialItem[] = [
 ]
 
 function Home() {
+  const [favoriteIds, setFavoriteIds] = useState<number[]>([])
+  const [isFavoritesOpen, setIsFavoritesOpen] = useState(false)
+
+  const toggleFavorite = (carId: number) => {
+    setFavoriteIds((prev) =>
+      prev.includes(carId) ? prev.filter((id) => id !== carId) : [...prev, carId],
+    )
+  }
+
+  const favoriteCars = featuredCars.filter((car) => favoriteIds.includes(car.id))
+
+  useEffect(() => {
+    if (isFavoritesOpen) {
+      document.body.style.overflow = 'hidden'
+      return () => {
+        document.body.style.overflow = ''
+      }
+    }
+
+    document.body.style.overflow = ''
+    return undefined
+  }, [isFavoritesOpen])
+
   return (
     <>
-      <Navbar />
+      <Navbar onFavoritesClick={() => setIsFavoritesOpen(true)} />
       <main className="home-page">
         <HeroSection />
-        <FeaturedCarsSection cars={featuredCars} />
+        <FeaturedCarsSection
+          cars={featuredCars}
+          favoriteIds={favoriteIds}
+          onToggleFavorite={toggleFavorite}
+        />
         <WhyChooseUsSection features={features} />
       </main>
 
       <SiteFooter socialLinks={socialLinks} />
+      <FavoritesPanel
+        cars={favoriteCars}
+        favoriteIds={favoriteIds}
+        isOpen={isFavoritesOpen}
+        onClose={() => setIsFavoritesOpen(false)}
+        onToggleFavorite={toggleFavorite}
+      />
     </>
   )
 }

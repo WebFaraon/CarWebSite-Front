@@ -2,12 +2,19 @@ import type { FeaturedCar } from './types'
 
 interface CarCardProps {
   car: FeaturedCar
+  isFavorite: boolean
+  onToggleFavorite: (carId: number) => void
 }
 
-function CarCard({ car }: CarCardProps) {
+function CarCard({ car, isFavorite, onToggleFavorite }: CarCardProps) {
   return (
     <article className="car-card">
-      <button className="favorite-btn" aria-label="Add to favorites" type="button">
+      <button
+        className={`favorite-btn ${isFavorite ? 'is-active' : ''}`}
+        aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+        type="button"
+        onClick={() => onToggleFavorite(car.id)}
+      >
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <path d="M12 20.25 10.55 19C5.4 14.36 2 11.28 2 7.5A5.38 5.38 0 0 1 7.5 2 6.16 6.16 0 0 1 12 4.09 6.16 6.16 0 0 1 16.5 2 5.38 5.38 0 0 1 22 7.5c0 3.78-3.4 6.86-8.55 11.51L12 20.25Z" />
         </svg>
