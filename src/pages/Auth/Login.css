@@ -1,41 +1,322 @@
-
-body {
-    margin: 0;
-    padding: 0;
+.login-page {
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
 }
 
 .login-container {
-    /* centrare */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    /* marimea originala a userului de la display */
-    height: 100vh;
-    width: 100vw;
-
-    /* elimina borderul default */
-    box-sizing: border-box;
-
-    animation: changeColor 0.06s infinite;
+  width: min(1140px, 92vw);
+  margin: 0 auto;
+  min-height: calc(100vh - 80px);
+  padding-top: clamp(0.75rem, 2vw, 1.5rem);
 }
 
-.login-inner-container {
-    width: 60vw;
-    max-width: 900px;
-    height: 70vh;
-    max-height: 600px;
-
-    padding: 2.5rem;
-
-    background-color: rgb(217, 255, 28);
-    border-radius: 12px;
-    border: solid blueviolet;
-
-    animation: changeColor 0.05s infinite;
+.login-hero-section {
+  background:
+    radial-gradient(1200px 500px at 15% -10%, rgba(249, 115, 22, 0.14), transparent 62%),
+    radial-gradient(900px 380px at 100% 0%, rgba(59, 130, 246, 0.12), transparent 60%),
+    linear-gradient(160deg, #f8fbff 0%, #eff5ff 55%, #f9fcff 100%);
+  isolation: isolate;
+  overflow-x: hidden;
+  overflow-y: visible;
+  padding: 1rem 0 2.25rem;
+  position: relative;
+  z-index: 2;
+  min-height: calc(100vh - 80px);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
 }
 
-@keyframes changeColor {
-    0%   {background-color: white;}
-    100% {background-color: black;}
+.login-hero-section .login-container {
+  position: relative;
+  z-index: 2;
 }
+
+.hero-orbs {
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  position: absolute;
+  z-index: 0;
+}
+
+.hero-orb {
+  border-radius: 50%;
+  filter: blur(1px);
+  pointer-events: none;
+  position: absolute;
+  transform-style: preserve-3d;
+  z-index: 0;
+}
+
+.hero-orb-one {
+  animation: orbPulse 8s ease-in-out infinite;
+  background: radial-gradient(circle at 30% 30%, #fff7ed, #fdba74);
+  height: 280px;
+  left: -80px;
+  top: 22px;
+  width: 280px;
+}
+
+.hero-orb-two {
+  animation: orbPulse 10s ease-in-out infinite reverse;
+  background: radial-gradient(circle at 30% 30%, #eff6ff, #93c5fd);
+  height: 220px;
+  right: -60px;
+  top: 18px;
+  width: 220px;
+}
+
+.hero-orb-three {
+  animation: orbPulse 12s ease-in-out infinite;
+  background: radial-gradient(circle at 35% 35%, #ecfeff, #67e8f9);
+  bottom: -80px;
+  height: 190px;
+  left: 46%;
+  width: 190px;
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 1.6rem;
+  position: relative;
+  z-index: 2;
+}
+
+.hero-eyebrow {
+  color: var(--accent);
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  margin-bottom: 0.9rem;
+  text-transform: uppercase;
+}
+
+.login-header h1 {
+  font-size: clamp(2rem, 4vw, 2.85rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+  margin: 0;
+  color: #0f172a;
+}
+
+.login-subtitle {
+  margin: 0.85rem auto 0;
+  max-width: 620px;
+  color: #475569;
+  font-size: 1rem;
+}
+
+.login-content {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  position: relative;
+  z-index: 2;
+}
+
+.login-form-card {
+  backdrop-filter: blur(16px);
+  background: rgba(255, 255, 255, 0.84);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  border-radius: 26px;
+  box-shadow:
+    0 25px 50px rgba(15, 23, 42, 0.14),
+    0 2px 10px rgba(15, 23, 42, 0.06);
+  padding: 2.2rem;
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 530px;
+}
+
+.form-header {
+  margin-bottom: 1.6rem;
+  text-align: center;
+}
+
+.form-header p {
+  color: var(--text-muted);
+  font-size: 0.98rem;
+  margin: 0;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.form-group label {
+  color: #334155;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.form-group input {
+  border: 1px solid #dbe1ea;
+  border-radius: 12px;
+  padding: 0.86rem 1.05rem;
+  font-size: 1rem;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+.form-group input:hover:not(:disabled) {
+  border-color: #a8b3c4;
+  background: #ffffff;
+}
+
+.form-group input:focus:not(:disabled) {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.16);
+  background: #ffffff;
+}
+
+.form-group input::placeholder {
+  color: #94a3b8;
+}
+
+.form-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.35rem;
+  font-size: 0.9rem;
+}
+
+.remember-me {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.remember-me input[type='checkbox'] {
+  width: 17px;
+  height: 17px;
+  cursor: pointer;
+  accent-color: var(--accent);
+}
+
+.remember-me label {
+  color: #4b5563;
+  cursor: pointer;
+  font-weight: 500;
+  margin: 0;
+}
+
+.forgot-password {
+  color: #1d4ed8;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.forgot-password:hover {
+  color: #1e40af;
+}
+
+.login-btn {
+  background: linear-gradient(120deg, #f97316 0%, #ea580c 55%, #c2410c 140%);
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 0.9rem 1.35rem;
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
+  margin-top: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.login-btn:not(:disabled):hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 24px rgba(234, 88, 12, 0.35);
+  filter: saturate(1.08);
+}
+
+.login-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.signup-prompt {
+  text-align: center;
+  margin-top: 1.35rem;
+  color: #475569;
+  font-size: 0.98rem;
+}
+
+.signup-prompt a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 700;
+  transition: opacity 0.3s ease;
+}
+
+.signup-prompt a:hover {
+  opacity: 0.8;
+}
+
+@keyframes orbPulse {
+  0%,
+  100% {
+    opacity: 0.2;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.3;
+    transform: scale(1.1);
+  }
+}
+
+@media (max-width: 768px) {
+  .login-hero-section {
+    min-height: calc(100vh - 80px);
+    padding: 0.5rem 0 1.5rem;
+  }
+
+  .login-container {
+    padding-top: 0.25rem;
+  }
+
+  .login-header {
+    margin-bottom: 1rem;
+  }
+
+  .login-header h1 {
+    font-size: 1.55rem;
+  }
+
+  .login-subtitle {
+    font-size: 0.93rem;
+    max-width: 32ch;
+  }
+
+  .login-form-card {
+    padding: 1.35rem;
+    max-width: 100%;
+  }
+
+  .form-footer {
+    flex-direction: column;
+    gap: 0.7rem;
+    align-items: flex-start;
+  }
+}
+
