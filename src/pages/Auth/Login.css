@@ -108,6 +108,17 @@ card: {
 .submit-button:hover {
     background-color: #fbce48;
     box-shadow: 0 0 10px rgba(100, 100, 100, 0.1);
+    
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 .forgot-password-link {
