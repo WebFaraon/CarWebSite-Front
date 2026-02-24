@@ -9,8 +9,8 @@ function Login() {
                 <form className="form">
                     <input className="input" type="email" placeholder="Email"></input>
                     <input className="input" type="password" placeholder="Password"></input>
-                    <button className="submit-button" type="submit"></button>
-                    <a className="forgot-password-link" href="#"></a>
+                    <button className="submit-button" type="submit">LOGIN</button>
+                    <a className="forgot-password-link" href="#">Forgot Your Password?</a>
                 </form>
             </div>
         </div>
