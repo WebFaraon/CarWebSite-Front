@@ -1,0 +1,98 @@
+/*
+
+.wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f4f7f6;
+}
+
+card: {
+    backgroundColor: '#ffffff',
+    padding: '40px',
+    borderRadius: '12px',
+    boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
+    width: '100%',
+    maxWidth: '400px',
+    textAlign: 'center',
+  },
+
+*/
+
+.wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f4f7f6;
+}
+
+.card {
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.title {
+    margin-top: 0px;
+    color: #333;
+    font-size: 1.5rem;
+}
+
+.info {
+    color: #333;
+    font-weight: 100;
+    font-size: 1rem;
+    margin-bottom: 10px;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.input {
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    font-size: 16px;
+    outline: none;
+
+    transition: box-shadow 0.3s ease;
+}
+
+.input:focus {
+    border: 2px solid #ebc75c;
+    box-shadow: 0 0 10px rgba(100, 100, 100, 0.1);
+}
+
+.submit-button {
+    padding: 12px;
+    border-radius: 6px;
+    border: none;
+    background-color: #ebc75c;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.submit-button:hover {
+    background-color: #fbce48;
+    box-shadow: 0 0 10px rgba(100, 100, 100, 0.1);
+}
+
+.forgot-password-link {
+    text-decoration: underline;
+    color: #007bff;
+    margin-top: 10px;
+    font-size: 14px;
+}

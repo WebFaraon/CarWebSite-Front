@@ -5,7 +5,8 @@ function Login() {
     return(
         <div className="wrapper">
             <div className="card">
-                <h2 className="title">Log In to your account</h2>
+                <h2 className="title">Welcome back!</h2>
+                <h4 className="info">Enter your credentials to continue.</h4>
                 <form className="form">
                     <input className="input" type="email" placeholder="Email"></input>
                     <input className="input" type="password" placeholder="Password"></input>
