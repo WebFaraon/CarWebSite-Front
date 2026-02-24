@@ -1,4 +1,3 @@
-
 body {
     margin: 0;
     padding: 0;
@@ -21,7 +20,7 @@ body {
 }
 
 .login-inner-container {
-    width: 60vw;
+    width: 55vw;
     max-width: 900px;
     height: 70vh;
     max-height: 600px;
@@ -30,12 +29,25 @@ body {
 
     background-color: rgb(217, 255, 28);
     border-radius: 12px;
-    border: solid blueviolet;
+    text-align: center;
 
-    animation: changeColor 0.05s infinite;
+    margin: 0;
+    padding: 0;
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
 }
 
-@keyframes changeColor {
-    0%   {background-color: white;}
-    100% {background-color: black;}
+.login-title {
+    margin-top: 2vh;
+    font-size: 35px;
+}
+
+.email-input, .password-input {
+    width: 70%;
+    height: 50px;
+    border-radius: 2rem;
+    border:  gray outset;
 }
