@@ -1,0 +1,135 @@
+.signup-page {
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+.signup-hero-section {
+  background: linear-gradient(160deg, #f8fbff 0%, #eff5ff 52%, #f9fcff 100%);
+  min-height: calc(100vh - 80px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 0;
+}
+
+.signup-container {
+  width: min(480px, 92vw);
+}
+
+.signup-copy {
+  text-align: center;
+  padding-bottom: 1.5rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.signup-copy .hero-eyebrow {
+  color: var(--accent);
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.signup-copy h1 {
+  font-size: clamp(1.6rem, 4vw, 2rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin: 0 0 0.5rem;
+  color: #0f172a;
+}
+
+.signup-copy p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.signup-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  box-shadow: var(--shadow-soft);
+  padding: 2rem;
+  width: 100%;
+}
+
+.signup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.form-group label {
+  color: #374151;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.form-group input {
+  background: #fbfcfe;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--text);
+  height: 44px;
+  padding: 0.65rem 0.85rem;
+  font-size: 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-group input:focus {
+  border-color: #fdba74;
+  box-shadow: 0 0 0 3px rgba(251, 146, 60, 0.15);
+  outline: none;
+}
+
+.form-group input::placeholder {
+  color: #94a3b8;
+}
+
+.signup-btn {
+  width: 100%;
+  margin-top: 0.5rem;
+  height: 44px;
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+}
+
+.login-prompt {
+  text-align: center;
+  margin-top: 1.25rem;
+  color: var(--text-muted);
+  font-size: 0.94rem;
+}
+
+.login-prompt a {
+  color: var(--accent);
+  font-weight: 700;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.login-prompt a:hover {
+  opacity: 0.8;
+}
+
+@media (max-width: 480px) {
+  .signup-hero-section {
+    padding: 2rem 0;
+    align-items: flex-start;
+    padding-top: 3rem;
+  }
+
+  .signup-card {
+    padding: 1.5rem;
+  }
+}

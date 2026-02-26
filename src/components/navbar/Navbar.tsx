@@ -80,7 +80,7 @@ function Navbar({
           <a href="login" className="navbar-login">
             Login
           </a>
-          <a href="#" className="navbar-signup">
+          <a href="signup" className="navbar-signup">
             Sign Up
           </a>
         </div>

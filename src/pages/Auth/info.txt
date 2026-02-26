@@ -1,4 +1,0 @@
-Daniel - CarDetails, Favorites,
-Andrei - Auth, Catalog
-Dragos - Home, FAQ, AboutUs
-Victor -
