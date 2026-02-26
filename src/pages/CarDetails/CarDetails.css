@@ -95,16 +95,28 @@
 }
 
 .car-info-top h1 {
-  font-size: clamp(1.25rem, 1.8vw, 1.65rem);
+  font-size: clamp(1.25rem, 1.8vw, 2rem);
   letter-spacing: -0.02em;
   line-height: 1.15;
   margin: 0;
+  padding-bottom: 0.55rem;
+  position: relative;
+}
+
+.car-info-top h1::after {
+  background-color: rgba(190, 190, 190, 0.991);
+  bottom: 0;
+  content: '';
+  height: 2px;
+  left: 0;
+  position: absolute;
+  width: min(220px, 100%);
 }
 
 .car-price {
   color: var(--accent);
-  font-size: clamp(1.5rem, 2.2vw, 2.05rem);
-  font-weight: 800;
+  font-size: clamp(1.5rem, 2.2vw, 1.9rem);
+  font-weight: 700;
   letter-spacing: -0.02em;
   margin: 0.4rem 0 0;
 }
@@ -228,10 +240,13 @@
 }
 
 .actions-row {
-  display: grid;
-  gap: 0.8rem;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  display: flex;
+  justify-content: center;
   margin-top: 2rem;
+}
+
+.actions-row .primary-action {
+  min-width: 220px;
 }
 
 .primary-action,
@@ -262,8 +277,13 @@
 
 .primary-action:hover,
 .secondary-action:hover {
-  opacity: 0.94;
+  opacity: 0.8;
   transform: translateY(-1px);
+}
+
+.primary-action:active,
+.secondary-action:active {
+  opacity: 0.5;
 }
 
 .image-nav-btn {
@@ -336,8 +356,7 @@
   }
 
   .spec-grid,
-  .feature-grid,
-  .actions-row {
+  .feature-grid {
     grid-template-columns: 1fr;
   }
 

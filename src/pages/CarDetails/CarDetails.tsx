@@ -1,25 +1,31 @@
 import { useState } from 'react'
 import Navbar from '../../components/navbar/Navbar.tsx'
 import './CarDetails.css'
+import s1 from './sclassImages/s1.jpg'
+import s2 from './sclassImages/s2.jpg'
+import s3 from './sclassImages/s3.jpg'
+import s4 from './sclassImages/s4.jpg'
+import s5 from './sclassImages/s5.jpg'
 
 const carData = {
-  title: '2024 Mercedes-Benz S-Class',
+  title: '2024 Mercedes-Maybach S580',
   price: '$112,000',
   
   images: [
-    'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1400&q=80',
-    'https://images.unsplash.com/photo-1619405399517-d7fce0f13302?auto=format&fit=crop&w=1400&q=80',
-    'https://images.unsplash.com/photo-1580273916550-e323be2ae537?auto=format&fit=crop&w=1400&q=80',
-    'https://images.unsplash.com/photo-1549925862-99039ec8e7f4?auto=format&fit=crop&w=1400&q=80',
+    s1,
+    s2,
+    s3,
+    s4,
+    s5,
   ],
   description:
-    'The pinnacle of luxury sedans. This Mercedes-Benz S-Class offers unmatched comfort and advanced technology.',
+    'Its a maybach, what else do you want',
   specs: [
     { label: 'Mileage', value: '1,200 mi', icon: 'mileage' },
     { label: 'Year', value: '2024', icon: 'year' },
     { label: 'Transmission', value: 'Automatic', icon: 'transmission' },
     { label: 'Fuel Type', value: 'Gasoline', icon: 'fuel' },
-    { label: 'Color', value: 'White', icon: 'color' },
+    { label: 'Color', value: 'Black/White', icon: 'color' },
   ],
   features: [
     'Massage Seats',
@@ -181,9 +187,6 @@ function CarDetails() {
             <div className="actions-row">
               <button type="button" className="primary-action">
                 Contact Us
-              </button>
-              <button type="button" className="secondary-action">
-                Schedule Test Drive
               </button>
             </div>
           </article>
