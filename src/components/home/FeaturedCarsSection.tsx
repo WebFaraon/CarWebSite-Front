@@ -3,9 +3,15 @@ import type { FeaturedCar } from './types'
 
 interface FeaturedCarsSectionProps {
   cars: FeaturedCar[]
+  favoriteIds: number[]
+  onToggleFavorite: (carId: number) => void
 }
 
-function FeaturedCarsSection({ cars }: FeaturedCarsSectionProps) {
+function FeaturedCarsSection({
+  cars,
+  favoriteIds,
+  onToggleFavorite,
+}: FeaturedCarsSectionProps) {
   return (
     <section id="offers" className="featured-section section-spacer">
       <div className="container">
@@ -18,7 +24,12 @@ function FeaturedCarsSection({ cars }: FeaturedCarsSectionProps) {
 
         <div className="cars-grid">
           {cars.map((car) => (
-            <CarCard key={car.id} car={car} />
+            <CarCard
+              key={car.id}
+              car={car}
+              isFavorite={favoriteIds.includes(car.id)}
+              onToggleFavorite={onToggleFavorite}
+            />
           ))}
         </div>
       </div>

@@ -48,50 +48,6 @@
   z-index: 2;
 }
 
-.hero-orb {
-  border-radius: 50%;
-  filter: blur(1px);
-  pointer-events: none;
-  position: absolute;
-  transform-style: preserve-3d;
-  z-index: 0;
-}
-
-.hero-orbs {
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-  position: absolute;
-  z-index: 0;
-}
-
-.hero-orb-one {
-  animation: orbPulse 8s ease-in-out infinite;
-  background: radial-gradient(circle at 30% 30%, #fff7ed, #fdba74);
-  height: 280px;
-  left: -80px;
-  top: 22px;
-  width: 280px;
-}
-
-.hero-orb-two {
-  animation: orbPulse 10s ease-in-out infinite reverse;
-  background: radial-gradient(circle at 30% 30%, #eff6ff, #93c5fd);
-  height: 220px;
-  right: -60px;
-  top: 18px;
-  width: 220px;
-}
-
-.hero-orb-three {
-  animation: orbPulse 12s ease-in-out infinite;
-  background: radial-gradient(circle at 35% 35%, #ecfeff, #67e8f9);
-  bottom: -80px;
-  height: 190px;
-  left: 46%;
-  width: 190px;
-}
-
 .hero-float-card {
   backdrop-filter: blur(10px);
   background: rgba(255, 255, 255, 0.7);
@@ -300,6 +256,16 @@
   width: 18px;
 }
 
+.favorite-btn.is-active {
+  background: #f97316;
+  border-color: #f97316;
+}
+
+.favorite-btn.is-active svg {
+  fill: #ffffff;
+  stroke: #ffffff;
+}
+
 .car-card-content {
   padding: 1rem 1rem 1.2rem;
   position: relative;
@@ -402,30 +368,6 @@
   min-height: 260px;
   overflow: hidden;
   position: relative;
-}
-
-.sell-orb {
-  border-radius: 50%;
-  pointer-events: none;
-  position: absolute;
-}
-
-.sell-orb-one {
-  animation: floatSoft 5.4s ease-in-out infinite;
-  background: radial-gradient(circle at 35% 35%, rgba(253, 186, 116, 0.55), rgba(249, 115, 22, 0.15));
-  height: 140px;
-  right: -42px;
-  top: -30px;
-  width: 140px;
-}
-
-.sell-orb-two {
-  animation: floatSoft 6.4s ease-in-out infinite reverse;
-  background: radial-gradient(circle at 35% 35%, rgba(147, 197, 253, 0.45), rgba(59, 130, 246, 0.1));
-  bottom: -45px;
-  height: 170px;
-  left: -50px;
-  width: 170px;
 }
 
 .sell-floating-chip {
@@ -560,18 +502,6 @@
   }
 }
 
-@keyframes orbPulse {
-  0% {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-  50% {
-    transform: translate3d(10px, -12px, 0) scale(1.08);
-  }
-  100% {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-}
-
 @media (max-width: 1024px) {
   .hero-float-card {
     display: none;
@@ -593,23 +523,6 @@
 @media (max-width: 720px) {
   .section-spacer {
     padding: 3rem 0;
-  }
-
-  .hero-orb-one {
-    height: 180px;
-    left: -70px;
-    width: 180px;
-  }
-
-  .hero-orb-two {
-    height: 160px;
-    right: -70px;
-    top: 60px;
-    width: 160px;
-  }
-
-  .hero-orb-three {
-    display: none;
   }
 
   .search-card {

@@ -9,6 +9,12 @@ export interface FeaturedCar {
   mileage: string
   price: string
   image: string
+  fuel: string
+  transmission: string
+  body: string
+  engine: string
+  consumption: string
+  features: string[]
 }
 
 export interface FeatureItem {
