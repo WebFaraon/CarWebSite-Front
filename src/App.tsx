@@ -13,7 +13,7 @@ function AppRoutes() {
         <Route path="/" element={<Home />} />
         <Route path="/favorites" element={<Favorites/>} />
         <Route path="/sell" element={<SellCar />} />
-        <Route path="login" element={<Login />} />
+        <Route path="/login" element={<Login />} />
 
       </Routes>
     </div>
