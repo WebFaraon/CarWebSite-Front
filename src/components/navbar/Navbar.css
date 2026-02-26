@@ -93,6 +93,12 @@
   border-color: #fed7aa;
 }
 
+.favorites-btn.is-active {
+  background: #fff7ed;
+  border-color: #fdba74;
+  color: #ea580c;
+}
+
 .favorites-btn svg {
   fill: none;
   height: 17px;

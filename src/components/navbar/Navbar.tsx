@@ -20,7 +20,10 @@ const defaultNavItems: NavItem[] = [
   { label: 'Contact', href: '#contact' },
 ]
 
-function Navbar({ brandName = 'AutoMarket', navItems = defaultNavItems }: NavbarProps) {
+function Navbar({
+  brandName = 'AutoMarket',
+  navItems = defaultNavItems,
+}: NavbarProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   const handleLinkClick = () => {
@@ -62,11 +65,18 @@ function Navbar({ brandName = 'AutoMarket', navItems = defaultNavItems }: Navbar
         </nav>
 
         <div className="navbar-actions">
-          <button className="favorites-btn" aria-label="Favorites" type="button">
+          <NavLink
+            className={({ isActive }) =>
+              `favorites-btn ${isActive ? 'is-active' : ''}`
+            }
+            to="/favorites"
+            aria-label="Favorites"
+            onClick={handleLinkClick}
+          >
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M12 20.25 10.55 19C5.4 14.36 2 11.28 2 7.5A5.38 5.38 0 0 1 7.5 2 6.16 6.16 0 0 1 12 4.09 6.16 6.16 0 0 1 16.5 2 5.38 5.38 0 0 1 22 7.5c0 3.78-3.4 6.86-8.55 11.51L12 20.25Z" />
             </svg>
-          </button>
+          </NavLink>
           <a href="login" className="navbar-login">
             Login
           </a>
@@ -94,11 +104,18 @@ function Navbar({ brandName = 'AutoMarket', navItems = defaultNavItems }: Navbar
         </nav>
 
         <div className="mobile-actions">
-          <button className="favorites-btn" aria-label="Favorites" type="button">
+          <NavLink
+            className={({ isActive }) =>
+              `favorites-btn ${isActive ? 'is-active' : ''}`
+            }
+            to="/favorites"
+            aria-label="Favorites"
+            onClick={handleLinkClick}
+          >
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M12 20.25 10.55 19C5.4 14.36 2 11.28 2 7.5A5.38 5.38 0 0 1 7.5 2 6.16 6.16 0 0 1 12 4.09 6.16 6.16 0 0 1 16.5 2 5.38 5.38 0 0 1 22 7.5c0 3.78-3.4 6.86-8.55 11.51L12 20.25Z" />
             </svg>
-          </button>
+          </NavLink>
           <a href="#" className="navbar-login">
             Login
           </a>
