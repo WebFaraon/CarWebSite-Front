@@ -48,50 +48,6 @@
   z-index: 2;
 }
 
-.hero-orb {
-  border-radius: 50%;
-  filter: blur(1px);
-  pointer-events: none;
-  position: absolute;
-  transform-style: preserve-3d;
-  z-index: 0;
-}
-
-.hero-orbs {
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-  position: absolute;
-  z-index: 0;
-}
-
-.hero-orb-one {
-  animation: orbPulse 8s ease-in-out infinite;
-  background: radial-gradient(circle at 30% 30%, #fff7ed, #fdba74);
-  height: 280px;
-  left: -80px;
-  top: 22px;
-  width: 280px;
-}
-
-.hero-orb-two {
-  animation: orbPulse 10s ease-in-out infinite reverse;
-  background: radial-gradient(circle at 30% 30%, #eff6ff, #93c5fd);
-  height: 220px;
-  right: -60px;
-  top: 18px;
-  width: 220px;
-}
-
-.hero-orb-three {
-  animation: orbPulse 12s ease-in-out infinite;
-  background: radial-gradient(circle at 35% 35%, #ecfeff, #67e8f9);
-  bottom: -80px;
-  height: 190px;
-  left: 46%;
-  width: 190px;
-}
-
 .hero-float-card {
   backdrop-filter: blur(10px);
   background: rgba(255, 255, 255, 0.7);
@@ -310,135 +266,6 @@
   stroke: #ffffff;
 }
 
-.favorites-panel-overlay {
-  inset: 0;
-  opacity: 0;
-  pointer-events: none;
-  position: fixed;
-  transition: opacity 0.25s ease;
-  z-index: 1400;
-}
-
-.favorites-panel-overlay.is-open {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.favorites-panel-backdrop {
-  background: rgba(15, 23, 42, 0.45);
-  border: none;
-  height: 100%;
-  left: 0;
-  position: absolute;
-  top: 0;
-  width: 100%;
-}
-
-.favorites-panel {
-  background: #fff7ed;
-  border-left: 1px solid #fed7aa;
-  box-shadow: -18px 0 30px rgba(15, 23, 42, 0.2);
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  height: 100%;
-  max-width: 520px;
-  padding: 2rem;
-  position: absolute;
-  right: 0;
-  top: 0;
-  transform: translateX(100%);
-  transition: transform 0.3s ease;
-  width: min(92vw, 520px);
-  z-index: 1;
-}
-
-.favorites-panel-overlay.is-open .favorites-panel {
-  transform: translateX(0);
-}
-
-.favorites-panel-header {
-  align-items: flex-start;
-  display: flex;
-  justify-content: space-between;
-}
-
-.favorites-panel-header h2 {
-  font-size: clamp(1.6rem, 2.6vw, 2.1rem);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  margin: 0 0 0.3rem;
-}
-
-.favorites-panel-header p {
-  color: #9a3412;
-  font-size: 0.95rem;
-  font-weight: 700;
-  margin: 0;
-}
-
-.favorites-close {
-  align-items: center;
-  background: #ffffff;
-  border: 1px solid #fed7aa;
-  border-radius: 12px;
-  cursor: pointer;
-  display: inline-flex;
-  height: 36px;
-  justify-content: center;
-  position: relative;
-  width: 36px;
-}
-
-.favorites-close span {
-  background: #9a3412;
-  border-radius: 999px;
-  height: 2px;
-  position: absolute;
-  width: 16px;
-}
-
-.favorites-close span:first-child {
-  transform: rotate(45deg);
-}
-
-.favorites-close span:last-child {
-  transform: rotate(-45deg);
-}
-
-.favorites-panel-list {
-  display: grid;
-  gap: 1rem;
-  overflow-y: auto;
-  padding-right: 0.3rem;
-}
-
-.favorites-panel-list .car-card {
-  transform: none;
-}
-
-.favorites-panel-list .car-card:hover {
-  transform: none;
-}
-
-.favorites-empty {
-  background: #ffffff;
-  border: 1px dashed #fdba74;
-  border-radius: 18px;
-  padding: 2rem;
-  text-align: center;
-}
-
-.favorites-empty h3 {
-  font-size: 1.2rem;
-  margin-bottom: 0.4rem;
-}
-
-.favorites-empty p {
-  color: #6b7280;
-  margin: 0;
-}
-
 .car-card-content {
   padding: 1rem 1rem 1.2rem;
   position: relative;
@@ -541,30 +368,6 @@
   min-height: 260px;
   overflow: hidden;
   position: relative;
-}
-
-.sell-orb {
-  border-radius: 50%;
-  pointer-events: none;
-  position: absolute;
-}
-
-.sell-orb-one {
-  animation: floatSoft 5.4s ease-in-out infinite;
-  background: radial-gradient(circle at 35% 35%, rgba(253, 186, 116, 0.55), rgba(249, 115, 22, 0.15));
-  height: 140px;
-  right: -42px;
-  top: -30px;
-  width: 140px;
-}
-
-.sell-orb-two {
-  animation: floatSoft 6.4s ease-in-out infinite reverse;
-  background: radial-gradient(circle at 35% 35%, rgba(147, 197, 253, 0.45), rgba(59, 130, 246, 0.1));
-  bottom: -45px;
-  height: 170px;
-  left: -50px;
-  width: 170px;
 }
 
 .sell-floating-chip {
@@ -699,18 +502,6 @@
   }
 }
 
-@keyframes orbPulse {
-  0% {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-  50% {
-    transform: translate3d(10px, -12px, 0) scale(1.08);
-  }
-  100% {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-}
-
 @media (max-width: 1024px) {
   .hero-float-card {
     display: none;
@@ -732,23 +523,6 @@
 @media (max-width: 720px) {
   .section-spacer {
     padding: 3rem 0;
-  }
-
-  .hero-orb-one {
-    height: 180px;
-    left: -70px;
-    width: 180px;
-  }
-
-  .hero-orb-two {
-    height: 160px;
-    right: -70px;
-    top: 60px;
-    width: 160px;
-  }
-
-  .hero-orb-three {
-    display: none;
   }
 
   .search-card {

@@ -19,8 +19,6 @@ function SellYourCarSection({ image }: SellYourCarSectionProps) {
           </div>
 
           <div className="sell-image-wrap">
-            <div className="sell-orb sell-orb-one" aria-hidden="true" />
-            <div className="sell-orb sell-orb-two" aria-hidden="true" />
             <div className="sell-floating-chip" aria-hidden="true">
               2.4k+ active buyers
             </div>
