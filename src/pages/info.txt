@@ -1,4 +1,4 @@
 Daniel - CarDetails, Favorites,
-Andrei - Auth, Catalog
+Andrei - Login, Signup, Contact us
 Dragos - Home, FAQ, AboutUs
-Victor -
+Victor - Catalog
