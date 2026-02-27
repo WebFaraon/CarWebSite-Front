@@ -3,6 +3,12 @@ import Home from './pages/Home/Home.tsx'
 import SellCar from './pages/SellCar/SellCar.tsx'
 import Login from './pages/Auth/Login.tsx'
 import Favorites from './pages/Favorites/Favorites.tsx'
+import CatalogPage from './pages/Catalog/CatalogPage.tsx'
+import Signup from './pages/Auth/Signup.tsx'
+import Favorites from './pages/Favorites/Favorites.tsx'
+import ContactUs from './pages/ContactUs/ContactUs.tsx'
+import CarDetails from './pages/CarDetails/CarDetails.tsx'
+import ForgotPassword from './pages/Auth/ForgotPassword.tsx'
 
 function AppRoutes() {
   const location = useLocation()
@@ -14,6 +20,10 @@ function AppRoutes() {
         <Route path="/favorites" element={<Favorites/>} />
         <Route path="/sell" element={<SellCar />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/contact-us" element={<ContactUs />} />
+        <Route path="/car-details" element={<CarDetails />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
 
       </Routes>
     </div>

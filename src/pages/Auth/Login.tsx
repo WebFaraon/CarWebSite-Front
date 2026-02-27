@@ -53,7 +53,7 @@ function Login() {
                     />
                     <label htmlFor="remember">Remember me</label>
                   </div>
-                  <a href="#" className="forgot-password">Forgot password?</a>
+                  <a href="/forgot-password" className="forgot-password">Forgot password?</a>
                 </div>
 
                 <button type="button" className="primary-btn login-btn">
