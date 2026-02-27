@@ -2,6 +2,7 @@ import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom'
 import Home from './pages/Home/Home.tsx'
 import SellCar from './pages/SellCar/SellCar.tsx'
 import Login from './pages/Auth/Login.tsx'
+import CatalogPagr from './pages/Catalog/CatalogPage.tsx'
 import Signup from './pages/Auth/Signup.tsx'
 import Favorites from './pages/Favorites/Favorites.tsx'
 import ContactUs from './pages/ContactUs/ContactUs.tsx'
@@ -27,6 +28,7 @@ function AppRoutes() {
 }
 
 function App() {
+  
   return (
     <BrowserRouter>
       <AppRoutes />

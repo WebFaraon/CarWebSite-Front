@@ -14,7 +14,7 @@ interface NavbarProps {
 
 const defaultNavItems: NavItem[] = [
   { label: 'Home', href: '/' },
-  { label: 'Offers', href: '#offers' },
+  { label: 'Offers', href: '/offers' },
   { label: 'Sell', href: '/sell' },
   { label: 'Help', href: '#help' },
   { label: 'Contact', href: '/contact-us' },
@@ -36,9 +36,7 @@ function Navbar({
         <NavLink
           key={item.label}
           to={item.href}
-          className={({ isActive }) =>
-            `${className} ${isActive ? 'is-active' : ''}`
-          }
+          className={({ isActive }) => `${className} ${isActive ? 'is-active' : ''}`}
           onClick={handleLinkClick}
         >
           {item.label}
@@ -47,7 +45,12 @@ function Navbar({
     }
 
     return (
-      <a key={item.label} href={item.href} className={className} onClick={handleLinkClick}>
+      <a
+        key={item.label}
+        href={item.href}
+        className={className}
+        onClick={handleLinkClick}
+      >
         {item.label}
       </a>
     )
@@ -119,6 +122,7 @@ function Navbar({
           <a href="#" className="navbar-login">
             Login
           </a>
+
           <a href="#" className="navbar-signup">
             Sign Up
           </a>
