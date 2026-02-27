@@ -18,24 +18,24 @@ const contactConfig = {
       id: 1,
       type: 'phone' as const,
       label: 'Call us',
-      value: '+1 (555) 000-0000',
+      value: '+373xxxxxxxx',
       detail: 'Mon–Fri, 9 am – 6 pm',
-      href: 'tel:+15550000000',
+      href: 'tel:+373xxxxxxxx',
     },
     {
       id: 2,
       type: 'email' as const,
       label: 'Email us',
       value: 'hello@automarket.com',
-      detail: 'We reply within 24 hours',
+      detail: 'We reply within 24 working hours',
       href: 'mailto:hello@automarket.com',
     },
     {
       id: 3,
       type: 'location' as const,
       label: 'Visit us',
-      value: '123 Market Street',
-      detail: 'San Francisco, CA 94103',
+      value: 'Strada Studenților 7',
+      detail: 'Republic of Moldova, Chișinău, MD-2012',
       href: '#',
     },
     {
@@ -52,7 +52,7 @@ const contactConfig = {
     heading: 'Stop by our office',
     body:
       'Our doors are open Monday through Friday. Whether you want to discuss a listing in person or just say hello, we love meeting our community.',
-    address: '123 Market Street, San Francisco, CA 94103',
+    address: 'Strada Studenților 7, MD-2012, Chișinău',
     mapEmbedSrc: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d21743.451228805923!2d28.866073321224768!3d47.06119593964116!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40c97ce00125f907%3A0xfc2e5ee00a6d3d6a!2sUniversitatea%20Tehnic%C4%83%20a%20Moldovei!5e0!3m2!1sro!2s!4v1772179223452!5m2!1sro!2s', // paste a Google Maps embed src here when ready
   },
 }
