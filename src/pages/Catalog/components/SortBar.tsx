@@ -1,6 +1,6 @@
 // src/pages/Catalog/components/SortBar.tsx
 import type { SortKey } from "../catalog.types";
-import "./catalogstyles.css";
+import "../catalogstyles.css";
 
 export default function SortBar({
   value,
