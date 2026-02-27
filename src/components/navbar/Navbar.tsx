@@ -14,7 +14,7 @@ interface NavbarProps {
 
 const defaultNavItems: NavItem[] = [
   { label: 'Home', href: '/' },
-  { label: 'Offers', href: '#offers' },
+  { label: 'Offers', href: '/offers' },
   { label: 'Sell', href: '/sell' },
   { label: 'Help', href: '#help' },
   { label: 'Contact', href: '#contact' },
@@ -33,9 +33,7 @@ function Navbar({ brandName = 'AutoMarket', navItems = defaultNavItems }: Navbar
         <NavLink
           key={item.label}
           to={item.href}
-          className={({ isActive }) =>
-            `${className} ${isActive ? 'is-active' : ''}`
-          }
+          className={({ isActive }) => `${className} ${isActive ? 'is-active' : ''}`}
           onClick={handleLinkClick}
         >
           {item.label}
@@ -44,7 +42,12 @@ function Navbar({ brandName = 'AutoMarket', navItems = defaultNavItems }: Navbar
     }
 
     return (
-      <a key={item.label} href={item.href} className={className} onClick={handleLinkClick}>
+      <a
+        key={item.label}
+        href={item.href}
+        className={className}
+        onClick={handleLinkClick}
+      >
         {item.label}
       </a>
     )
@@ -67,9 +70,11 @@ function Navbar({ brandName = 'AutoMarket', navItems = defaultNavItems }: Navbar
               <path d="M12 20.25 10.55 19C5.4 14.36 2 11.28 2 7.5A5.38 5.38 0 0 1 7.5 2 6.16 6.16 0 0 1 12 4.09 6.16 6.16 0 0 1 16.5 2 5.38 5.38 0 0 1 22 7.5c0 3.78-3.4 6.86-8.55 11.51L12 20.25Z" />
             </svg>
           </button>
+
           <a href="login" className="navbar-login">
             Login
           </a>
+
           <a href="#" className="navbar-signup">
             Sign Up
           </a>
@@ -99,9 +104,11 @@ function Navbar({ brandName = 'AutoMarket', navItems = defaultNavItems }: Navbar
               <path d="M12 20.25 10.55 19C5.4 14.36 2 11.28 2 7.5A5.38 5.38 0 0 1 7.5 2 6.16 6.16 0 0 1 12 4.09 6.16 6.16 0 0 1 16.5 2 5.38 5.38 0 0 1 22 7.5c0 3.78-3.4 6.86-8.55 11.51L12 20.25Z" />
             </svg>
           </button>
+
           <a href="#" className="navbar-login">
             Login
           </a>
+
           <a href="#" className="navbar-signup">
             Sign Up
           </a>
