@@ -62,7 +62,7 @@ function Login() {
               </form>
 
               <p className="signup-prompt">
-                Don't have an account? <a href="#">Create one here</a>
+                Don't have an account? <a href="signup">Create one here</a>
               </p>
             </div>
           </div>

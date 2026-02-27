@@ -72,7 +72,7 @@ function Signup() {
               </form>
 
               <p className="login-prompt">
-                Already have an account? <a href="#">Log in here</a>
+                Already have an account? <a href="login">Log in here</a>
               </p>
             </div>
           </div>
