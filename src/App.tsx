@@ -5,6 +5,7 @@ import Login from './pages/Auth/Login.tsx'
 import Signup from './pages/Auth/Signup.tsx'
 import Favorites from './pages/Favorites/Favorites.tsx'
 import ContactUs from './pages/ContactUs/ContactUs.tsx'
+import CarDetails from './pages/CarDetails/CarDetails.tsx'
 
 function AppRoutes() {
   const location = useLocation()
@@ -18,6 +19,7 @@ function AppRoutes() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/contact-us" element={<ContactUs />} />
+        <Route path="/car-details" element={<CarDetails />} />
 
       </Routes>
     </div>
