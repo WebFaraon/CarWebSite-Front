@@ -1,5 +1,6 @@
 // src/pages/Catalog/components/CatalogFilters.tsx
 import type { Filters } from "../catalog.types";
+import "../catalogstyles.css";
 
 export default function CatalogFilters({
   value,
@@ -11,30 +12,26 @@ export default function CatalogFilters({
   const v = value;
 
   return (
-    <div className="p-4">
-      <div className="mb-3">
-        <div className="text-lg font-black text-slate-900">Filters</div>
-        <div className="text-sm text-slate-500">Narrow down your search</div>
+    <div className="filters">
+      <div className="filters-head">
+        <div className="filters-title">Filters</div>
+        <div className="filters-subtitle">Narrow down your search</div>
       </div>
 
-      <label className="block text-xs font-extrabold text-slate-700 mb-2">
-        Search
-      </label>
-      <div className="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2">
-        <span className="text-slate-400">🔎</span>
+      <label className="filters-label">Search</label>
+      <div className="filters-search">
+        <span className="filters-search-icon">🔎</span>
         <input
           value={v.q}
           onChange={(e) => onChange({ ...v, q: e.target.value })}
-          className="w-full bg-transparent outline-none text-slate-700 placeholder:text-slate-400"
+          className="filters-search-input"
           placeholder="Audi A6, SUV, diesel..."
         />
       </div>
 
-      <div className="mt-4 grid grid-cols-2 gap-3">
-        <div>
-          <label className="block text-xs font-extrabold text-slate-700 mb-2">
-            Min price
-          </label>
+      <div className="filters-grid2">
+        <div className="filters-field">
+          <label className="filters-label">Min price</label>
           <input
             type="number"
             value={v.minPrice ?? ""}
@@ -44,14 +41,13 @@ export default function CatalogFilters({
                 minPrice: e.target.value ? Number(e.target.value) : undefined,
               })
             }
-            className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 outline-none focus:ring-4 focus:ring-orange-100"
+            className="filters-control"
             placeholder="0"
           />
         </div>
-        <div>
-          <label className="block text-xs font-extrabold text-slate-700 mb-2">
-            Max price
-          </label>
+
+        <div className="filters-field">
+          <label className="filters-label">Max price</label>
           <input
             type="number"
             value={v.maxPrice ?? ""}
@@ -61,17 +57,15 @@ export default function CatalogFilters({
                 maxPrice: e.target.value ? Number(e.target.value) : undefined,
               })
             }
-            className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 outline-none focus:ring-4 focus:ring-orange-100"
+            className="filters-control"
             placeholder="50000"
           />
         </div>
       </div>
 
-      <div className="mt-4 grid grid-cols-2 gap-3">
-        <div>
-          <label className="block text-xs font-extrabold text-slate-700 mb-2">
-            Year from
-          </label>
+      <div className="filters-grid2">
+        <div className="filters-field">
+          <label className="filters-label">Year from</label>
           <input
             type="number"
             value={v.yearFrom ?? ""}
@@ -81,14 +75,13 @@ export default function CatalogFilters({
                 yearFrom: e.target.value ? Number(e.target.value) : undefined,
               })
             }
-            className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 outline-none focus:ring-4 focus:ring-orange-100"
+            className="filters-control"
             placeholder="2015"
           />
         </div>
-        <div>
-          <label className="block text-xs font-extrabold text-slate-700 mb-2">
-            Year to
-          </label>
+
+        <div className="filters-field">
+          <label className="filters-label">Year to</label>
           <input
             type="number"
             value={v.yearTo ?? ""}
@@ -98,20 +91,18 @@ export default function CatalogFilters({
                 yearTo: e.target.value ? Number(e.target.value) : undefined,
               })
             }
-            className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 outline-none focus:ring-4 focus:ring-orange-100"
+            className="filters-control"
             placeholder="2025"
           />
         </div>
       </div>
 
-      <div className="mt-4">
-        <label className="block text-xs font-extrabold text-slate-700 mb-2">
-          Fuel
-        </label>
+      <div className="filters-block">
+        <label className="filters-label">Fuel</label>
         <select
           value={v.fuel ?? ""}
           onChange={(e) => onChange({ ...v, fuel: e.target.value as any })}
-          className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 outline-none focus:ring-4 focus:ring-orange-100"
+          className="filters-control"
         >
           <option value="">Any</option>
           <option value="diesel">Diesel</option>
@@ -122,7 +113,7 @@ export default function CatalogFilters({
         </select>
       </div>
 
-      <div className="mt-5 flex gap-3">
+      <div className="filters-actions">
         <button
           type="button"
           onClick={() =>
@@ -135,7 +126,7 @@ export default function CatalogFilters({
               yearTo: undefined,
             })
           }
-          className="flex-1 rounded-xl border border-slate-200 bg-white px-3 py-2 font-extrabold text-slate-700 hover:bg-slate-50"
+          className="filters-reset"
         >
           Reset
         </button>
