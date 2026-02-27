@@ -3,7 +3,6 @@ import Home from './pages/Home/Home.tsx'
 import SellCar from './pages/SellCar/SellCar.tsx'
 import Login from './pages/Auth/Login.tsx'
 import Favorites from './pages/Favorites/Favorites.tsx'
-import CarDetails from "./pages/CarDetails/CarDetails.tsx";
 
 function AppRoutes() {
   const location = useLocation()
@@ -15,7 +14,6 @@ function AppRoutes() {
         <Route path="/favorites" element={<Favorites/>} />
         <Route path="/sell" element={<SellCar />} />
         <Route path="/login" element={<Login />} />
-          <Route path="/car-detail" element={<CarDetails/>} />
 
       </Routes>
     </div>
