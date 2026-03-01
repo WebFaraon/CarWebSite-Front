@@ -17,7 +17,7 @@ const defaultNavItems: NavItem[] = [
   { label: 'Offers', href: '/offers' },
   { label: 'Sell', href: '/sell' },
   { label: 'Help', href: '#help' },
-  { label: 'Contact', href: '#contact' },
+  { label: 'Contact', href: '/contact-us' },
 ]
 
 function Navbar({
