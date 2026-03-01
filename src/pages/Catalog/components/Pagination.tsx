@@ -1,4 +1,6 @@
 // src/pages/Catalog/components/Pagination.tsx
+import "../catalogstyles.css";
+
 export default function Pagination({
   page,
   totalPages,
@@ -14,23 +16,23 @@ export default function Pagination({
   const nextDisabled = page >= totalPages;
 
   return (
-    <div className="flex items-center justify-center gap-2">
+    <div className="pagination">
       <button
         disabled={prevDisabled}
         onClick={() => onChange(page - 1)}
-        className="h-10 px-3 rounded-xl border border-slate-200 bg-white font-black text-slate-700 disabled:opacity-40 hover:bg-slate-50"
+        className="pagination-btn"
       >
         Prev
       </button>
 
-      <div className="h-10 px-4 rounded-xl border border-slate-200 bg-white grid place-items-center font-black text-slate-700">
+      <div className="pagination-info">
         {page} / {totalPages}
       </div>
 
       <button
         disabled={nextDisabled}
         onClick={() => onChange(page + 1)}
-        className="h-10 px-3 rounded-xl border border-slate-200 bg-white font-black text-slate-700 disabled:opacity-40 hover:bg-slate-50"
+        className="pagination-btn"
       >
         Next
       </button>

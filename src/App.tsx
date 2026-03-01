@@ -23,6 +23,7 @@ function AppRoutes() {
         <Route path="/contact-us" element={<ContactUs />} />
         <Route path="/car-details" element={<CarDetails />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/offers" element={<CatalogPage />} />
 
       </Routes>
     </div>

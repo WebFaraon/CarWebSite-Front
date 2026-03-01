@@ -3,7 +3,8 @@ import CatalogFilters from "./components/CatalogFilters";
 import SortBar from "./components/SortBar";
 import OfferGrid from "./components/OfferGrid";
 import Pagination from "./components/Pagination";
-import useCatalog from "./hooks/useCatalog"; 
+import useCatalog from "./hooks/useCatalog";
+import "./catalogstyles.css";
 
 export default function CatalogPage() {
   const {
@@ -20,17 +21,17 @@ export default function CatalogPage() {
   } = useCatalog();
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <div className="pointer-events-none fixed inset-0">
-        <div className="absolute -top-40 left-1/2 h-96 w-[720px] -translate-x-1/2 rounded-full bg-blue-200/40 blur-3xl" />
-        <div className="absolute top-32 left-1/3 h-72 w-72 rounded-full bg-orange-200/40 blur-3xl" />
+    <div className="catalog-page">
+      <div className="catalog-bg">
+        <div className="catalog-blob catalog-blob--blue" />
+        <div className="catalog-blob catalog-blob--orange" />
       </div>
 
-      <div className="relative mx-auto max-w-6xl px-6 py-8">
-        <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
+      <div className="catalog-container">
+        <div className="catalog-header">
           <div>
-            <h1 className="text-3xl font-black text-slate-900">Offers</h1>
-            <p className="text-slate-500">
+            <h1 className="catalog-title">Offers</h1>
+            <p className="catalog-subtitle">
               {isLoading ? "Loading..." : `${totalCount} results`}
             </p>
           </div>
@@ -38,19 +39,19 @@ export default function CatalogPage() {
           <SortBar value={sort} onChange={setSort} />
         </div>
 
-        <div className="grid gap-5 lg:grid-cols-[320px_1fr] items-start">
-          <aside className="lg:sticky lg:top-6">
-            <div className="rounded-2xl border border-slate-200 bg-white shadow-[0_18px_45px_rgba(15,23,42,0.06)]">
+        <div className="catalog-layout">
+          <aside className="catalog-aside">
+            <div className="catalog-card">
               <CatalogFilters value={filters} onChange={setFilters} />
             </div>
           </aside>
 
-          <main className="min-w-0">
-            <div className="rounded-2xl border border-slate-200 bg-white shadow-[0_18px_45px_rgba(15,23,42,0.06)] p-4">
+          <main className="catalog-main">
+            <div className="catalog-card catalog-card--padded">
               <OfferGrid offers={filteredOffers} loading={isLoading} />
             </div>
 
-            <div className="mt-4">
+            <div className="catalog-pagination">
               <Pagination page={page} totalPages={totalPages} onChange={setPage} />
             </div>
           </main>

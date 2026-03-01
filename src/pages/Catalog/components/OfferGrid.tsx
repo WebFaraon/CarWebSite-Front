@@ -1,6 +1,7 @@
 // src/pages/Catalog/components/OfferGrid.tsx
 import OfferCard from "./OfferCard";
 import type { Offer } from "../catalog.types";
+import "../catalogstyles.css";
 
 export default function OfferGrid({
   offers,
@@ -11,23 +12,20 @@ export default function OfferGrid({
 }) {
   if (loading) {
     return (
-      <div className="grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(260px,1fr))]">
+      <div className="offer-grid">
         {Array.from({ length: 9 }).map((_, i) => (
-          <div
-            key={i}
-            className="h-[340px] rounded-2xl border border-slate-200 bg-slate-50 animate-pulse"
-          />
+          <div key={i} className="offer-skeleton" />
         ))}
       </div>
     );
   }
 
   if (!offers?.length) {
-    return <div className="p-6 text-slate-500">No results.</div>;
+    return <div className="offer-grid-empty">No results.</div>;
   }
 
   return (
-    <div className="grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(260px,1fr))]">
+    <div className="offer-grid">
       {offers.map((o) => (
         <OfferCard key={o.id} offer={o} />
       ))}
