@@ -182,9 +182,6 @@ function CarDetails() {
               <button type="button" className="primary-action">
                 Contact Us
               </button>
-              <button type="button" className="secondary-action">
-                Schedule Test Drive
-              </button>
             </div>
           </article>
         </section>
