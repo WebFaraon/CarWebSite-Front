@@ -324,3 +324,28 @@ a.contact-card:hover {
     grid-template-columns: 1fr;
   }
 }
+
+/* ── Dark mode overrides ───────────────────────────────────── */
+[data-theme='dark'] .contact-hero-card {
+  background: linear-gradient(135deg, #1a2030 0%, #1e293b 55%, #0f172a 100%);
+  border-color: #334155;
+}
+
+[data-theme='dark'] .contact-card-icon {
+  background: #2d3748;
+}
+
+[data-theme='dark'] .contact-office-card {
+  background: linear-gradient(135deg, #1a2030 0%, #1e293b 100%);
+  border-color: #334155;
+}
+
+[data-theme='dark'] .form-group label {
+  color: #94a3b8;
+}
+
+[data-theme='dark'] .form-group input,
+[data-theme='dark'] .form-group select,
+[data-theme='dark'] .form-group textarea {
+  background: #1e293b;
+}

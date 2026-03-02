@@ -178,3 +178,24 @@
     align-items: flex-start;
   }
 }
+
+/* ── Dark mode overrides ───────────────────────────────────── */
+[data-theme='dark'] .login-hero-section {
+  background: linear-gradient(160deg, #0f172a 0%, #1a2540 52%, #0f172a 100%);
+}
+
+[data-theme='dark'] .login-copy h1 {
+  color: #f1f5f9;
+}
+
+[data-theme='dark'] .form-group label {
+  color: #94a3b8;
+}
+
+[data-theme='dark'] .form-group input {
+  background: #1e293b;
+}
+
+[data-theme='dark'] .remember-me label {
+  color: #94a3b8;
+}

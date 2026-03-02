@@ -345,3 +345,36 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+/* ── Dark mode overrides ───────────────────────────────────── */
+[data-theme='dark'] .main-image-wrap {
+  background: #1e293b;
+}
+
+[data-theme='dark'] .thumb-btn {
+  background: #1e293b;
+}
+
+[data-theme='dark'] .thumb-btn img {
+  background: #1e293b;
+}
+
+[data-theme='dark'] .secondary-action {
+  background: #1e293b;
+  border-color: #334155;
+  color: #f1f5f9;
+}
+
+[data-theme='dark'] .secondary-action:hover {
+  background: #2d3748;
+}
+
+[data-theme='dark'] .image-nav-btn {
+  background: rgba(15, 23, 42, 0.85);
+  border-color: #334155;
+  color: #f1f5f9;
+}
+
+[data-theme='dark'] .image-nav-btn:hover {
+  background: rgba(15, 23, 42, 1);
+}

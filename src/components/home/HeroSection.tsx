@@ -3,25 +3,21 @@ import SmartSearchBar from '../search/SmartSearchBar.tsx'
 function HeroSection() {
   return (
     <section className="hero-section">
-      <div className="hero-float-card hero-float-left" aria-hidden="true">
-        <span>Hot Deal</span>
-        <strong>BMW X5</strong>
-        <p>from $58,900</p>
-      </div>
-      <div className="hero-float-card hero-float-right" aria-hidden="true">
-        <span>Fast Sell</span>
-        <strong>Avg. 36h</strong>
-        <p>for listed cars</p>
-      </div>
-
       <div className="container">
         <div className="hero-copy">
           <p className="hero-eyebrow">Buy. Sell. Drive.</p>
           <h1>Find your perfect car today</h1>
           <p>
-            Browse trusted listings from verified sellers and discover great
-            deals near you.
+            Browse trusted listings from verified sellers and discover
+            great deals near you.
           </p>
+          <div className="hero-trust">
+            <span><strong>14,300+</strong> cars listed</span>
+            <span className="hero-trust-dot" aria-hidden="true" />
+            <span><strong>6,800+</strong> verified sellers</span>
+            <span className="hero-trust-dot" aria-hidden="true" />
+            <span><strong>Free</strong> to browse</span>
+          </div>
         </div>
 
         <SmartSearchBar />

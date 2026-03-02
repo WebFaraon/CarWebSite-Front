@@ -248,6 +248,56 @@ body.smart-search-open {
   overflow: hidden;
 }
 
+/* ── Dark mode ───────────────────────────────────────────────────────────── */
+
+[data-theme='dark'] .smart-search-filters {
+  background: #1e1810;
+  border-color: #7c2d12;
+  color: #fdba74;
+}
+
+[data-theme='dark'] .smart-search-filters:hover {
+  background: #241a0e;
+}
+
+[data-theme='dark'] .filters-panel-header span {
+  color: var(--text);
+}
+
+[data-theme='dark'] .filters-close {
+  background: #334155;
+  border-color: #475569;
+  color: var(--text);
+}
+
+[data-theme='dark'] .filter-field span,
+[data-theme='dark'] .filter-range span {
+  color: var(--text-muted);
+}
+
+[data-theme='dark'] .filter-field select,
+[data-theme='dark'] .filter-range input,
+[data-theme='dark'] .filter-range select {
+  background: #0f172a;
+  border-color: var(--border);
+  color: var(--text);
+}
+
+[data-theme='dark'] .filter-field select:disabled {
+  background: #1e293b;
+  color: #475569;
+}
+
+[data-theme='dark'] .filters-reset {
+  background: #1e293b;
+  border-color: var(--border);
+  color: var(--text-muted);
+}
+
+[data-theme='dark'] .filters-backdrop {
+  background: rgba(0, 0, 0, 0.5);
+}
+
 @media (max-width: 1024px) {
   .filters-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));

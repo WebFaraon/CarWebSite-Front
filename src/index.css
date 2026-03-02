@@ -4,6 +4,11 @@
   box-sizing: border-box;
 }
 
+html {
+  color-scheme: light dark;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
 html,
 body,
 #root {
@@ -27,6 +32,23 @@ body {
   --accent: #f97316;
   --accent-hover: #ea580c;
   --shadow-soft: 0 16px 36px rgba(15, 23, 42, 0.08);
+}
+
+[data-theme='dark'] {
+  --bg: #0f172a;
+  --surface: #1e293b;
+  --surface-soft: #334155;
+  --text: #f1f5f9;
+  --text-muted: #94a3b8;
+  --border: #334155;
+  --accent: #f97316;
+  --accent-hover: #ea580c;
+  --shadow-soft: 0 16px 36px rgba(0, 0, 0, 0.35);
+}
+
+[data-theme='dark'] body {
+  background: var(--bg);
+  color: var(--text);
 }
 
 .primary-btn {
