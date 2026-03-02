@@ -1,6 +1,6 @@
 .navbar {
-  background: rgba(255, 255, 255, 0.95);
-  border-bottom: 1px solid #e5e7eb;
+  background: var(--navbar-bg);
+  border-bottom: 1px solid var(--border);
   box-shadow: 0 8px 20px rgba(15, 23, 42, 0.04);
   position: sticky;
   top: 0;
@@ -18,7 +18,7 @@
 }
 
 .navbar-brand {
-  color: #111827;
+  color: var(--text);
   font-size: 1.12rem;
   font-weight: 800;
   letter-spacing: 0.01em;
@@ -26,7 +26,7 @@
 }
 
 .navbar-brand:hover {
-  color: #f97316;
+  color: var(--accent);
 }
 
 .navbar-links {
@@ -36,7 +36,7 @@
 }
 
 .navbar-link {
-  color: #4b5563;
+  color: var(--text-muted);
   font-size: 0.95rem;
   font-weight: 600;
   padding: 0.35rem 0;
@@ -45,7 +45,7 @@
 }
 
 .navbar-link::after {
-  background: #f97316;
+  background: var(--accent);
   border-radius: 999px;
   bottom: 0;
   content: '';
@@ -60,7 +60,7 @@
 
 .navbar-link:hover,
 .navbar-link.is-active {
-  color: #111827;
+  color: var(--text);
 }
 
 .navbar-link:hover::after,
@@ -76,10 +76,10 @@
 
 .favorites-btn {
   align-items: center;
-  background: #f8fafc;
-  border: 1px solid #e5e7eb;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
   border-radius: 999px;
-  color: #f97316;
+  color: var(--accent);
   cursor: pointer;
   display: inline-flex;
   height: 36px;
@@ -89,14 +89,14 @@
 }
 
 .favorites-btn:hover {
-  background: #fff7ed;
-  border-color: #fed7aa;
+  background: var(--accent-soft);
+  border-color: var(--accent-border);
 }
 
 .favorites-btn.is-active {
-  background: #fff7ed;
-  border-color: #fdba74;
-  color: #ea580c;
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent-hover);
 }
 
 .favorites-btn svg {
@@ -107,9 +107,26 @@
   width: 17px;
 }
 
+.theme-toggle-btn {
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text);
+  cursor: pointer;
+  font-weight: 700;
+  padding: 0.55rem 0.95rem;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.theme-toggle-btn:hover {
+  background: var(--accent-soft);
+  color: var(--accent-hover);
+  transform: translateY(-1px);
+}
+
 .navbar-login {
   border-radius: 10px;
-  color: #374151;
+  color: var(--text);
   font-size: 0.95rem;
   font-weight: 600;
   padding: 0.45rem 0.6rem;
@@ -117,12 +134,12 @@
 }
 
 .navbar-login:hover {
-  background: #f3f4f6;
-  color: #111827;
+  background: var(--surface-soft);
+  color: var(--text);
 }
 
 .navbar-signup {
-  background: #f97316;
+  background: var(--accent);
   border-radius: 12px;
   color: #ffffff;
   font-size: 0.95rem;
@@ -132,14 +149,14 @@
 }
 
 .navbar-signup:hover {
-  background: #ea580c;
+  background: var(--accent-hover);
   transform: translateY(-1px);
 }
 
 .navbar-menu-btn {
   align-items: center;
-  background: #f8fafc;
-  border: 1px solid #e5e7eb;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
   border-radius: 10px;
   cursor: pointer;
   display: none;
@@ -151,7 +168,7 @@
 }
 
 .navbar-menu-btn span {
-  background: #1f2937;
+  background: var(--text);
   border-radius: 999px;
   display: block;
   height: 2px;
@@ -172,8 +189,8 @@
 }
 
 .navbar-mobile-menu {
-  background: #ffffff;
-  border-top: 1px solid #e5e7eb;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
   max-height: 0;
   opacity: 0;
   overflow: hidden;
@@ -195,7 +212,7 @@
 
 .mobile-link {
   border-radius: 10px;
-  color: #374151;
+  color: var(--text);
   font-weight: 600;
   padding: 0.65rem 0.75rem;
   transition: background-color 0.2s ease, color 0.2s ease;
@@ -203,8 +220,8 @@
 
 .mobile-link:hover,
 .mobile-link.is-active {
-  background: #fff7ed;
-  color: #c2410c;
+  background: var(--accent-soft);
+  color: var(--accent-hover);
 }
 
 .mobile-actions {

@@ -1,4 +1,4 @@
-// src/pages/Catalog/components/OfferCard.tsx
+import type { ReactNode } from "react";
 import type { Offer } from "../catalog.types";
 import "../catalogstyles.css";
 
@@ -25,7 +25,9 @@ export default function OfferCard({ offer }: { offer: Offer }) {
           aria-label="Favorite"
           type="button"
         >
-          <span className="offer-card__fav-icon">♡</span>
+          <span className="offer-card__fav-icon" aria-hidden="true">
+            Heart
+          </span>
         </button>
       </div>
 
@@ -50,9 +52,9 @@ export default function OfferCard({ offer }: { offer: Offer }) {
         </div>
 
         <div className="offer-card__footer">
-          <div className="offer-card__location">📍 {offer.location}</div>
+          <div className="offer-card__location">Location: {offer.location}</div>
           <button className="offer-card__cta" type="button">
-            View →
+            View details
           </button>
         </div>
       </div>
@@ -60,7 +62,7 @@ export default function OfferCard({ offer }: { offer: Offer }) {
   );
 }
 
-function Spec({ label, value }: { label: string; value: any }) {
+function Spec({ label, value }: { label: string; value: ReactNode }) {
   return (
     <div className="spec">
       <div className="spec__label">{label}</div>

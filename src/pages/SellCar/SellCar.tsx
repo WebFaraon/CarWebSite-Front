@@ -11,6 +11,12 @@ const socialLinks = [
 ]
 
 function SellCar() {
+  const benefits = [
+    'Professional listing structure that looks credible from the first scroll',
+    'Buyer conversations organized in one place',
+    'Guided pricing and paperwork support when you are ready to close',
+  ]
+
   return (
     <>
       <Navbar />
@@ -33,6 +39,23 @@ function SellCar() {
                     Talk to an expert
                   </button>
                 </div>
+              </div>
+
+              <div className="sell-hero-panel">
+                <div className="sell-hero-stat">
+                  <strong>48h</strong>
+                  <span>typical time to receive first serious inquiries</span>
+                </div>
+                <div className="sell-hero-stat">
+                  <strong>Verified</strong>
+                  <span>buyer flow with cleaner handoff to negotiation</span>
+                </div>
+
+                <ul className="sell-hero-list">
+                  {benefits.map((benefit) => (
+                    <li key={benefit}>{benefit}</li>
+                  ))}
+                </ul>
               </div>
             </div>
           </div>
@@ -65,6 +88,14 @@ function SellCar() {
                 <h3>Close the deal</h3>
                 <p>Finalize paperwork securely with our guided process.</p>
               </article>
+            </div>
+
+            <div className="sell-support-strip">
+              <div>
+                <p className="sell-support-label">Need a faster start?</p>
+                <h3>Our team can help shape your first listing.</h3>
+              </div>
+              <button className="primary-btn" type="button">Book a consultation</button>
             </div>
           </div>
         </section>
