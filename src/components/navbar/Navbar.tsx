@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
-import { useTheme } from '../../context/ThemeContext.tsx'
+import { useTheme } from '../../context/ThemeContext'
 import './Navbar.css'
 
 interface NavItem {
@@ -49,6 +49,7 @@ function Navbar({
   navItems = defaultNavItems,
 }: NavbarProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const { theme, toggleTheme } = useTheme()
 
   const handleLinkClick = () => {
     setIsMenuOpen(false)
@@ -92,6 +93,14 @@ function Navbar({
         </nav>
 
         <div className="navbar-actions">
+          <button
+            type="button"
+            className="theme-toggle-btn"
+            onClick={toggleTheme}
+            aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+          >
+            {theme === 'light' ? 'Dark' : 'Light'}
+          </button>
           <ThemeToggle />
           <NavLink
             className={({ isActive }) =>
@@ -132,6 +141,14 @@ function Navbar({
         </nav>
 
         <div className="mobile-actions">
+          <button
+            type="button"
+            className="theme-toggle-btn"
+            onClick={toggleTheme}
+            aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+          >
+            {theme === 'light' ? 'Dark' : 'Light'}
+          </button>
           <ThemeToggle />
           <NavLink
             className={({ isActive }) =>

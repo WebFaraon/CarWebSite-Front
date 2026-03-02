@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import Navbar from '../../components/navbar/Navbar'
 import SiteFooter from '../../components/home/SiteFooter'
 import type { FeaturedCar, SocialItem } from '../../components/home/types'
@@ -31,12 +31,8 @@ const comparisonRows: Array<{
 ]
 
 function Favorites() {
-  const [favoriteIds, setFavoriteIdsState] = useState<number[]>([])
+  const [favoriteIds, setFavoriteIdsState] = useState<number[]>(() => getFavoriteIds())
   const [compareIds, setCompareIds] = useState<number[]>([])
-
-  useEffect(() => {
-    setFavoriteIdsState(getFavoriteIds())
-  }, [])
 
   useEffect(() => {
     setFavoriteIds(favoriteIds)
@@ -44,7 +40,9 @@ function Favorites() {
 
   useEffect(() => {
     const handleStorage = () => {
-      setFavoriteIdsState(getFavoriteIds())
+      const nextFavoriteIds = getFavoriteIds()
+      setFavoriteIdsState(nextFavoriteIds)
+      setCompareIds((prev) => prev.filter((id) => nextFavoriteIds.includes(id)))
     }
 
     window.addEventListener('storage', handleStorage)
@@ -56,16 +54,17 @@ function Favorites() {
     [favoriteIds],
   )
 
-  useEffect(() => {
-    setCompareIds((prev) => prev.filter((id) => favoriteIds.includes(id)))
-  }, [favoriteIds])
-
   const toggleFavorite = (carId: number) => {
     setFavoriteIdsState((prev) => {
-      if (prev.includes(carId)) {
-        return prev.filter((id) => id !== carId)
-      }
-      return [...prev, carId]
+      const nextFavoriteIds = prev.includes(carId)
+        ? prev.filter((id) => id !== carId)
+        : [...prev, carId]
+
+      setCompareIds((current) =>
+        current.filter((id) => nextFavoriteIds.includes(id)),
+      )
+
+      return nextFavoriteIds
     })
   }
 

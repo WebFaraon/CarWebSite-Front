@@ -1,6 +1,13 @@
-// src/pages/Catalog/components/CatalogFilters.tsx
 import type { Filters } from "../catalog.types";
 import "../catalogstyles.css";
+
+const fuelOptions: NonNullable<Filters["fuel"]>[] = [
+  "diesel",
+  "petrol",
+  "hybrid",
+  "electric",
+  "gas",
+];
 
 export default function CatalogFilters({
   value,
@@ -20,7 +27,7 @@ export default function CatalogFilters({
 
       <label className="filters-label">Search</label>
       <div className="filters-search">
-        <span className="filters-search-icon">🔎</span>
+        <span className="filters-search-icon">Search</span>
         <input
           value={v.q}
           onChange={(e) => onChange({ ...v, q: e.target.value })}
@@ -101,15 +108,17 @@ export default function CatalogFilters({
         <label className="filters-label">Fuel</label>
         <select
           value={v.fuel ?? ""}
-          onChange={(e) => onChange({ ...v, fuel: e.target.value as any })}
+          onChange={(e) =>
+            onChange({ ...v, fuel: e.target.value as Filters["fuel"] })
+          }
           className="filters-control"
         >
           <option value="">Any</option>
-          <option value="diesel">Diesel</option>
-          <option value="petrol">Petrol</option>
-          <option value="hybrid">Hybrid</option>
-          <option value="electric">Electric</option>
-          <option value="gas">Gas</option>
+          {fuelOptions.map((fuel) => (
+            <option key={fuel} value={fuel}>
+              {fuel.charAt(0).toUpperCase() + fuel.slice(1)}
+            </option>
+          ))}
         </select>
       </div>
 

@@ -1,12 +1,10 @@
-// src/pages/Catalog/catalog.types.ts
-
 export type Fuel = "diesel" | "petrol" | "hybrid" | "electric" | "gas";
 
 export type Offer = {
   id: string;
   title: string;
   price: number;
-  currency: "€" | "$" | "MDL";
+  currency: "EUR" | "$" | "MDL";
   year: number;
   km: number;
   fuel: Fuel;

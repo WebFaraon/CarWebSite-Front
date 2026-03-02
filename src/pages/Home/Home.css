@@ -34,7 +34,7 @@
 }
 
 .hero-section {
-  background: linear-gradient(170deg, #f0f6ff 0%, #eaf1ff 50%, #f4f8ff 100%);
+  
   isolation: isolate;
   overflow: hidden;
   padding: 5.5rem 0 5rem;
