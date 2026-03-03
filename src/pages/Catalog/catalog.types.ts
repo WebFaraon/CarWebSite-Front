@@ -1,4 +1,5 @@
 export type Fuel = "diesel" | "petrol" | "hybrid" | "electric" | "gas";
+export type Transmission = "manual" | "automatic";
 
 export type Offer = {
   id: string;
@@ -8,6 +9,7 @@ export type Offer = {
   year: number;
   km: number;
   fuel: Fuel;
+  transmission?: Transmission;
   powerHp?: number;
   location: string;
   imageUrl: string;
@@ -17,11 +19,15 @@ export type Offer = {
 
 export type Filters = {
   q: string;
+  brand?: string;
+  location?: string;
   minPrice?: number;
   maxPrice?: number;
   yearFrom?: number;
   yearTo?: number;
   fuel?: Fuel | "";
+  transmission?: Transmission | "";
+  maxKm?: number;
 };
 
 export type SortKey =

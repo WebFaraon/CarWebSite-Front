@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import CatalogFilters from "./components/CatalogFilters";
 import SortBar from "./components/SortBar";
 import OfferGrid from "./components/OfferGrid";
+import BrandBar from "./components/BrandBar";
 import Pagination from "./components/Pagination";
 import Navbar from "../../components/navbar/Navbar";
 import useCatalog from "./hooks/useCatalog";
@@ -13,6 +14,8 @@ export default function CatalogPage() {
   const [favoriteIds, setFavoriteIdsState] = useState<number[]>(() => getFavoriteIds());
 
   const {
+    brands,
+    locations,
     filteredOffers,
     totalCount,
     page,
@@ -32,13 +35,9 @@ export default function CatalogPage() {
   const toggleFavorite = (offerId: string) => {
     const numericId = Number.parseInt(offerId, 10);
     if (!Number.isInteger(numericId)) return;
-
-    setFavoriteIdsState((prev) => {
-      if (prev.includes(numericId)) {
-        return prev.filter((id) => id !== numericId);
-      }
-      return [...prev, numericId];
-    });
+    setFavoriteIdsState((prev) =>
+      prev.includes(numericId) ? prev.filter((id) => id !== numericId) : [...prev, numericId]
+    );
   };
 
   return (
@@ -55,21 +54,26 @@ export default function CatalogPage() {
             <div>
               <h1 className="catalog-title">Offers</h1>
               <p className="catalog-subtitle">
-                {isLoading ? "Loading..." : `${totalCount} results`}
+                {isLoading ? "Loading…" : `${totalCount} results`}
               </p>
             </div>
-
             <SortBar value={sort} onChange={setSort} />
           </div>
 
           <div className="catalog-layout">
             <aside className="catalog-aside">
               <div className="catalog-card">
-                <CatalogFilters value={filters} onChange={setFilters} />
+                <CatalogFilters value={filters} onChange={setFilters} locations={locations} />
               </div>
             </aside>
 
             <main className="catalog-main">
+              <BrandBar
+                brands={brands}
+                active={filters.brand ?? ""}
+                onChange={(b) => setFilters({ ...filters, brand: b })}
+              />
+
               <div className="catalog-card catalog-card--padded">
                 <OfferGrid
                   offers={filteredOffers}

@@ -1,6 +1,18 @@
-import type { ReactNode } from "react";
 import type { Offer } from "../catalog.types";
 import "../catalogstyles.css";
+
+const FUEL_LABEL: Record<string, string> = {
+  diesel: "Diesel",
+  petrol: "Petrol",
+  hybrid: "Hybrid",
+  electric: "Electric",
+  gas: "Gas",
+};
+
+const TX_LABEL: Record<string, string> = {
+  automatic: "Auto",
+  manual: "Manual",
+};
 
 export default function OfferCard({
   offer,
@@ -11,8 +23,12 @@ export default function OfferCard({
   isFavorite: boolean;
   onToggleFavorite: (offerId: string) => void;
 }) {
+  const priceFormatted = new Intl.NumberFormat("de-DE").format(offer.price);
+  const kmFormatted = new Intl.NumberFormat("de-DE").format(offer.km);
+
   return (
     <article className="offer-card">
+      {/* Image section */}
       <div className="offer-card__media">
         <img
           src={offer.imageUrl}
@@ -21,17 +37,21 @@ export default function OfferCard({
           loading="lazy"
         />
 
-        <div className="offer-card__badges">
-          {offer.isNew && <span className="badge badge--new">NEW</span>}
-          {offer.discountPct && offer.discountPct > 0 && (
-            <span className="badge badge--discount">-{offer.discountPct}%</span>
-          )}
-        </div>
+        {/* Badges top-left */}
+        {(offer.isNew || (offer.discountPct ?? 0) > 0) && (
+          <div className="offer-card__badges">
+            {offer.isNew && <span className="badge badge--new">NEW</span>}
+            {(offer.discountPct ?? 0) > 0 && (
+              <span className="badge badge--discount">-{offer.discountPct}%</span>
+            )}
+          </div>
+        )}
 
+        {/* Fav button top-right */}
         <button
-          className={`offer-card__fav ${isFavorite ? "is-active" : ""}`}
-          aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
           type="button"
+          className={`offer-card__fav${isFavorite ? " is-active" : ""}`}
+          aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
           onClick={() => onToggleFavorite(offer.id)}
         >
           <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -40,42 +60,40 @@ export default function OfferCard({
         </button>
       </div>
 
+      {/* Info section below image */}
       <div className="offer-card__body">
         <h3 className="offer-card__title">{offer.title}</h3>
 
-        <div className="offer-card__price-row">
-          <div className="offer-card__price">
-            {new Intl.NumberFormat("de-DE").format(offer.price)} {offer.currency}
-          </div>
-          <div className="offer-card__verified">Verified listing</div>
+        <div className="offer-card__price">
+          {priceFormatted}{" "}
+          <span className="offer-card__currency">{offer.currency}</span>
         </div>
 
-        <div className="offer-card__specs">
-          <Spec label="Year" value={offer.year} />
-          <Spec
-            label="Mileage"
-            value={`${new Intl.NumberFormat("de-DE").format(offer.km)} km`}
-          />
-          <Spec label="Fuel" value={offer.fuel} />
-          <Spec label="Power" value={offer.powerHp ? `${offer.powerHp} hp` : "-"} />
+        <div className="offer-card__meta">
+          <span>{offer.year}</span>
+          {offer.transmission && (
+            <>
+              <span className="offer-card__dot">·</span>
+              <span>{TX_LABEL[offer.transmission]}</span>
+            </>
+          )}
+          <span className="offer-card__dot">·</span>
+          <span>{FUEL_LABEL[offer.fuel] ?? offer.fuel}</span>
+          <span className="offer-card__dot">·</span>
+          <span>{kmFormatted} km</span>
+          {offer.powerHp && (
+            <>
+              <span className="offer-card__dot">·</span>
+              <span>{offer.powerHp} hp</span>
+            </>
+          )}
         </div>
 
         <div className="offer-card__footer">
-          <div className="offer-card__location">Location: {offer.location}</div>
-          <button className="offer-card__cta" type="button">
-            View details
-          </button>
+          <span className="offer-card__location">{offer.location}</span>
+          <button className="offer-card__cta" type="button">View →</button>
         </div>
       </div>
     </article>
-  );
-}
-
-function Spec({ label, value }: { label: string; value: ReactNode }) {
-  return (
-    <div className="spec">
-      <div className="spec__label">{label}</div>
-      <div className="spec__value">{value}</div>
-    </div>
   );
 }

@@ -9,6 +9,7 @@ const MOCK_OFFERS: Offer[] = [
     year: 2019,
     km: 98000,
     fuel: "diesel",
+    transmission: "automatic",
     powerHp: 340,
     location: "Chisinau",
     imageUrl:
@@ -24,6 +25,7 @@ const MOCK_OFFERS: Offer[] = [
     year: 2017,
     km: 156000,
     fuel: "diesel",
+    transmission: "automatic",
     powerHp: 190,
     location: "Balti",
     imageUrl:
@@ -37,6 +39,7 @@ const MOCK_OFFERS: Offer[] = [
     year: 2020,
     km: 82000,
     fuel: "electric",
+    transmission: "automatic",
     powerHp: 351,
     location: "Chisinau",
     imageUrl:
@@ -51,6 +54,7 @@ const MOCK_OFFERS: Offer[] = [
     year: 2018,
     km: 125000,
     fuel: "hybrid",
+    transmission: "automatic",
     powerHp: 197,
     location: "Orhei",
     imageUrl:
@@ -64,6 +68,7 @@ const MOCK_OFFERS: Offer[] = [
     year: 2019,
     km: 112000,
     fuel: "diesel",
+    transmission: "automatic",
     powerHp: 194,
     location: "Chisinau",
     imageUrl:
@@ -78,6 +83,7 @@ const MOCK_OFFERS: Offer[] = [
     year: 2016,
     km: 198000,
     fuel: "diesel",
+    transmission: "manual",
     powerHp: 110,
     location: "Cahul",
     imageUrl:
