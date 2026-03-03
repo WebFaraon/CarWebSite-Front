@@ -107,23 +107,6 @@
   width: 17px;
 }
 
-.theme-toggle-btn {
-  background: var(--surface-soft);
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  color: var(--text);
-  cursor: pointer;
-  font-weight: 700;
-  padding: 0.55rem 0.95rem;
-  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
-}
-
-.theme-toggle-btn:hover {
-  background: var(--accent-soft);
-  color: var(--accent-hover);
-  transform: translateY(-1px);
-}
-
 .navbar-login {
   border-radius: 10px;
   color: var(--text);

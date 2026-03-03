@@ -346,14 +346,25 @@ bg-white/90 backdrop-blur hover:bg-white */
 }
 
 .offer-card__fav:hover {
-  background: var(--surface);
+  background: #fff7ed;
 }
 
-/* text-orange-500 text-lg */
-.offer-card__fav-icon {
-  color: var(--accent);
-  font-size: 1.125rem; /* ~text-lg */
-  line-height: 1;
+.offer-card__fav svg {
+  fill: none;
+  height: 18px;
+  stroke: #f97316;
+  stroke-width: 1.5;
+  width: 18px;
+}
+
+.offer-card__fav.is-active {
+  background: #fff7ed;
+  border-color: #f97316;
+}
+
+.offer-card__fav.is-active svg {
+  fill: #f97316;
+  stroke: #f97316;
 }
 
 /* p-4 */
@@ -591,4 +602,13 @@ h-[340px] rounded-2xl border border-slate-200 bg-slate-50 animate-pulse */
 /* focus:ring-4 focus:ring-orange-100 */
 .sortbar__select:focus {
   box-shadow: 0 0 0 4px var(--accent-ring);
+}
+
+[data-theme='dark'] .offer-card__fav {
+  background: rgba(15, 23, 42, 0.9);
+  border-color: #334155;
+}
+
+[data-theme='dark'] .offer-card__fav:hover {
+  background: #1e293b;
 }

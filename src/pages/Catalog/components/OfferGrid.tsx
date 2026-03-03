@@ -6,9 +6,13 @@ import "../catalogstyles.css";
 export default function OfferGrid({
   offers,
   loading,
+  favoriteIds,
+  onToggleFavorite,
 }: {
   offers: Offer[];
   loading?: boolean;
+  favoriteIds: number[];
+  onToggleFavorite: (offerId: string) => void;
 }) {
   if (loading) {
     return (
@@ -27,7 +31,12 @@ export default function OfferGrid({
   return (
     <div className="offer-grid">
       {offers.map((o) => (
-        <OfferCard key={o.id} offer={o} />
+        <OfferCard
+          key={o.id}
+          offer={o}
+          isFavorite={favoriteIds.includes(Number.parseInt(o.id, 10))}
+          onToggleFavorite={onToggleFavorite}
+        />
       ))}
     </div>
   );

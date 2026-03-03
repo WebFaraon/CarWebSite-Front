@@ -2,7 +2,15 @@ import type { ReactNode } from "react";
 import type { Offer } from "../catalog.types";
 import "../catalogstyles.css";
 
-export default function OfferCard({ offer }: { offer: Offer }) {
+export default function OfferCard({
+  offer,
+  isFavorite,
+  onToggleFavorite,
+}: {
+  offer: Offer;
+  isFavorite: boolean;
+  onToggleFavorite: (offerId: string) => void;
+}) {
   return (
     <article className="offer-card">
       <div className="offer-card__media">
@@ -21,13 +29,14 @@ export default function OfferCard({ offer }: { offer: Offer }) {
         </div>
 
         <button
-          className="offer-card__fav"
-          aria-label="Favorite"
+          className={`offer-card__fav ${isFavorite ? "is-active" : ""}`}
+          aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
           type="button"
+          onClick={() => onToggleFavorite(offer.id)}
         >
-          <span className="offer-card__fav-icon" aria-hidden="true">
-            Heart
-          </span>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 20.25 10.55 19C5.4 14.36 2 11.28 2 7.5A5.38 5.38 0 0 1 7.5 2 6.16 6.16 0 0 1 12 4.09 6.16 6.16 0 0 1 16.5 2 5.38 5.38 0 0 1 22 7.5c0 3.78-3.4 6.86-8.55 11.51L12 20.25Z" />
+          </svg>
         </button>
       </div>
 

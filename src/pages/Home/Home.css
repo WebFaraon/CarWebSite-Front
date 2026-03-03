@@ -225,13 +225,13 @@
 }
 
 .favorite-btn.is-active {
-  background: #f97316;
+  background: #fff7ed;
   border-color: #f97316;
 }
 
 .favorite-btn.is-active svg {
-  fill: #ffffff;
-  stroke: #ffffff;
+  fill: #f97316;
+  stroke: #f97316;
 }
 
 .car-card-content {
@@ -531,4 +531,13 @@
 
 [data-theme='dark'] .footer-note {
   color: #64748b;
+}
+
+[data-theme='dark'] .favorite-btn {
+  background: rgba(15, 23, 42, 0.9);
+  border-color: #334155;
+}
+
+[data-theme='dark'] .favorite-btn:hover {
+  background: #1e293b;
 }
