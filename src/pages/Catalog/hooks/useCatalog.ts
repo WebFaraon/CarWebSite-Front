@@ -60,6 +60,11 @@ export default function useCatalog() {
   const filteredOffers = useMemo(() => {
     const q = (filters.q ?? "").trim().toLowerCase();
     const brand = (filters.brand ?? "").toLowerCase();
+    const minPrice = filters.minPrice != null ? Math.max(0, filters.minPrice) : undefined;
+    const maxPrice = filters.maxPrice != null ? Math.max(0, filters.maxPrice) : undefined;
+    const yearFrom = filters.yearFrom != null ? Math.max(0, filters.yearFrom) : undefined;
+    const yearTo = filters.yearTo != null ? Math.max(0, filters.yearTo) : undefined;
+    const maxKm = filters.maxKm != null ? Math.max(0, filters.maxKm) : undefined;
 
     return offers.filter((o) => {
       if (q) {
@@ -70,11 +75,11 @@ export default function useCatalog() {
       if (filters.location && o.location !== filters.location) return false;
       if (filters.fuel && o.fuel !== filters.fuel) return false;
       if (filters.transmission && o.transmission !== filters.transmission) return false;
-      if (filters.minPrice != null && o.price < filters.minPrice) return false;
-      if (filters.maxPrice != null && o.price > filters.maxPrice) return false;
-      if (filters.yearFrom != null && o.year < filters.yearFrom) return false;
-      if (filters.yearTo != null && o.year > filters.yearTo) return false;
-      if (filters.maxKm != null && o.km > filters.maxKm) return false;
+      if (minPrice != null && o.price < minPrice) return false;
+      if (maxPrice != null && o.price > maxPrice) return false;
+      if (yearFrom != null && o.year < yearFrom) return false;
+      if (yearTo != null && o.year > yearTo) return false;
+      if (maxKm != null && o.km > maxKm) return false;
       return true;
     });
   }, [offers, filters]);
