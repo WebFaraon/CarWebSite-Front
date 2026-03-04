@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import CatalogFilters from "./components/CatalogFilters";
 import SortBar from "./components/SortBar";
 import OfferGrid from "./components/OfferGrid";
-import BrandBar from "./components/BrandBar";
 import Pagination from "./components/Pagination";
 import Navbar from "../../components/navbar/Navbar";
 import SiteFooter from "../../components/home/SiteFooter";
@@ -23,7 +22,7 @@ export default function CatalogPage() {
   const [favoriteIds, setFavoriteIdsState] = useState<number[]>(() => getFavoriteIds());
 
   const {
-    brands,
+    brandOptions,
     locations,
     filteredOffers,
     totalCount,
@@ -72,17 +71,16 @@ export default function CatalogPage() {
           <div className="catalog-layout">
             <aside className="catalog-aside">
               <div className="catalog-card">
-                <CatalogFilters value={filters} onChange={setFilters} locations={locations} />
+                <CatalogFilters
+                  value={filters}
+                  onChange={setFilters}
+                  locations={locations}
+                  brandOptions={brandOptions}
+                />
               </div>
             </aside>
 
             <main className="catalog-main">
-              <BrandBar
-                brands={brands}
-                active={filters.brand ?? ""}
-                onChange={(b) => setFilters({ ...filters, brand: b })}
-              />
-
               <div className="catalog-card catalog-card--padded">
                 <OfferGrid
                   offers={filteredOffers}

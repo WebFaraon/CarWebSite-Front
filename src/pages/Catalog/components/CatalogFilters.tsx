@@ -49,12 +49,15 @@ export default function CatalogFilters({
   value,
   onChange,
   locations,
+  brandOptions,
 }: {
   value: Filters;
   onChange: (v: Filters) => void;
   locations: string[];
+  brandOptions: Array<{ name: string; count: number }>;
 }) {
   const v = value;
+  const totalBrandCount = brandOptions.reduce((sum, brand) => sum + brand.count, 0);
   const hasActive =
     v.q || v.brand || v.location || v.fuel || v.transmission ||
     v.minPrice != null || v.maxPrice != null ||
@@ -85,6 +88,23 @@ export default function CatalogFilters({
             placeholder="BMW, Audi, SUV…"
           />
         </div>
+      </div>
+
+      {/* Brand */}
+      <div className="filters-section">
+        <label className="filters-label">Brand</label>
+        <select
+          value={v.brand ?? ""}
+          onChange={(e) => onChange({ ...v, brand: e.target.value })}
+          className="filters-control"
+        >
+          <option value="">Any brand ({totalBrandCount})</option>
+          {brandOptions.map((brand) => (
+            <option key={brand.name} value={brand.name}>
+              {brand.name} ({brand.count})
+            </option>
+          ))}
+        </select>
       </div>
 
       {/* Fuel chips */}

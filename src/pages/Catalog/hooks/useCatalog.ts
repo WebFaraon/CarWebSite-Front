@@ -3,6 +3,20 @@ import { useEffect, useMemo, useState } from "react";
 import { fetchOffers } from "../catalog.api";
 import type { Filters, Offer, SortKey } from "../catalog.types";
 
+const BRAND_FILTER_PRESET = [
+  "Audi",
+  "BMW",
+  "Mercedes-Benz",
+  "Tesla",
+  "Toyota",
+  "Volkswagen",
+] as const;
+
+function extractBrand(title: string): string {
+  const [brand = ""] = title.trim().split(/\s+/, 1);
+  return brand;
+}
+
 const DEFAULT_FILTERS: Filters = {
   q: "",
   brand: "",
@@ -45,11 +59,30 @@ export default function useCatalog() {
   }, [filters, sort]);
 
   // Derived filter options from data
-  const brands = useMemo(() => {
-    const set = new Set<string>();
-    for (const o of offers) set.add(o.title.split(" ")[0]);
-    return Array.from(set).sort();
+  const brandCounts = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const offer of offers) {
+      const brand = extractBrand(offer.title);
+      if (!brand) continue;
+      counts.set(brand, (counts.get(brand) ?? 0) + 1);
+    }
+    return counts;
   }, [offers]);
+
+  const brandOptions = useMemo(() => {
+    const preset = BRAND_FILTER_PRESET.map((brand) => ({
+      name: brand,
+      count: brandCounts.get(brand) ?? 0,
+    }));
+
+    const presetSet = new Set<string>(BRAND_FILTER_PRESET);
+    const discovered = Array.from(brandCounts.entries())
+      .filter(([brand]) => !presetSet.has(brand))
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([name, count]) => ({ name, count }));
+
+    return [...preset, ...discovered];
+  }, [brandCounts]);
 
   const locations = useMemo(() => {
     const set = new Set<string>();
@@ -104,7 +137,7 @@ export default function useCatalog() {
 
   return {
     offers,
-    brands,
+    brandOptions,
     locations,
     filteredOffers: pagedOffers,
     totalCount: sortedOffers.length,
