@@ -38,6 +38,13 @@ const DEFAULT: Filters = {
   maxKm: undefined,
 };
 
+function parseNonNegativeNumber(raw: string): number | undefined {
+  if (!raw) return undefined;
+  const parsed = Number(raw);
+  if (!Number.isFinite(parsed)) return undefined;
+  return Math.max(0, parsed);
+}
+
 export default function CatalogFilters({
   value,
   onChange,
@@ -137,18 +144,20 @@ export default function CatalogFilters({
         <div className="filters-grid2">
           <input
             type="number"
+            min={0}
             value={v.minPrice ?? ""}
             onChange={(e) =>
-              onChange({ ...v, minPrice: e.target.value ? Number(e.target.value) : undefined })
+              onChange({ ...v, minPrice: parseNonNegativeNumber(e.target.value) })
             }
             className="filters-control"
             placeholder="Min"
           />
           <input
             type="number"
+            min={0}
             value={v.maxPrice ?? ""}
             onChange={(e) =>
-              onChange({ ...v, maxPrice: e.target.value ? Number(e.target.value) : undefined })
+              onChange({ ...v, maxPrice: parseNonNegativeNumber(e.target.value) })
             }
             className="filters-control"
             placeholder="Max"
@@ -162,18 +171,20 @@ export default function CatalogFilters({
         <div className="filters-grid2">
           <input
             type="number"
+            min={0}
             value={v.yearFrom ?? ""}
             onChange={(e) =>
-              onChange({ ...v, yearFrom: e.target.value ? Number(e.target.value) : undefined })
+              onChange({ ...v, yearFrom: parseNonNegativeNumber(e.target.value) })
             }
             className="filters-control"
             placeholder="From"
           />
           <input
             type="number"
+            min={0}
             value={v.yearTo ?? ""}
             onChange={(e) =>
-              onChange({ ...v, yearTo: e.target.value ? Number(e.target.value) : undefined })
+              onChange({ ...v, yearTo: parseNonNegativeNumber(e.target.value) })
             }
             className="filters-control"
             placeholder="To"
