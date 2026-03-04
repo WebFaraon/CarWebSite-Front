@@ -7,13 +7,12 @@ const carData = {
   price: '$112,000',
   
   images: [
-    'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=1400&q=80',
-    'https://images.unsplash.com/photo-1619405399517-d7fce0f13302?auto=format&fit=crop&w=1400&q=80',
-    'https://images.unsplash.com/photo-1580273916550-e323be2ae537?auto=format&fit=crop&w=1400&q=80',
-    'https://images.unsplash.com/photo-1549925862-99039ec8e7f4?auto=format&fit=crop&w=1400&q=80',
+    'https://images.unsplash.com/photo-1629019879059-2a0345f93aea?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    'https://images.unsplash.com/photo-1609521233053-345bfa8b6f17?q=80&w=626&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    'https://images.unsplash.com/photo-1609521247503-8de40462e427?q=80&w=627&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
   ],
   description:
-    'The pinnacle of luxury sedans. This Mercedes-Benz S-Class offers unmatched comfort and advanced technology.',
+    'Its and sclass, what do you expect.',
   specs: [
     { label: 'Mileage', value: '1,200 mi', icon: 'mileage' },
     { label: 'Year', value: '2024', icon: 'year' },
