@@ -6,9 +6,17 @@ import OfferGrid from "./components/OfferGrid";
 import BrandBar from "./components/BrandBar";
 import Pagination from "./components/Pagination";
 import Navbar from "../../components/navbar/Navbar";
+import SiteFooter from "../../components/home/SiteFooter";
 import useCatalog from "./hooks/useCatalog";
 import { getFavoriteIds, setFavoriteIds } from "../../utils/favoritesStorage";
 import "./catalogstyles.css";
+
+const socialLinks = [
+  { platform: "facebook", href: "#" },
+  { platform: "instagram", href: "#" },
+  { platform: "x", href: "#" },
+  { platform: "linkedin", href: "#" },
+] as const;
 
 export default function CatalogPage() {
   const [favoriteIds, setFavoriteIdsState] = useState<number[]>(() => getFavoriteIds());
@@ -90,6 +98,7 @@ export default function CatalogPage() {
           </div>
         </div>
       </div>
+      <SiteFooter socialLinks={[...socialLinks]} />
     </>
   );
 }
