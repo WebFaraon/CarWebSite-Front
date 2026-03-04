@@ -67,11 +67,6 @@ function CarCard({ car, isFavorite, onToggleFavorite }: CarCardProps) {
           <span>{car.mileage}</span>
         </div>
 
-        <div className="car-card__footer">
-          <span className="car-card__location">
-            {car.body} {car.engine}
-          </span>
-        </div>
       </div>
     </article>
   )
