@@ -342,9 +342,18 @@
   flex-direction: column;
 }
 
+.offer-card--clickable {
+  cursor: pointer;
+}
+
 .offer-card:hover {
   transform: translateY(-3px);
   box-shadow: 0 12px 32px rgba(15, 23, 42, 0.12);
+}
+
+.offer-card--clickable:focus-visible {
+  outline: 3px solid var(--accent-border);
+  outline-offset: 2px;
 }
 
 /* Image: 4:3 makes cards roughly square overall */
@@ -506,24 +515,6 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.offer-card__cta {
-  flex-shrink: 0;
-  border-radius: 0.5rem;
-  border: 1px solid var(--accent-border);
-  background: var(--accent-soft);
-  padding: 0.25rem 0.625rem;
-  font-size: 0.72rem;
-  font-weight: 800;
-  color: var(--accent-hover);
-  cursor: pointer;
-  transition: background 150ms ease;
-  white-space: nowrap;
-}
-
-.offer-card__cta:hover {
-  background: var(--accent-border);
 }
 
 /* ===== Offer Grid — 3 columns ===== */
