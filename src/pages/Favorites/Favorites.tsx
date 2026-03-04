@@ -18,14 +18,14 @@ const comparisonRows: Array<{
   label: string
   getValue: (car: FeaturedCar) => string
 }> = [
-  { key: 'price', label: 'Pret', getValue: (car) => car.price },
-  { key: 'year', label: 'An', getValue: (car) => `${car.year}` },
-  { key: 'mileage', label: 'Rulaj', getValue: (car) => car.mileage },
-  { key: 'engine', label: 'Motorizare', getValue: (car) => car.engine },
-  { key: 'consumption', label: 'Consum', getValue: (car) => car.consumption },
+  { key: 'price', label: 'Price', getValue: (car) => car.price },
+  { key: 'year', label: 'Year', getValue: (car) => `${car.year}` },
+  { key: 'mileage', label: 'Mileage', getValue: (car) => car.mileage },
+  { key: 'engine', label: 'Engine', getValue: (car) => car.engine },
+  { key: 'consumption', label: 'Consumption', getValue: (car) => car.consumption },
   {
     key: 'features',
-    label: 'Dotari cheie',
+    label: 'Key features',
     getValue: (car) => car.features.join(', '),
   },
 ]
@@ -93,12 +93,12 @@ function Favorites() {
           <div className="container">
             <div className="favorites-title">
               <span className="favorites-eyebrow">AutoMarket / Shortlist</span>
-              <h1>Favorite</h1>
-              <p>Aici compari masinile tale salvate, fara distrageri.</p>
+              <h1>Favorites</h1>
+              <p>Compare your saved cars in one clean view.</p>
             </div>
             <div className="favorites-meta">
-              <span>{favoriteCars.length} masini salvate</span>
-              <span>{compareIds.length}/4 selectate pentru comparatie</span>
+              <span>{favoriteCars.length} saved cars</span>
+              <span>{compareIds.length}/4 selected for comparison</span>
             </div>
           </div>
         </section>
@@ -108,10 +108,10 @@ function Favorites() {
             {favoriteCars.length === 0 ? (
               <div className="favorites-empty">
                 <div>
-                  <h2>Nu ai masini salvate</h2>
-                  <p>Adauga favorite si revino pentru comparatie rapida.</p>
-                  <a className="primary-btn" href="/">
-                    Vezi oferte
+                  <h2>You have no saved cars</h2>
+                  <p>Add favorites and return for quick comparison.</p>
+                  <a className="primary-btn" href="/offers">
+                    View offers
                   </a>
                 </div>
               </div>
@@ -149,17 +149,17 @@ function Favorites() {
                             onClick={() => toggleCompare(car.id)}
                             disabled={compareDisabled}
                           >
-                            {isSelected ? 'Selectat' : 'Compara'}
+                            {isSelected ? 'Selected' : 'Compare'}
                           </button>
                           <button
                             type="button"
                             className="danger-btn"
                             onClick={() => toggleFavorite(car.id)}
                           >
-                            Elimina
+                            Remove
                           </button>
                           <button type="button" className="primary-btn">
-                            Vezi detalii
+                            View details
                           </button>
                         </div>
                       </div>
@@ -176,15 +176,15 @@ function Favorites() {
             <div className="container">
               <header className="compare-header">
                 <div>
-                  <h2>Comparatie</h2>
-                  <p>Selecteaza intre 2 si 4 masini pentru comparatie directa.</p>
+                  <h2>Comparison</h2>
+                  <p>Select between 2 and 4 cars for a direct comparison.</p>
                 </div>
                 <button
                   type="button"
                   className="ghost-btn"
                   onClick={() => setCompareIds([])}
                 >
-                  Reseteaza selectia
+                  Reset selection
                 </button>
               </header>
 
