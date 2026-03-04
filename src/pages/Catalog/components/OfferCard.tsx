@@ -29,7 +29,11 @@ export default function OfferCard({
   const kmFormatted = new Intl.NumberFormat("de-DE").format(offer.km);
 
   const goToCarDetails = () => {
-    navigate("/car-details");
+    navigate("/car-details", {
+      state: {
+        offer,
+      },
+    });
   };
 
   return (
@@ -114,6 +118,16 @@ export default function OfferCard({
 
         <div className="offer-card__footer">
           <span className="offer-card__location">{offer.location}</span>
+          <button
+            type="button"
+            className="offer-card__cta"
+            onClick={(event) => {
+              event.stopPropagation();
+              goToCarDetails();
+            }}
+          >
+            View details
+          </button>
         </div>
       </div>
     </article>

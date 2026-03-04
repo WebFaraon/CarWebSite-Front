@@ -7,6 +7,7 @@ import BrandBar from "./components/BrandBar";
 import Pagination from "./components/Pagination";
 import Navbar from "../../components/navbar/Navbar";
 import SiteFooter from "../../components/home/SiteFooter";
+import { toCatalogFavoriteId } from "./catalog.api";
 import useCatalog from "./hooks/useCatalog";
 import { getFavoriteIds, setFavoriteIds } from "../../utils/favoritesStorage";
 import "./catalogstyles.css";
@@ -41,10 +42,10 @@ export default function CatalogPage() {
   }, [favoriteIds]);
 
   const toggleFavorite = (offerId: string) => {
-    const numericId = Number.parseInt(offerId, 10);
-    if (!Number.isInteger(numericId)) return;
+    const favoriteId = toCatalogFavoriteId(offerId);
+    if (favoriteId == null) return;
     setFavoriteIdsState((prev) =>
-      prev.includes(numericId) ? prev.filter((id) => id !== numericId) : [...prev, numericId]
+      prev.includes(favoriteId) ? prev.filter((id) => id !== favoriteId) : [...prev, favoriteId]
     );
   };
 

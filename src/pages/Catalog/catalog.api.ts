@@ -1,5 +1,21 @@
 import type { Offer } from "./catalog.types";
 
+export const CATALOG_FAVORITE_ID_OFFSET = 1000;
+
+export function toCatalogFavoriteId(offerId: string): number | null {
+  const numericId = Number.parseInt(offerId, 10);
+  return Number.isInteger(numericId) ? CATALOG_FAVORITE_ID_OFFSET + numericId : null;
+}
+
+export function fromCatalogFavoriteId(favoriteId: number): string | null {
+  if (favoriteId < CATALOG_FAVORITE_ID_OFFSET) return null;
+  return String(favoriteId - CATALOG_FAVORITE_ID_OFFSET);
+}
+
+export function isCatalogFavoriteId(favoriteId: number): boolean {
+  return favoriteId >= CATALOG_FAVORITE_ID_OFFSET;
+}
+
 const MOCK_OFFERS: Offer[] = [
   {
     id: "1",

@@ -1,8 +1,10 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import Navbar from '../../components/navbar/Navbar.tsx'
+import type { Offer } from '../Catalog/catalog.types'
 import './CarDetails.css'
 
-const carData = {
+const fallbackCarData = {
   title: '2024 Mercedes-Benz S-Class',
   price: '$112,000',
   
@@ -28,6 +30,41 @@ const carData = {
     'Executive Package',
     'Night Vision',
   ],
+}
+
+type CarDetailsState = {
+  offer?: Offer
+}
+
+function buildCarDataFromOffer(offer: Offer) {
+  const price = `${new Intl.NumberFormat('de-DE').format(offer.price)} ${offer.currency}`
+  const transmission =
+    offer.transmission === 'automatic'
+      ? 'Automatic'
+      : offer.transmission === 'manual'
+        ? 'Manual'
+        : 'N/A'
+
+  return {
+    title: offer.title,
+    price,
+    images: [offer.imageUrl, offer.imageUrl, offer.imageUrl, offer.imageUrl],
+    description: `${offer.title} is available now in ${offer.location}. This listing includes ${offer.fuel} propulsion, ${new Intl.NumberFormat('de-DE').format(offer.km)} km mileage, and a ${offer.year} registration year.`,
+    specs: [
+      { label: 'Mileage', value: `${new Intl.NumberFormat('de-DE').format(offer.km)} km`, icon: 'mileage' },
+      { label: 'Year', value: `${offer.year}`, icon: 'year' },
+      { label: 'Transmission', value: transmission, icon: 'transmission' },
+      { label: 'Fuel Type', value: offer.fuel.charAt(0).toUpperCase() + offer.fuel.slice(1), icon: 'fuel' },
+      { label: 'Location', value: offer.location, icon: 'color' },
+    ],
+    features: [
+      offer.isNew ? 'New offer highlight' : 'Verified listing',
+      `${offer.powerHp ?? 'N/A'} hp output`,
+      `${transmission} transmission`,
+      `Available in ${offer.location}`,
+      `${offer.discountPct ? `${offer.discountPct}% promotional discount` : 'Standard market pricing'}`,
+    ],
+  }
 }
 
 function SpecIcon({ icon }: { icon: string }) {
@@ -71,6 +108,12 @@ function SpecIcon({ icon }: { icon: string }) {
 }
 
 function CarDetails() {
+  const location = useLocation()
+  const state = location.state as CarDetailsState | null
+  const carData = useMemo(
+    () => (state?.offer ? buildCarDataFromOffer(state.offer) : fallbackCarData),
+    [state],
+  )
   const [activeImageIndex, setActiveImageIndex] = useState(0)
   const totalImages = carData.images.length
 

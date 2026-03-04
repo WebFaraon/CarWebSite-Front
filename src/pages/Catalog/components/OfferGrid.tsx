@@ -1,5 +1,6 @@
 // src/pages/Catalog/components/OfferGrid.tsx
 import OfferCard from "./OfferCard";
+import { toCatalogFavoriteId } from "../catalog.api";
 import type { Offer } from "../catalog.types";
 import "../catalogstyles.css";
 
@@ -34,7 +35,7 @@ export default function OfferGrid({
         <OfferCard
           key={o.id}
           offer={o}
-          isFavorite={favoriteIds.includes(Number.parseInt(o.id, 10))}
+          isFavorite={favoriteIds.includes(toCatalogFavoriteId(o.id) ?? -1)}
           onToggleFavorite={onToggleFavorite}
         />
       ))}
