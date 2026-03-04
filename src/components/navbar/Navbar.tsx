@@ -23,21 +23,23 @@ const defaultNavItems: NavItem[] = [
 
 function ThemeToggle() {
   const { theme, toggleTheme } = useTheme()
+  const isDark = theme === 'dark'
+
   return (
     <button
       type="button"
       className="theme-toggle-btn"
-      aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+      aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
       onClick={toggleTheme}
     >
-      {theme === 'dark' ? (
+      {isDark ? (
         <svg viewBox="0 0 24 24" aria-hidden="true">
-          <circle cx="12" cy="12" r="4" />
+          <circle cx="12" cy="12" r="4.25" />
           <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
         </svg>
       ) : (
         <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+          <path d="M20.3 14.8A8.6 8.6 0 1 1 9.2 3.7a7.2 7.2 0 1 0 11.1 11.1z" />
         </svg>
       )}
     </button>
@@ -49,7 +51,6 @@ function Navbar({
   navItems = defaultNavItems,
 }: NavbarProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const { theme, toggleTheme } = useTheme()
 
   const handleLinkClick = () => {
     setIsMenuOpen(false)
@@ -93,14 +94,6 @@ function Navbar({
         </nav>
 
         <div className="navbar-actions">
-          <button
-            type="button"
-            className="theme-toggle-btn"
-            onClick={toggleTheme}
-            aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-          >
-            {theme === 'light' ? 'Dark' : 'Light'}
-          </button>
           <ThemeToggle />
           <NavLink
             className={({ isActive }) =>
@@ -141,14 +134,6 @@ function Navbar({
         </nav>
 
         <div className="mobile-actions">
-          <button
-            type="button"
-            className="theme-toggle-btn"
-            onClick={toggleTheme}
-            aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-          >
-            {theme === 'light' ? 'Dark' : 'Light'}
-          </button>
           <ThemeToggle />
           <NavLink
             className={({ isActive }) =>

@@ -63,7 +63,7 @@
   transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
 
-a.contact-card:hover {
+.contact-card:hover {
   box-shadow: var(--shadow-soft);
   transform: translateY(-4px);
 }
