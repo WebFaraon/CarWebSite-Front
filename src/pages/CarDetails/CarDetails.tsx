@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import Navbar from '../../components/navbar/Navbar.tsx'
+import type { FeaturedCar } from '../../components/home/types'
 import type { Offer } from '../Catalog/catalog.types'
 import './CarDetails.css'
 
@@ -33,6 +34,7 @@ const fallbackCarData = {
 
 type CarDetailsState = {
   offer?: Offer
+  featuredCar?: FeaturedCar
 }
 
 function buildCarDataFromOffer(offer: Offer) {
@@ -63,6 +65,23 @@ function buildCarDataFromOffer(offer: Offer) {
       `Available in ${offer.location}`,
       `${offer.discountPct ? `${offer.discountPct}% promotional discount` : 'Standard market pricing'}`,
     ],
+  }
+}
+
+function buildCarDataFromFeaturedCar(featuredCar: FeaturedCar) {
+  return {
+    title: `${featuredCar.name} ${featuredCar.model}`,
+    price: featuredCar.price,
+    images: [featuredCar.image, featuredCar.image, featuredCar.image],
+    description: `${featuredCar.name} ${featuredCar.model} from ${featuredCar.year} with ${featuredCar.mileage}, ${featuredCar.transmission} transmission and ${featuredCar.fuel} fuel type.`,
+    specs: [
+      { label: 'Mileage', value: featuredCar.mileage, icon: 'mileage' },
+      { label: 'Year', value: `${featuredCar.year}`, icon: 'year' },
+      { label: 'Transmission', value: featuredCar.transmission, icon: 'transmission' },
+      { label: 'Fuel Type', value: featuredCar.fuel, icon: 'fuel' },
+      { label: 'Body', value: featuredCar.body, icon: 'color' },
+    ],
+    features: featuredCar.features,
   }
 }
 
@@ -110,7 +129,12 @@ function CarDetails() {
   const location = useLocation()
   const state = location.state as CarDetailsState | null
   const carData = useMemo(
-    () => (state?.offer ? buildCarDataFromOffer(state.offer) : fallbackCarData),
+    () =>
+      state?.offer
+        ? buildCarDataFromOffer(state.offer)
+        : state?.featuredCar
+          ? buildCarDataFromFeaturedCar(state.featuredCar)
+          : fallbackCarData,
     [state],
   )
   const [activeImageIndex, setActiveImageIndex] = useState(0)

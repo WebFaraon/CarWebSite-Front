@@ -9,15 +9,22 @@ interface CarCardProps {
 
 function CarCard({ car, isFavorite, onToggleFavorite }: CarCardProps) {
   const navigate = useNavigate()
+  const goToDetails = () => {
+    navigate('/car-details', {
+      state: {
+        featuredCar: car,
+      },
+    })
+  }
 
   return (
     <article
       className="car-card car-card--clickable"
-      onClick={() => navigate('/car-details')}
+      onClick={goToDetails}
       onKeyDown={(event) => {
         if (event.key === 'Enter' || event.key === ' ') {
           event.preventDefault()
-          navigate('/car-details')
+          goToDetails()
         }
       }}
       role="link"
