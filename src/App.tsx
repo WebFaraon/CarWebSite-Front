@@ -8,6 +8,8 @@ import Signup from './pages/Auth/Signup.tsx'
 import ContactUs from './pages/ContactUs/ContactUs.tsx'
 import CarDetails from './pages/CarDetails/CarDetails.tsx'
 import ForgotPassword from './pages/Auth/ForgotPassword.tsx'
+import Help from './pages/Help/Help.tsx'
+import { ThemeProvider } from './context/ThemeContext.tsx'
 
 function AppRoutes() {
   const location = useLocation()
@@ -24,7 +26,7 @@ function AppRoutes() {
         <Route path="/car-details" element={<CarDetails />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/offers" element={<CatalogPage />} />
-
+        <Route path="/help" element={<Help />} />
       </Routes>
     </div>
   )
@@ -32,9 +34,11 @@ function AppRoutes() {
 
 function App() {
   return (
-    <BrowserRouter>
-      <AppRoutes />
-    </BrowserRouter>
+    <ThemeProvider>
+      <BrowserRouter>
+        <AppRoutes />
+      </BrowserRouter>
+    </ThemeProvider>
   )
 }
 

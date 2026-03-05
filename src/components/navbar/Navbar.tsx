@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
+import { useTheme } from '../../context/ThemeContext'
 import './Navbar.css'
 
 interface NavItem {
@@ -16,9 +17,34 @@ const defaultNavItems: NavItem[] = [
   { label: 'Home', href: '/' },
   { label: 'Offers', href: '/offers' },
   { label: 'Sell', href: '/sell' },
-  { label: 'Help', href: '#help' },
+  { label: 'Help', href: '/help' },
   { label: 'Contact', href: '/contact-us' },
 ]
+
+function ThemeToggle() {
+  const { theme, toggleTheme } = useTheme()
+  const isDark = theme === 'dark'
+
+  return (
+    <button
+      type="button"
+      className="theme-toggle-btn"
+      aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+      onClick={toggleTheme}
+    >
+      {isDark ? (
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="4.25" />
+          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+        </svg>
+      ) : (
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M20.3 14.8A8.6 8.6 0 1 1 9.2 3.7a7.2 7.2 0 1 0 11.1 11.1z" />
+        </svg>
+      )}
+    </button>
+  )
+}
 
 function Navbar({
   brandName = 'AutoMarket',
@@ -68,6 +94,7 @@ function Navbar({
         </nav>
 
         <div className="navbar-actions">
+          <ThemeToggle />
           <NavLink
             className={({ isActive }) =>
               `favorites-btn ${isActive ? 'is-active' : ''}`
@@ -107,6 +134,7 @@ function Navbar({
         </nav>
 
         <div className="mobile-actions">
+          <ThemeToggle />
           <NavLink
             className={({ isActive }) =>
               `favorites-btn ${isActive ? 'is-active' : ''}`

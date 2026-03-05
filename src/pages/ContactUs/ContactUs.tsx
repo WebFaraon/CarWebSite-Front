@@ -3,24 +3,21 @@ import Navbar from '../../components/navbar/Navbar.tsx'
 import SiteFooter from '../../components/home/SiteFooter.tsx'
 import './ContactUs.css'
 
-// ─── Mock data — replace with real values before going live ──────────────────
-
 const contactConfig = {
   hero: {
-    eyebrow: 'We\'re here to help',
+    eyebrow: "We're here to help",
     heading: 'Get in touch with our team',
     subtext:
       'Have a question about buying or selling? Our support team is available to guide you every step of the way.',
   },
-
   contactCards: [
     {
       id: 1,
       type: 'phone' as const,
       label: 'Call us',
-      value: '+373xxxxxxxx',
-      detail: 'Mon–Fri, 9 am – 6 pm',
-      href: 'tel:+373xxxxxxxx',
+      value: '+373 600 00 000',
+      detail: 'Mon-Fri, 9 am - 6 pm',
+      href: 'tel:+37360000000',
     },
     {
       id: 2,
@@ -34,26 +31,26 @@ const contactConfig = {
       id: 3,
       type: 'location' as const,
       label: 'Visit us',
-      value: 'Strada Studenților 7',
-      detail: 'Republic of Moldova, Chișinău, MD-2012',
+      value: 'Strada Studentilor 7',
+      detail: 'Chisinau, Republic of Moldova, MD-2012',
       href: '#',
     },
     {
       id: 4,
       type: 'clock' as const,
       label: 'Working hours',
-      value: 'Mon – Fri, 9 am – 6 pm',
-      detail: 'Closed on weekends & public holidays',
+      value: 'Mon - Fri, 9 am - 6 pm',
+      detail: 'Closed on weekends and public holidays',
       href: null,
     },
   ],
-
   officeNote: {
     heading: 'Stop by our office',
     body:
       'Our doors are open Monday through Friday. Whether you want to discuss a listing in person or just say hello, we love meeting our community.',
-    address: 'Strada Studenților 7, MD-2012, Chișinău',
-    mapEmbedSrc: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d21743.451228805923!2d28.866073321224768!3d47.06119593964116!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40c97ce00125f907%3A0xfc2e5ee00a6d3d6a!2sUniversitatea%20Tehnic%C4%83%20a%20Moldovei!5e0!3m2!1sro!2s!4v1772179223452!5m2!1sro!2s', // paste a Google Maps embed src here when ready
+    address: 'Strada Studentilor 7, MD-2012, Chisinau',
+    mapEmbedSrc:
+      'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d21743.451228805923!2d28.866073321224768!3d47.06119593964116!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40c97ce00125f907%3A0xfc2e5ee00a6d3d6a!2sUniversitatea%20Tehnic%C4%83%20a%20Moldovei!5e0!3m2!1sro!2s!4v1772179223452!5m2!1sro!2s',
   },
 }
 
@@ -63,8 +60,6 @@ const socialLinks = [
   { platform: 'x' as const, href: '#' },
   { platform: 'linkedin' as const, href: '#' },
 ]
-
-// ─── Icon helpers ─────────────────────────────────────────────────────────────
 
 type CardType = 'phone' | 'email' | 'location' | 'clock'
 
@@ -76,6 +71,7 @@ function ContactIcon({ type }: { type: CardType }) {
       </svg>
     )
   }
+
   if (type === 'email') {
     return (
       <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.8">
@@ -83,6 +79,7 @@ function ContactIcon({ type }: { type: CardType }) {
       </svg>
     )
   }
+
   if (type === 'location') {
     return (
       <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.8">
@@ -91,7 +88,7 @@ function ContactIcon({ type }: { type: CardType }) {
       </svg>
     )
   }
-  // clock
+
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.8">
       <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
@@ -99,11 +96,10 @@ function ContactIcon({ type }: { type: CardType }) {
   )
 }
 
-// ─── Page component ───────────────────────────────────────────────────────────
-
 function ContactUs() {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
+  const [subject, setSubject] = useState('general')
   const [message, setMessage] = useState('')
 
   const { hero, contactCards, officeNote } = contactConfig
@@ -112,8 +108,6 @@ function ContactUs() {
     <>
       <Navbar />
       <main className="contact-page">
-
-        {/* Hero */}
         <section className="contact-hero section-spacer">
           <div className="container">
             <div className="contact-hero-card">
@@ -124,7 +118,6 @@ function ContactUs() {
           </div>
         </section>
 
-        {/* Contact info cards */}
         <section className="contact-cards-section section-spacer">
           <div className="container">
             <div className="contact-cards-grid">
@@ -139,6 +132,7 @@ function ContactUs() {
                     <p className="contact-card-detail">{card.detail}</p>
                   </>
                 )
+
                 return card.href ? (
                   <a key={card.id} href={card.href} className="contact-card">
                     {inner}
@@ -153,46 +147,59 @@ function ContactUs() {
           </div>
         </section>
 
-        {/* Form + Office note */}
         <section className="contact-form-section section-spacer">
           <div className="container">
             <div className="contact-form-layout">
-
-              {/* Form */}
               <div className="contact-form-card">
                 <div className="contact-form-header">
                   <h2>Send us a message</h2>
-                  <p>Fill in the form below and we'll get back to you as soon as possible.</p>
+                  <p>Fill in the form below and we&apos;ll get back to you as soon as possible.</p>
                 </div>
 
                 <form className="contact-form">
-                  <div className="form-group">
-                    <label htmlFor="contact-name">Full Name</label>
-                    <input
-                      type="text"
-                      id="contact-name"
-                      placeholder="John Doe"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                    />
+                  <div className="contact-form-row">
+                    <div className="form-group">
+                      <label htmlFor="contact-name">Full Name</label>
+                      <input
+                        type="text"
+                        id="contact-name"
+                        placeholder="John Doe"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                      />
+                    </div>
+
+                    <div className="form-group">
+                      <label htmlFor="contact-email">Email Address</label>
+                      <input
+                        type="email"
+                        id="contact-email"
+                        placeholder="your@example.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                      />
+                    </div>
                   </div>
 
                   <div className="form-group">
-                    <label htmlFor="contact-email">Email Address</label>
-                    <input
-                      type="email"
-                      id="contact-email"
-                      placeholder="your@example.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                    />
+                    <label htmlFor="contact-subject">Subject</label>
+                    <select
+                      id="contact-subject"
+                      value={subject}
+                      onChange={(e) => setSubject(e.target.value)}
+                    >
+                      <option value="general">General question</option>
+                      <option value="buying">Buying support</option>
+                      <option value="selling">Selling support</option>
+                      <option value="partnership">Partnership</option>
+                    </select>
                   </div>
 
                   <div className="form-group">
                     <label htmlFor="contact-message">Message</label>
                     <textarea
                       id="contact-message"
-                      placeholder="Tell us how we can help…"
+                      placeholder="Tell us how we can help..."
                       rows={5}
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
@@ -205,12 +212,15 @@ function ContactUs() {
                 </form>
               </div>
 
-              {/* Office note */}
               <div className="contact-office-panel">
                 <div className="contact-office-card">
                   <h3>{officeNote.heading}</h3>
                   <p>{officeNote.body}</p>
                   <address className="contact-office-address">{officeNote.address}</address>
+                  <div className="contact-office-meta">
+                    <span>Response target: under 1 business day</span>
+                    <span>Best for listing issues, account help, and buyer support</span>
+                  </div>
                 </div>
 
                 <div className="contact-map-placeholder">
@@ -224,19 +234,17 @@ function ContactUs() {
                   ) : (
                     <div className="contact-map-mock" aria-label="Map placeholder">
                       <svg viewBox="0 0 48 48" aria-hidden="true" fill="none">
-                        <rect width="48" height="48" rx="14" fill="#fff3e8" />
-                        <path d="M24 10a10 10 0 0 0-10 10c0 7 10 18 10 18s10-11 10-18a10 10 0 0 0-10-10Zm0 13a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z" fill="#f97316" />
+                        <rect width="48" height="48" rx="14" fill="var(--accent-soft)" />
+                        <path d="M24 10a10 10 0 0 0-10 10c0 7 10 18 10 18s10-11 10-18a10 10 0 0 0-10-10Zm0 13a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z" fill="var(--accent)" />
                       </svg>
                       <span>Map will appear here</span>
                     </div>
                   )}
                 </div>
               </div>
-
             </div>
           </div>
         </section>
-
       </main>
       <SiteFooter socialLinks={socialLinks} />
     </>

@@ -1,17 +1,33 @@
-// src/pages/Catalog/catalog.api.ts
 import type { Offer } from "./catalog.types";
+
+export const CATALOG_FAVORITE_ID_OFFSET = 1000;
+
+export function toCatalogFavoriteId(offerId: string): number | null {
+  const numericId = Number.parseInt(offerId, 10);
+  return Number.isInteger(numericId) ? CATALOG_FAVORITE_ID_OFFSET + numericId : null;
+}
+
+export function fromCatalogFavoriteId(favoriteId: number): string | null {
+  if (favoriteId < CATALOG_FAVORITE_ID_OFFSET) return null;
+  return String(favoriteId - CATALOG_FAVORITE_ID_OFFSET);
+}
+
+export function isCatalogFavoriteId(favoriteId: number): boolean {
+  return favoriteId >= CATALOG_FAVORITE_ID_OFFSET;
+}
 
 const MOCK_OFFERS: Offer[] = [
   {
     id: "1",
-    title: "BMW X5 xDrive 40d • M Paket",
+    title: "BMW X5 xDrive 40d - M Paket",
     price: 58900,
     currency: "$",
     year: 2019,
     km: 98000,
     fuel: "diesel",
+    transmission: "automatic",
     powerHp: 340,
-    location: "Chișinău",
+    location: "Chisinau",
     imageUrl:
       "https://commons.wikimedia.org/wiki/Special:FilePath/2019%20BMW%20X5%20xDrive40i%20rear%203.24.19.jpg?width=900",
     isNew: true,
@@ -19,14 +35,15 @@ const MOCK_OFFERS: Offer[] = [
   },
   {
     id: "2",
-    title: "Audi A6 • 2.0 TDI • S-Line",
+    title: "Audi A6 - 2.0 TDI - S-Line",
     price: 26900,
-    currency: "€",
+    currency: "EUR",
     year: 2017,
     km: 156000,
     fuel: "diesel",
+    transmission: "automatic",
     powerHp: 190,
-    location: "Bălți",
+    location: "Balti",
     imageUrl:
       "https://commons.wikimedia.org/wiki/Special:FilePath/2017%20Audi%20A6%202.0.jpg?width=900",
   },
@@ -34,24 +51,26 @@ const MOCK_OFFERS: Offer[] = [
     id: "3",
     title: "Tesla Model 3 Long Range",
     price: 32900,
-    currency: "€",
+    currency: "EUR",
     year: 2020,
     km: 82000,
     fuel: "electric",
+    transmission: "automatic",
     powerHp: 351,
-    location: "Chișinău",
+    location: "Chisinau",
     imageUrl:
       "https://commons.wikimedia.org/wiki/Special:FilePath/2020%20Tesla%20Model%203.jpg?width=900",
     isNew: true,
   },
   {
     id: "4",
-    title: "Toyota RAV4 Hybrid • AWD",
+    title: "Toyota RAV4 Hybrid - AWD",
     price: 24900,
-    currency: "€",
+    currency: "EUR",
     year: 2018,
     km: 125000,
     fuel: "hybrid",
+    transmission: "automatic",
     powerHp: 197,
     location: "Orhei",
     imageUrl:
@@ -59,26 +78,28 @@ const MOCK_OFFERS: Offer[] = [
   },
   {
     id: "5",
-    title: "Mercedes-Benz C220d • AMG",
+    title: "Mercedes-Benz C220d - AMG",
     price: 29900,
-    currency: "€",
+    currency: "EUR",
     year: 2019,
     km: 112000,
     fuel: "diesel",
+    transmission: "automatic",
     powerHp: 194,
-    location: "Chișinău",
+    location: "Chisinau",
     imageUrl:
       "https://commons.wikimedia.org/wiki/Special:FilePath/2019%20Mercedes-Benz%20C220%20AMG%20Line%20Premium%20Diesel%20Estate%202.0%20Front.jpg?width=900",
     discountPct: 5,
   },
   {
     id: "6",
-    title: "Volkswagen Golf 7 • 1.6 TDI",
+    title: "Volkswagen Golf 7 - 1.6 TDI",
     price: 9900,
-    currency: "€",
+    currency: "EUR",
     year: 2016,
     km: 198000,
     fuel: "diesel",
+    transmission: "manual",
     powerHp: 110,
     location: "Cahul",
     imageUrl:

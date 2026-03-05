@@ -43,7 +43,6 @@ const features: FeatureItem[] = [
   },
 ]
 
-
 const socialLinks: SocialItem[] = [
   { platform: 'facebook', href: '#' },
   { platform: 'instagram', href: '#' },
@@ -52,7 +51,7 @@ const socialLinks: SocialItem[] = [
 ]
 
 function Home() {
-  const [favoriteIds, setFavoriteIds] = useState<number[]>([])
+  const [favoriteIds, setFavoriteIds] = useState<number[]>(() => getFavoriteIds())
 
   const toggleFavorite = (carId: number) => {
     setFavoriteIds((prev) => {
@@ -62,10 +61,6 @@ function Home() {
       return [...prev, carId]
     })
   }
-
-  useEffect(() => {
-    setFavoriteIds(getFavoriteIds())
-  }, [])
 
   useEffect(() => {
     storeFavoriteIds(favoriteIds)
