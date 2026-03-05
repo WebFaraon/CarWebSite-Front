@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import './SmartSearchBar.css'
 
-type FiltersState = {
+export type FiltersState = {
   brand: string
   model: string
   bodyType: string
@@ -18,6 +18,11 @@ type FiltersState = {
   condition: string
   color: string
   doors: string
+}
+
+export type SearchPayload = {
+  query: string
+  filters: FiltersState
 }
 
 const brandOptions = [
@@ -71,7 +76,11 @@ const defaultFilters: FiltersState = {
   doors: '',
 }
 
-function SmartSearchBar() {
+interface SmartSearchBarProps {
+  onSearchAction?: (payload: SearchPayload) => void
+}
+
+function SmartSearchBar({ onSearchAction }: SmartSearchBarProps) {
   const [query, setQuery] = useState('')
   const [filters, setFilters] = useState<FiltersState>(defaultFilters)
   const [isOpen, setIsOpen] = useState(false)
@@ -126,12 +135,19 @@ function SmartSearchBar() {
     }
   }, [isOpen])
 
-  const onSearch = (payload: { query: string; filters: FiltersState }) => {
+  const onSearch = (payload: SearchPayload) => {
     console.log('SmartSearchBar search', payload)
   }
 
+  const runSearchAction = () => {
+    const normalizedQuery = query.trim()
+    const payload: SearchPayload = { query: normalizedQuery, filters }
+    onSearch(payload)
+    onSearchAction?.(payload)
+  }
+
   const handleApply = () => {
-    onSearch({ query, filters })
+    runSearchAction()
     setIsOpen(false)
   }
 
@@ -150,36 +166,46 @@ function SmartSearchBar() {
         className="smart-search-bar"
         onSubmit={(event) => {
           event.preventDefault()
-          onSearch({ query, filters })
+          runSearchAction()
         }}
       >
         <div className="smart-search-input">
-          <span className="smart-search-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" role="img" focusable="false">
-              <path
-                d="M10.5 3a7.5 7.5 0 1 0 4.7 13.3l4 4a1 1 0 0 0 1.4-1.4l-4-4A7.5 7.5 0 0 0 10.5 3Zm0 2a5.5 5.5 0 1 1 0 11 5.5 5.5 0 0 1 0-11Z"
-                fill="currentColor"
-              />
-            </svg>
-          </span>
+          <div className="smart-search-input-field">
+            <input
+              type="search"
+              value={query}
+              onChange={(event) => {
+                setQuery(event.target.value)
+              }}
+              placeholder="Search cars (e.g., Audi A6, SUV, diesel, 2018...)"
+              aria-label="Search cars"
+            />
 
-          <input
-            type="search"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search cars (e.g., Audi A6, SUV, diesel, 2018...)"
-            aria-label="Search cars"
-          />
+            {query.trim().length > 0 ? (
+              <button
+                className="smart-search-clear"
+                type="button"
+                onClick={() => {
+                  setQuery('')
+                }}
+                aria-label="Clear search query"
+              >
+                X
+              </button>
+            ) : null}
+          </div>
 
-          {activeFiltersCount > 0 && (
-            <button
-              className="smart-search-clear"
-              type="button"
-              onClick={handleClear}
-            >
-              Clear
-            </button>
-          )}
+          <button className="smart-search-submit" type="submit">
+            <span className="smart-search-submit-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" role="img" focusable="false">
+                <path
+                  d="M10.5 3a7.5 7.5 0 1 0 4.7 13.3l4 4a1 1 0 0 0 1.4-1.4l-4-4A7.5 7.5 0 0 0 10.5 3Zm0 2a5.5 5.5 0 1 1 0 11 5.5 5.5 0 0 1 0-11Z"
+                  fill="currentColor"
+                />
+              </svg>
+            </span>
+            Search
+          </button>
 
           <button
             className="smart-search-filters"
@@ -204,6 +230,16 @@ function SmartSearchBar() {
               <span className="filters-badge">{activeFiltersCount}</span>
             )}
           </button>
+
+          {activeFiltersCount > 0 && (
+            <button
+              className="smart-search-clear-filters"
+              type="button"
+              onClick={handleClear}
+            >
+              Clear
+            </button>
+          )}
         </div>
       </form>
 

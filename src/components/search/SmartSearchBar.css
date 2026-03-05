@@ -19,15 +19,13 @@
   position: relative;
 }
 
-.smart-search-icon {
-  color: #94a3b8;
-  display: inline-flex;
-  margin-left: 0.55rem;
-}
-
-.smart-search-icon svg {
-  height: 20px;
-  width: 20px;
+.smart-search-input-field {
+  align-items: center;
+  border-radius: 999px;
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  position: relative;
 }
 
 .smart-search-input input {
@@ -38,7 +36,7 @@
   font-size: 1rem;
   height: 48px;
   outline: none;
-  padding: 0.25rem 0.6rem 0.25rem 0;
+  padding: 0.25rem 2.5rem 0.25rem 0.7rem;
 }
 
 .smart-search-input input::placeholder {
@@ -46,6 +44,62 @@
 }
 
 .smart-search-clear {
+  align-items: center;
+  background: transparent;
+  border: 1px solid #cbd5e1;
+  border-radius: 999px;
+  color: #64748b;
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 0.75rem;
+  font-weight: 600;
+  height: 24px;
+  justify-content: center;
+  padding: 0;
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+}
+
+.smart-search-clear:hover {
+  border-color: #94a3b8;
+  color: #475569;
+}
+
+.smart-search-submit {
+  align-items: center;
+  background: var(--accent);
+  border: none;
+  border-radius: 999px;
+  color: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  font-weight: 700;
+  gap: 0.45rem;
+  justify-content: center;
+  min-width: 122px;
+  padding: 0.75rem 1.05rem;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  white-space: nowrap;
+}
+
+.smart-search-submit:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+}
+
+.smart-search-submit-icon {
+  display: inline-flex;
+}
+
+.smart-search-submit-icon svg {
+  height: 16px;
+  width: 16px;
+}
+
+.smart-search-clear-filters {
   background: none;
   border: none;
   color: #6b7280;
@@ -260,6 +314,20 @@ body.smart-search-open {
   background: #241a0e;
 }
 
+[data-theme='dark'] .smart-search-submit {
+  background: #f97316;
+  color: #fff;
+}
+
+[data-theme='dark'] .smart-search-submit:hover {
+  background: #ea580c;
+}
+
+[data-theme='dark'] .smart-search-clear {
+  border-color: #475569;
+  color: #cbd5e1;
+}
+
 [data-theme='dark'] .filters-panel-header span {
   color: var(--text);
 }
@@ -318,22 +386,24 @@ body.smart-search-open {
     flex-wrap: wrap;
   }
 
-  .smart-search-input input {
+  .smart-search-input-field {
     min-width: 100%;
     order: 1;
   }
 
-  .smart-search-icon {
-    order: 0;
+  .smart-search-submit {
+    order: 2;
+    width: calc(50% - 0.25rem);
   }
 
   .smart-search-filters {
-    margin-left: auto;
-    order: 2;
+    order: 3;
+    width: calc(50% - 0.25rem);
   }
 
-  .smart-search-clear {
-    order: 3;
+  .smart-search-clear-filters {
+    order: 4;
+    width: 100%;
   }
 
   .filters-panel {

@@ -1,6 +1,11 @@
 import SmartSearchBar from '../search/SmartSearchBar.tsx'
+import type { SearchPayload } from '../search/SmartSearchBar.tsx'
 
-function HeroSection() {
+interface HeroSectionProps {
+  onSearchAction: (payload: SearchPayload) => void
+}
+
+function HeroSection({ onSearchAction }: HeroSectionProps) {
   return (
     <section className="hero-section">
       <div className="container">
@@ -20,7 +25,7 @@ function HeroSection() {
           </div>
         </div>
 
-        <SmartSearchBar />
+        <SmartSearchBar onSearchAction={onSearchAction} />
       </div>
     </section>
   )

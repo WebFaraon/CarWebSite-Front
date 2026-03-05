@@ -177,21 +177,25 @@ function Favorites() {
     () => favoriteCars.filter((car) => compareIds.includes(car.favoriteId)),
     [favoriteCars, compareIds],
   )
+  const selectedCount = compareIds.length
+  const showCompareBar = selectedCount >= 2
 
   return (
-    <>
+    <div className="page">
       <Navbar />
-      <main className="favorites-page">
+      <main className={`favorites-page content ${showCompareBar ? 'contentPadForBar' : ''}`}>
         <section className="favorites-header">
           <div className="container">
-            <div className="favorites-title">
-              <span className="favorites-eyebrow">AutoMarket / Shortlist</span>
-              <h1>Favorites</h1>
-              <p>Compare your saved cars in one clean view.</p>
-            </div>
-            <div className="favorites-meta">
-              <span>{favoriteCars.length} saved cars</span>
-              <span>{compareIds.length}/4 selected for comparison</span>
+            <div className="headerRow">
+              <div className="favorites-title">
+                <span className="favorites-eyebrow">AutoMarket / Shortlist</span>
+                <h1>Favorites</h1>
+                <p>Compare your saved cars in one clean view.</p>
+              </div>
+              <div className="favorites-meta">
+                <span>{favoriteCars.length} saved cars</span>
+                <span>{compareIds.length}/4 selected for comparison</span>
+              </div>
             </div>
           </div>
         </section>
@@ -209,31 +213,34 @@ function Favorites() {
                 </div>
               </div>
             ) : (
-              <div className="favorites-grid">
+              <div className="grid">
                 {favoriteCars.map((car) => {
                   const isSelected = compareIds.includes(car.favoriteId)
                   const compareDisabled = !isSelected && compareIds.length >= 4
 
                   return (
-                    <article key={car.favoriteId} className="favorite-card">
-                      <div className="favorite-card-media">
-                        <img src={car.image} alt={car.title} />
+                    <article key={car.favoriteId} className={`card ${isSelected ? 'selected' : ''}`}>
+                      <div className="imageWrap media">
+                        <img className="image mediaImg" src={car.image} alt={car.title} />
+                        {isSelected ? <span className="selectedChip">Selected</span> : null}
+                        <span className="badge badgeYear">{car.year}</span>
+                        <span className="badge badgeKm">{car.mileage}</span>
                       </div>
-                      <div className="favorite-card-body">
-                        <div className="favorite-card-title">
+                      <div className="cardBody">
+                        <div className="title">
                           <h3>{car.title}</h3>
                           <span>{car.year}</span>
                         </div>
-                        <div className="favorite-card-main">
-                          <strong>{car.price}</strong>
+                        <div className="metaRow">
+                          <strong className="price">{car.price}</strong>
                           <span>{car.mileage}</span>
                         </div>
-                        <div className="favorite-card-specs">
+                        <div className="tags">
                           <span>{car.fuel}</span>
                           <span>{car.transmission}</span>
                           <span>{car.category}</span>
                         </div>
-                        <div className="favorite-card-actions">
+                        <div className="actions">
                           <button
                             type="button"
                             className={`ghost-btn ${isSelected ? 'is-active' : ''}`}
@@ -269,7 +276,7 @@ function Favorites() {
         </section>
 
         {compareCars.length >= 2 ? (
-          <section className="compare-section">
+          <section id="comparison-section" className="compare-section">
             <div className="container">
               <header className="compare-header">
                 <div>
@@ -320,9 +327,31 @@ function Favorites() {
             </div>
           </section>
         ) : null}
+
+        {showCompareBar ? (
+          <section className="compare-bar-wrap">
+            <div className="container">
+              <div className="compareBar">
+                <div className="compareBarLeft">
+                  <span className="comparePill">{selectedCount}/4 selected</span>
+                  <span>Ready to compare selected cars</span>
+                </div>
+                <div className="compareBarActions">
+                  <button
+                    type="button"
+                    className="primary-btn"
+                    onClick={() => document.getElementById('comparison-section')?.scrollIntoView({ behavior: 'smooth' })}
+                  >
+                    Compare now
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+        ) : null}
       </main>
       <SiteFooter socialLinks={socialLinks} />
-    </>
+    </div>
   )
 }
 
