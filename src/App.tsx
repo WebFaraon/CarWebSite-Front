@@ -9,6 +9,7 @@ import ContactUs from './pages/ContactUs/ContactUs.tsx'
 import CarDetails from './pages/CarDetails/CarDetails.tsx'
 import ForgotPassword from './pages/Auth/ForgotPassword.tsx'
 import Help from './pages/Help/Help.tsx'
+import MyListings from './pages/MyListings/MyListings.tsx'
 import { ThemeProvider } from './context/ThemeContext.tsx'
 
 function AppRoutes() {
@@ -27,6 +28,7 @@ function AppRoutes() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/offers" element={<CatalogPage />} />
         <Route path="/help" element={<Help />} />
+        <Route path="/my-listings" element={<MyListings />} />
       </Routes>
     </div>
   )
