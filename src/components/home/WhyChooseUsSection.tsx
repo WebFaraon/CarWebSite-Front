@@ -44,10 +44,10 @@ function WhyChooseUsSection({ features }: WhyChooseUsSectionProps) {
           <h2>Why Choose Us</h2>
         </div>
 
-        <div className="features-grid">
+        <div className="why-features-grid">
           {features.map((feature) => (
-            <article key={feature.id} className="feature-card">
-              <div className="feature-icon">
+            <article key={feature.id} className="why-feature-card">
+              <div className="why-feature-icon">
                 <FeatureIconGraphic icon={feature.icon} />
               </div>
               <h3>{feature.title}</h3>

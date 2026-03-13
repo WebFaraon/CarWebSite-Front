@@ -351,19 +351,19 @@
   background: #f3f4f6;
 }
 
-.features-grid {
+.why-features-grid {
   display: grid;
   gap: 1rem;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 }
 
-.feature-card {
+.why-feature-card {
   background: var(--surface);
   border-radius: 16px;
   padding: 1.35rem;
 }
 
-.feature-icon {
+.why-feature-icon {
   align-items: center;
   background: #fff3e8;
   border-radius: 12px;
@@ -375,18 +375,18 @@
   width: 46px;
 }
 
-.feature-icon svg {
+.why-feature-icon svg {
   fill: currentColor;
   height: 22px;
   width: 22px;
 }
 
-.feature-card h3 {
+.why-feature-card h3 {
   font-size: 1.05rem;
   margin-bottom: 0.45rem;
 }
 
-.feature-card p {
+.why-feature-card p {
   color: var(--text-muted);
   font-size: 0.92rem;
 }
