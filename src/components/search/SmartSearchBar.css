@@ -302,7 +302,7 @@ body.smart-search-open {
   overflow: hidden;
 }
 
-/* ── Dark mode ───────────────────────────────────────────────────────────── */
+/* Dark mode */
 
 [data-theme='dark'] .smart-search-filters {
   background: #1e1810;

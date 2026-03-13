@@ -44,7 +44,7 @@ const modelOptionsByBrand: Record<string, string[]> = {
 }
 
 const bodyTypes = ['Sedan', 'SUV', 'Hatchback', 'Coupe', 'Wagon', 'Pickup', 'Van']
-const engineCapacities = ['1.0–1.4', '1.5–1.9', '2.0–2.4', '2.5+']
+const engineCapacities = ['1.0-1.4', '1.5-1.9', '2.0-2.4', '2.5+']
 const fuelTypes = ['Petrol', 'Diesel', 'Hybrid', 'Electric', 'Gas/LPG']
 const transmissions = ['Manual', 'Automatic']
 const driveTypes = ['FWD', 'RWD', 'AWD']
@@ -172,7 +172,7 @@ function SmartSearchBar({ onSearchAction }: SmartSearchBarProps) {
         <div className="smart-search-input">
           <div className="smart-search-input-field">
             <input
-              type="search"
+              type="text"
               value={query}
               onChange={(event) => {
                 setQuery(event.target.value)
@@ -257,7 +257,7 @@ function SmartSearchBar({ onSearchAction }: SmartSearchBarProps) {
             onClick={() => setIsOpen(false)}
             aria-label="Close filters"
           >
-            ✕
+            x
           </button>
         </div>
 
