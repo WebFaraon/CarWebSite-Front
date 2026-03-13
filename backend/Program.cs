@@ -13,6 +13,9 @@ builder.Services.AddCors(options => {
 
 var app = builder.Build();
 
+app.UseSwagger();
+app.UseSwaggerUI();
+
 app.UseCors("AllowFrontend");
 
 app.MapGet("/api/health", () => Results.Ok(new { status = "ok" }));
