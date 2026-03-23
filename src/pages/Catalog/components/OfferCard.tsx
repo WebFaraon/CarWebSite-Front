@@ -15,6 +15,12 @@ const TX_LABEL: Record<string, string> = {
   manual: "Manual",
 };
 
+const CURRENCY_LABEL: Record<Offer["currency"], string> = {
+  EUR: "EUR",
+  "$": "USD",
+  MDL: "MDL",
+};
+
 export default function OfferCard({
   offer,
   isFavorite,
@@ -84,7 +90,7 @@ export default function OfferCard({
       <div className="oc__body">
         <h3 className="oc__title">{offer.title}</h3>
         <p className="oc__price">
-          {priceFormatted} <span className="oc__currency">{offer.currency}</span>
+          {priceFormatted} <span className="oc__currency">{CURRENCY_LABEL[offer.currency]}</span>
         </p>
         <p className="oc__desc">
           {specs}

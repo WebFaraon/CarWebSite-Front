@@ -300,6 +300,7 @@
 }
 
 .num-input__field[type='number'] {
+  appearance: textfield;
   -moz-appearance: textfield;
 }
 
@@ -480,6 +481,7 @@
   margin: 0;
   overflow: hidden;
   display: -webkit-box;
+  line-clamp: 2;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
 }
@@ -493,9 +495,12 @@
 }
 
 .oc__currency {
+  display: inline-block;
   font-size: 0.8rem;
   font-weight: 700;
+  min-width: 3ch;
   opacity: 0.8;
+  text-transform: uppercase;
 }
 
 .oc__desc {
