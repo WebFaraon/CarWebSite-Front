@@ -11,6 +11,8 @@ import ForgotPassword from './pages/Auth/ForgotPassword.tsx'
 import Help from './pages/Help/Help.tsx'
 import MyListings from './pages/MyListings/MyListings.tsx'
 import { ThemeProvider } from './context/ThemeContext.tsx'
+import { AuthProvider } from './context/AuthContext.tsx'
+import PrivateRoute from './components/PrivateRoute.tsx'
 
 function AppRoutes() {
   const location = useLocation()
@@ -28,7 +30,7 @@ function AppRoutes() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/offers" element={<CatalogPage />} />
         <Route path="/help" element={<Help />} />
-        <Route path="/my-listings" element={<MyListings />} />
+        <Route path="/my-listings" element={<PrivateRoute><MyListings /></PrivateRoute>} />
       </Routes>
     </div>
   )
@@ -36,11 +38,13 @@ function AppRoutes() {
 
 function App() {
   return (
-    <ThemeProvider>
-      <BrowserRouter>
-        <AppRoutes />
-      </BrowserRouter>
-    </ThemeProvider>
+    <AuthProvider>
+      <ThemeProvider>
+        <BrowserRouter>
+          <AppRoutes />
+        </BrowserRouter>
+      </ThemeProvider>
+    </AuthProvider>
   )
 }
 
