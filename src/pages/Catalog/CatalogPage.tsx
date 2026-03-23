@@ -1,4 +1,3 @@
-// src/pages/Catalog/CatalogPage.tsx
 import { useEffect, useState } from "react";
 import CatalogFilters from "./components/CatalogFilters";
 import SortBar from "./components/SortBar";
@@ -9,14 +8,15 @@ import SiteFooter from "../../components/home/SiteFooter";
 import { toCatalogFavoriteId } from "./catalog.api";
 import useCatalog from "./hooks/useCatalog";
 import { getFavoriteIds, setFavoriteIds } from "../../utils/favoritesStorage";
+import type { SocialItem } from "../../components/home/types";
 import "./catalogstyles.css";
 
-const socialLinks = [
+const socialLinks: SocialItem[] = [
   { platform: "facebook", href: "#" },
   { platform: "instagram", href: "#" },
   { platform: "x", href: "#" },
   { platform: "linkedin", href: "#" },
-] as const;
+];
 
 export default function CatalogPage() {
   const [favoriteIds, setFavoriteIdsState] = useState<number[]>(() => getFavoriteIds());
@@ -68,36 +68,28 @@ export default function CatalogPage() {
             <SortBar value={sort} onChange={setSort} />
           </div>
 
-          <div className="catalog-layout">
-            <aside className="catalog-aside">
-              <div className="catalog-card">
-                <CatalogFilters
-                  value={filters}
-                  onChange={setFilters}
-                  locations={locations}
-                  brandOptions={brandOptions}
-                />
-              </div>
-            </aside>
+          <CatalogFilters
+            value={filters}
+            onChange={setFilters}
+            locations={locations}
+            brandOptions={brandOptions}
+          />
 
-            <main className="catalog-main">
-              <div className="catalog-card catalog-card--padded">
-                <OfferGrid
-                  offers={filteredOffers}
-                  loading={isLoading}
-                  favoriteIds={favoriteIds}
-                  onToggleFavorite={toggleFavorite}
-                />
-              </div>
+          <div className="catalog-grid-wrap">
+            <OfferGrid
+              offers={filteredOffers}
+              loading={isLoading}
+              favoriteIds={favoriteIds}
+              onToggleFavorite={toggleFavorite}
+            />
+          </div>
 
-              <div className="catalog-pagination">
-                <Pagination page={page} totalPages={totalPages} onChange={setPage} />
-              </div>
-            </main>
+          <div className="catalog-pagination">
+            <Pagination page={page} totalPages={totalPages} onChange={setPage} />
           </div>
         </div>
       </div>
-      <SiteFooter socialLinks={[...socialLinks]} />
+      <SiteFooter socialLinks={socialLinks} />
     </>
   );
 }
