@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback } from 'react'
 import Navbar from '../../components/navbar/Navbar.tsx'
 import SiteFooter from '../../components/home/SiteFooter.tsx'
+import type { SocialItem } from '../../components/home/types.ts'
 import './MyListings.css'
 
 type Tab = 'listings' | 'new'
@@ -130,7 +131,7 @@ const initialForm: FormData = {
   negotiable: false, showPhone: true,
 }
 
-const socialLinks = [
+const socialLinks: SocialItem[] = [
   { platform: 'facebook', href: '#' },
   { platform: 'instagram', href: '#' },
   { platform: 'x', href: '#' },
