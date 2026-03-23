@@ -207,13 +207,6 @@
   color: var(--accent-hover);
 }
 
-.mobile-actions {
-  align-items: center;
-  display: flex;
-  gap: 0.6rem;
-  margin: 0.75rem auto 0;
-  width: min(1140px, 92vw);
-}
 
 /* ── Theme toggle button ───────────────────────────────────── */
 .theme-toggle-btn {
