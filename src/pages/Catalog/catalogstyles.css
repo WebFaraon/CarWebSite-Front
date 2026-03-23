@@ -464,40 +464,6 @@
   fill: #f97316;
 }
 
-/* Timer + bid overlay */
-.oc__overlay {
-  align-items: center;
-  background: rgba(0, 0, 0, 0.62);
-  backdrop-filter: blur(4px);
-  border-radius: 8px;
-  bottom: 0.5rem;
-  color: #fff;
-  display: flex;
-  font-size: 0.78rem;
-  font-weight: 700;
-  gap: 0.65rem;
-  left: 0.5rem;
-  padding: 0.3rem 0.6rem;
-  position: absolute;
-}
-
-.oc__timer {
-  align-items: center;
-  display: flex;
-  gap: 0.3rem;
-}
-
-.oc__timer svg {
-  flex-shrink: 0;
-  height: 13px;
-  width: 13px;
-}
-
-.oc__bid {
-  border-left: 1px solid rgba(255, 255, 255, 0.3);
-  padding-left: 0.65rem;
-}
-
 /* Card body */
 .oc__body {
   display: flex;
@@ -518,6 +484,20 @@
   -webkit-box-orient: vertical;
 }
 
+.oc__price {
+  color: var(--accent-hover);
+  font-size: 1rem;
+  font-weight: 900;
+  line-height: 1.3;
+  margin: 0;
+}
+
+.oc__currency {
+  font-size: 0.8rem;
+  font-weight: 700;
+  opacity: 0.8;
+}
+
 .oc__desc {
   align-items: baseline;
   color: var(--text-muted);
@@ -527,23 +507,6 @@
   gap: 0.3rem;
   line-height: 1.5;
   margin: 0;
-}
-
-.oc__reserve {
-  background: #dbeafe;
-  border-radius: 4px;
-  color: #1d4ed8;
-  flex-shrink: 0;
-  font-size: 0.67rem;
-  font-weight: 900;
-  letter-spacing: 0.04em;
-  padding: 0.15rem 0.4rem;
-  text-transform: uppercase;
-}
-
-[data-theme='dark'] .oc__reserve {
-  background: rgba(29, 78, 216, 0.25);
-  color: #93c5fd;
 }
 
 .oc__location {
