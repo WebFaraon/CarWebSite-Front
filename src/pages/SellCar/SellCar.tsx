@@ -1,9 +1,10 @@
 import Navbar from '../../components/navbar/Navbar.tsx'
 import SellYourCarSection from '../../components/home/SellYourCarSection.tsx'
 import SiteFooter from '../../components/home/SiteFooter.tsx'
+import type { SocialItem } from '../../components/home/types.ts'
 import './SellCar.css'
 
-const socialLinks = [
+const socialLinks: SocialItem[] = [
   { platform: 'facebook', href: '#' },
   { platform: 'instagram', href: '#' },
   { platform: 'x', href: '#' },
