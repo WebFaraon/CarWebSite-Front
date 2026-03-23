@@ -15,14 +15,6 @@ const TX_LABEL: Record<string, string> = {
   manual: "Manual",
 };
 
-function fakeTimer(id: string) {
-  const seed = parseInt(id, 10) || 1;
-  const h = ((seed * 3 + 1) % 8) + 1;
-  const m = (seed * 17 + 5) % 60;
-  const s = (seed * 7 + 3) % 60;
-  return `${h}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
-}
-
 export default function OfferCard({
   offer,
   isFavorite,
@@ -38,10 +30,8 @@ export default function OfferCard({
     navigate("/car-details", { state: { offer } });
   };
 
-  const noReserve = !(offer.discountPct && offer.discountPct > 0);
-  const timer = fakeTimer(offer.id);
-  const bidFormatted = new Intl.NumberFormat("en-US").format(offer.price);
-  const kmFormatted = new Intl.NumberFormat("en-US").format(offer.km);
+  const priceFormatted = new Intl.NumberFormat("de-DE").format(offer.price);
+  const kmFormatted = new Intl.NumberFormat("de-DE").format(offer.km);
 
   const specs = [
     `~${kmFormatted} km`,
@@ -88,24 +78,15 @@ export default function OfferCard({
           </svg>
         </button>
 
-        {/* Timer + bid overlay */}
-        <div className="oc__overlay">
-          <span className="oc__timer">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-              <circle cx="12" cy="12" r="9" />
-              <path d="M12 7v5l3 3" strokeLinecap="round" />
-            </svg>
-            {timer}
-          </span>
-          <span className="oc__bid">Bid {offer.currency}{bidFormatted}</span>
-        </div>
       </div>
 
       {/* Body */}
       <div className="oc__body">
         <h3 className="oc__title">{offer.title}</h3>
+        <p className="oc__price">
+          {priceFormatted} <span className="oc__currency">{offer.currency}</span>
+        </p>
         <p className="oc__desc">
-          {noReserve && <span className="oc__reserve">NO RESERVE</span>}
           {specs}
         </p>
         <p className="oc__location">{offer.location}</p>
