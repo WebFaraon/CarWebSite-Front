@@ -28,7 +28,8 @@
       "Bash(curl -s -o /dev/null -w \"%{http_code} %{size_download}\" \"https://upload.wikimedia.org/wikipedia/commons/f/f6/2023_BMW_G05_IMG_7657.jpg\")",
       "Bash(curl -s \"https://en.wikipedia.org/w/api.php?action=query&titles=File:2023_BMW_G05_IMG_7657.jpg&prop=imageinfo&iiprop=url|thumburl&iiurlwidth=800&format=json&formatversion=2\")",
       "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); pages=d[''query''][''pages'']; [print\\(p.get\\(''imageinfo'',[{}]\\)[0].get\\(''url'',''N/A''\\), p.get\\(''imageinfo'',[{}]\\)[0].get\\(''thumburl'',''N/A''\\)\\) for p in pages]\")",
-      "Bash(curl -s \"https://commons.wikimedia.org/w/api.php?action=query&titles=File:2023_BMW_G05_IMG_7657.jpg&prop=imageinfo&iiprop=url%7Cthumburl&iiurlwidth=800&format=json\")"
+      "Bash(curl -s \"https://commons.wikimedia.org/w/api.php?action=query&titles=File:2023_BMW_G05_IMG_7657.jpg&prop=imageinfo&iiprop=url%7Cthumburl&iiurlwidth=800&format=json\")",
+      "Bash(npm run:*)"
     ]
   }
 }
