@@ -1,7 +1,7 @@
 import { useState, useRef, useCallback } from 'react'
 import Navbar from '../../components/navbar/Navbar.tsx'
 import SiteFooter from '../../components/home/SiteFooter.tsx'
-import type { SocialItem } from '../../components/home/types.ts'
+import type { SocialItem } from '../../components/home/types'
 import './MyListings.css'
 
 type Tab = 'listings' | 'new'

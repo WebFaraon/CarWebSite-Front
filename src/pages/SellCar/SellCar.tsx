@@ -1,7 +1,7 @@
 import Navbar from '../../components/navbar/Navbar.tsx'
 import SellYourCarSection from '../../components/home/SellYourCarSection.tsx'
 import SiteFooter from '../../components/home/SiteFooter.tsx'
-import type { SocialItem } from '../../components/home/types.ts'
+import type { SocialItem } from '../../components/home/types'
 import './SellCar.css'
 
 const socialLinks: SocialItem[] = [

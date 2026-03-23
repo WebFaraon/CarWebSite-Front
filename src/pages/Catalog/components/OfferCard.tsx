@@ -11,9 +11,17 @@ const FUEL_LABEL: Record<string, string> = {
 };
 
 const TX_LABEL: Record<string, string> = {
-  automatic: "Auto",
+  automatic: "Automatic",
   manual: "Manual",
 };
+
+function fakeTimer(id: string) {
+  const seed = parseInt(id, 10) || 1;
+  const h = ((seed * 3 + 1) % 8) + 1;
+  const m = (seed * 17 + 5) % 60;
+  const s = (seed * 7 + 3) % 60;
+  return `${h}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+}
 
 export default function OfferCard({
   offer,
@@ -25,24 +33,32 @@ export default function OfferCard({
   onToggleFavorite: (offerId: string) => void;
 }) {
   const navigate = useNavigate();
-  const priceFormatted = new Intl.NumberFormat("de-DE").format(offer.price);
-  const kmFormatted = new Intl.NumberFormat("de-DE").format(offer.km);
 
   const goToCarDetails = () => {
-    navigate("/car-details", {
-      state: {
-        offer,
-      },
-    });
+    navigate("/car-details", { state: { offer } });
   };
+
+  const noReserve = !(offer.discountPct && offer.discountPct > 0);
+  const timer = fakeTimer(offer.id);
+  const bidFormatted = new Intl.NumberFormat("en-US").format(offer.price);
+  const kmFormatted = new Intl.NumberFormat("en-US").format(offer.km);
+
+  const specs = [
+    `~${kmFormatted} km`,
+    offer.transmission ? TX_LABEL[offer.transmission] : null,
+    FUEL_LABEL[offer.fuel] ?? offer.fuel,
+    offer.powerHp ? `${offer.powerHp} hp` : null,
+  ]
+    .filter(Boolean)
+    .join(", ");
 
   return (
     <article
-      className="offer-card offer-card--clickable"
+      className="oc oc--clickable"
       onClick={goToCarDetails}
-      onKeyDown={(event) => {
-        if (event.key === "Enter" || event.key === " ") {
-          event.preventDefault();
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
           goToCarDetails();
         }
       }}
@@ -50,85 +66,49 @@ export default function OfferCard({
       tabIndex={0}
       aria-label={`Open details for ${offer.title}`}
     >
-      {/* Image section */}
-      <div className="offer-card__media">
+      {/* Image */}
+      <div className="oc__media">
         <img
           src={offer.imageUrl}
           alt={offer.title}
-          className="offer-card__img"
+          className="oc__img"
           loading="lazy"
         />
 
-        {/* Badges top-left */}
-        {(offer.isNew || (offer.discountPct ?? 0) > 0) && (
-          <div className="offer-card__badges">
-            {offer.isNew && <span className="badge badge--new">NEW</span>}
-            {(offer.discountPct ?? 0) > 0 && (
-              <span className="badge badge--discount">-{offer.discountPct}%</span>
-            )}
-          </div>
-        )}
-
-        {/* Fav button top-right */}
+        {/* Fav button */}
         <button
           type="button"
-          className={`offer-card__fav${isFavorite ? " is-active" : ""}`}
+          className={`oc__fav${isFavorite ? " is-active" : ""}`}
           aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
-          onClick={(event) => {
-            event.stopPropagation();
-            onToggleFavorite(offer.id);
-          }}
-          onKeyDown={(event) => {
-            event.stopPropagation();
-          }}
+          onClick={(e) => { e.stopPropagation(); onToggleFavorite(offer.id); }}
+          onKeyDown={(e) => e.stopPropagation()}
         >
           <svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="M12 20.25 10.55 19C5.4 14.36 2 11.28 2 7.5A5.38 5.38 0 0 1 7.5 2 6.16 6.16 0 0 1 12 4.09 6.16 6.16 0 0 1 16.5 2 5.38 5.38 0 0 1 22 7.5c0 3.78-3.4 6.86-8.55 11.51L12 20.25Z" />
           </svg>
         </button>
+
+        {/* Timer + bid overlay */}
+        <div className="oc__overlay">
+          <span className="oc__timer">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" />
+              <path d="M12 7v5l3 3" strokeLinecap="round" />
+            </svg>
+            {timer}
+          </span>
+          <span className="oc__bid">Bid {offer.currency}{bidFormatted}</span>
+        </div>
       </div>
 
-      {/* Info section below image */}
-      <div className="offer-card__body">
-        <h3 className="offer-card__title">{offer.title}</h3>
-
-        <div className="offer-card__price">
-          {priceFormatted} <span className="offer-card__currency">{offer.currency}</span>
-        </div>
-
-        <div className="offer-card__meta">
-          <span>{offer.year}</span>
-          {offer.transmission && (
-            <>
-              <span className="offer-card__dot">&middot;</span>
-              <span>{TX_LABEL[offer.transmission]}</span>
-            </>
-          )}
-          <span className="offer-card__dot">&middot;</span>
-          <span>{FUEL_LABEL[offer.fuel] ?? offer.fuel}</span>
-          <span className="offer-card__dot">&middot;</span>
-          <span>{kmFormatted} km</span>
-          {offer.powerHp && (
-            <>
-              <span className="offer-card__dot">&middot;</span>
-              <span>{offer.powerHp} hp</span>
-            </>
-          )}
-        </div>
-
-        <div className="offer-card__footer">
-          <span className="offer-card__location">{offer.location}</span>
-          <button
-            type="button"
-            className="offer-card__cta"
-            onClick={(event) => {
-              event.stopPropagation();
-              goToCarDetails();
-            }}
-          >
-            View details
-          </button>
-        </div>
+      {/* Body */}
+      <div className="oc__body">
+        <h3 className="oc__title">{offer.title}</h3>
+        <p className="oc__desc">
+          {noReserve && <span className="oc__reserve">NO RESERVE</span>}
+          {specs}
+        </p>
+        <p className="oc__location">{offer.location}</p>
       </div>
     </article>
   );
