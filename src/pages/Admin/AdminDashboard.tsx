@@ -69,15 +69,77 @@ const MOCK_MESSAGES: Message[] = [
 
 type Section = 'overview' | 'listings' | 'users' | 'messages'
 
-function StatCard({ label, value, sub, iconClass, icon }: { label: string; value: string; sub: string; iconClass: string; icon: React.ReactNode }) {
+interface DonutSegment { label: string; value: number; color: string }
+
+function polarToCartesian(cx: number, cy: number, r: number, angleDeg: number) {
+  const rad = (angleDeg - 90) * Math.PI / 180
+  return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) }
+}
+
+function arcPath(cx: number, cy: number, r: number, inner: number, start: number, end: number) {
+  const s  = polarToCartesian(cx, cy, r, start)
+  const e  = polarToCartesian(cx, cy, r, end)
+  const si = polarToCartesian(cx, cy, inner, start)
+  const ei = polarToCartesian(cx, cy, inner, end)
+  const lg = end - start > 180 ? 1 : 0
+  return `M ${s.x} ${s.y} A ${r} ${r} 0 ${lg} 1 ${e.x} ${e.y} L ${ei.x} ${ei.y} A ${inner} ${inner} 0 ${lg} 0 ${si.x} ${si.y} Z`
+}
+
+function DonutChart({ label, segments }: { label: string; segments: DonutSegment[] }) {
+  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null)
+  const total = segments.reduce((s, x) => s + x.value, 0)
+  const cx = 60, cy = 60, r = 54, inner = 30
+  let angle = -90
+
+  const arcs = segments.map((seg, i) => {
+    const sweep = total === 0 ? 0 : (seg.value / total) * 360
+    const start = angle
+    const end = angle + (sweep === 360 ? 359.99 : sweep)
+    angle += sweep
+    return { seg, i, path: arcPath(cx, cy, r, inner, start, end), sweep }
+  })
+
+  const hovered = hoveredIdx !== null ? arcs[hoveredIdx]?.seg : null
+
   return (
-    <div className="stat-card">
-      <div className="stat-card-header">
-        <span className="stat-card-label">{label}</span>
-        <span className={`stat-card-icon ${iconClass}`}>{icon}</span>
+    <div className="donut-card">
+      <div className="donut-label">{label}</div>
+      <div className="donut-wrap">
+        <svg width={120} height={120} viewBox="0 0 120 120">
+          {total === 0 ? (
+            <circle cx={cx} cy={cy} r={(r + inner) / 2} fill="none" stroke="var(--border)" strokeWidth={r - inner} />
+          ) : (
+            arcs.map(({ seg, i, path, sweep }) => sweep > 0 && (
+              <path
+                key={seg.label}
+                className="donut-segment"
+                d={path}
+                fill={seg.color}
+                onMouseEnter={() => setHoveredIdx(i)}
+                onMouseLeave={() => setHoveredIdx(null)}
+                style={{
+                  transformOrigin: `${cx}px ${cy}px`,
+                  transform: hoveredIdx === i ? 'scale(1.08)' : 'scale(1)',
+                  transition: 'transform 0.18s ease',
+                }}
+              />
+            ))
+          )}
+        </svg>
+        <div className="donut-center">
+          <span className="donut-total" style={{ color: hovered ? hovered.color : 'var(--text)' }}>
+            {hovered ? hovered.value : total}
+          </span>
+        </div>
       </div>
-      <div className="stat-card-value">{value}</div>
-      <div className="stat-card-sub">{sub}</div>
+      <div className="donut-legend">
+        {segments.map(s => (
+          <div key={s.label} className="donut-legend-item">
+            <div className="donut-legend-dot" style={{ background: s.color }} />
+            <span>{s.label}</span>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
@@ -112,34 +174,34 @@ function OverviewSection() {
 
   return (
     <>
-      <div className="admin-stats-grid">
-        <StatCard
-          label="Total Listings"
-          value={String(MOCK_LISTINGS.length)}
-          sub={`${MOCK_LISTINGS.filter(l => l.status === 'active').length} active`}
-          iconClass="stat-icon-orange"
-          icon={<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 13l1.5-5h15l1.5 5" strokeLinecap="round" strokeLinejoin="round"/><rect x="2" y="13" width="20" height="5" rx="2"/><circle cx="7" cy="18" r="1.5"/><circle cx="17" cy="18" r="1.5"/></svg>}
+      <div className="admin-charts-grid">
+        <DonutChart
+          label="Listings"
+          segments={[
+            { label: 'Active',   value: MOCK_LISTINGS.filter(l => l.status === 'active').length,   color: '#2563eb' },
+            { label: 'Inactive', value: MOCK_LISTINGS.filter(l => l.status === 'inactive').length, color: '#cbd5e1' },
+          ]}
         />
-        <StatCard
-          label="Registered Users"
-          value={String(MOCK_USERS.length)}
-          sub={`${MOCK_USERS.filter(u => u.status === 'active').length} active`}
-          iconClass="stat-icon-blue"
-          icon={<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+        <DonutChart
+          label="Users"
+          segments={[
+            { label: 'Active', value: MOCK_USERS.filter(u => u.status === 'active').length, color: '#0891b2' },
+            { label: 'Banned', value: MOCK_USERS.filter(u => u.status === 'banned').length, color: '#e11d48' },
+          ]}
         />
-        <StatCard
-          label="Inactive Listings"
-          value={String(pendingCount)}
-          sub="Hidden from users"
-          iconClass="stat-icon-purple"
-          icon={<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+        <DonutChart
+          label="Listings Status"
+          segments={[
+            { label: 'Active',   value: MOCK_LISTINGS.filter(l => l.status === 'active').length, color: '#0d9488' },
+            { label: 'Inactive', value: pendingCount,                                             color: '#cbd5e1' },
+          ]}
         />
-        <StatCard
-          label="New Messages"
-          value={String(unreadCount)}
-          sub="Unread inquiries"
-          iconClass="stat-icon-green"
-          icon={<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+        <DonutChart
+          label="Messages"
+          segments={[
+            { label: 'Unread', value: unreadCount,                        color: '#d97706' },
+            { label: 'Read',   value: MOCK_MESSAGES.length - unreadCount, color: '#cbd5e1' },
+          ]}
         />
       </div>
 
