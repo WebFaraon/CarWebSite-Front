@@ -1,11 +1,21 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Navbar from '../../components/navbar/Navbar.tsx'
+import { useAdminAuth } from '../../context/AdminAuthContext.tsx'
 import './Login.css'
 
 function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const { adminLogin } = useAdminAuth()
+  const navigate = useNavigate()
+
+  function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
+    e.preventDefault()
+    if (adminLogin(email, password)) {
+      navigate('/admin')
+    }
+  }
 
   return (
     <>
@@ -36,11 +46,11 @@ function Login() {
 
           <div className="auth-divider"><span>or</span></div>
 
-          <form className="auth-form">
+          <form className="auth-form" onSubmit={handleSubmit}>
             <div className="form-group">
               <label htmlFor="email">Email address</label>
               <input
-                type="email"
+                type="text"
                 id="email"
                 placeholder="your@example.com"
                 autoComplete="off"
@@ -63,7 +73,7 @@ function Login() {
               />
             </div>
 
-            <button type="button" className="primary-btn auth-submit-btn">
+            <button type="submit" className="primary-btn auth-submit-btn">
               Sign in
             </button>
           </form>
