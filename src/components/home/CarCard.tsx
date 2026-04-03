@@ -58,22 +58,17 @@ function CarCard({ car, isFavorite, onToggleFavorite }: CarCardProps) {
       </div>
 
       <div className="car-card__body">
-        <h3 className="car-card__title">
-          {car.name} {car.model}
-        </h3>
-
-        <div className="car-card__price">{car.price}</div>
-
-        <div className="car-card__meta">
-          <span>{car.year}</span>
-          <span className="car-card__dot">&middot;</span>
-          <span>{car.transmission}</span>
-          <span className="car-card__dot">&middot;</span>
-          <span>{car.fuel}</span>
-          <span className="car-card__dot">&middot;</span>
-          <span>{car.mileage}</span>
+        <div className="car-card__row">
+          <h3 className="car-card__title">
+            {car.name} {car.model}{' '}
+            <span className="car-card__year">{car.year}</span>
+          </h3>
+          <div className="car-card__price">{car.price}</div>
         </div>
 
+        <p className="car-card__meta">
+          {car.mileage}, {car.engine}, {car.fuel}, {car.transmission}
+        </p>
       </div>
     </article>
   )

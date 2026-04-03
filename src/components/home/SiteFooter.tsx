@@ -37,25 +37,88 @@ function SocialIcon({ platform }: { platform: SocialPlatform }) {
 }
 
 function SiteFooter({ socialLinks }: SiteFooterProps) {
+  const year = new Date().getFullYear()
+
   return (
     <footer id="contact" className="site-footer">
-      <div className="container footer-layout">
-        <a href="#" className="footer-logo">
-          AutoMarket
-        </a>
-        <p className="footer-note">Trusted by thousands of buyers and sellers.</p>
+      <div className="container">
+        <div className="footer-grid">
 
-        <div className="social-links">
-          {socialLinks.map((item) => (
-            <a
-              key={item.platform}
-              href={item.href}
-              aria-label={item.platform}
-              className="social-btn"
-            >
-              <SocialIcon platform={item.platform} />
+          {/* Brand column */}
+          <div className="footer-brand">
+            <a href="/" className="footer-brand__logo">
+              Auto<span>Market</span>
             </a>
-          ))}
+            <p className="footer-brand__tagline">
+              The smarter way to buy and sell cars. Trusted by thousands of
+              buyers and verified sellers across the country.
+            </p>
+            <div className="footer-social">
+              {socialLinks.map((item) => (
+                <a
+                  key={item.platform}
+                  href={item.href}
+                  aria-label={item.platform}
+                  className="social-btn"
+                >
+                  <SocialIcon platform={item.platform} />
+                </a>
+              ))}
+            </div>
+          </div>
+
+          {/* Quick links */}
+          <div>
+            <p className="footer-col__title">Explore</p>
+            <nav className="footer-links">
+              <a href="/offers">Browse Cars</a>
+              <a href="/offers">New Arrivals</a>
+              <a href="/offers">Electric Vehicles</a>
+              <a href="/offers">Luxury Cars</a>
+              <a href="/offers">SUVs & Crossovers</a>
+            </nav>
+          </div>
+
+          {/* Resources */}
+          <div>
+            <p className="footer-col__title">Company</p>
+            <nav className="footer-links">
+              <a href="/about">About Us</a>
+              <a href="/sell">Sell Your Car</a>
+              <a href="/contact-us">Contact</a>
+              <a href="/help">Help Center</a>
+              <a href="/faq">FAQ</a>
+            </nav>
+          </div>
+
+          {/* Newsletter */}
+          <div className="footer-newsletter">
+            <p className="footer-col__title">Stay Updated</p>
+            <p>Get new offers and market insights delivered to your inbox.</p>
+            <div className="footer-input-row">
+              <input
+                type="email"
+                placeholder="your@email.com"
+                aria-label="Email for newsletter"
+              />
+              <button type="button" className="btn btn-primary btn-sm">
+                Subscribe
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        {/* Bottom bar */}
+        <div className="footer-bottom">
+          <p className="footer-copy">
+            &copy; {year} AutoMarket. All rights reserved.
+          </p>
+          <div className="footer-legal">
+            <a href="#">Privacy Policy</a>
+            <a href="#">Terms of Service</a>
+            <a href="#">Cookie Settings</a>
+          </div>
         </div>
       </div>
     </footer>

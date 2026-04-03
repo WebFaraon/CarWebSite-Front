@@ -23,7 +23,7 @@ export const featuredCars: FeaturedCar[] = [
     year: 2022,
     mileage: '18,300 mi',
     price: '$45,600',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Audi_A6_Avant_%286F%29.JPG/960px-Audi_A6_Avant_%286F%29.JPG',
+    image: '/template_images/audi-sq7.png',
     fuel: 'Diesel',
     transmission: 'Automatic',
     body: 'Sedan',

@@ -40,8 +40,12 @@ function WhyChooseUsSection({ features }: WhyChooseUsSectionProps) {
   return (
     <section id="help" className="why-section section-spacer">
       <div className="container">
-        <div className="section-header">
-          <h2>Why Choose Us</h2>
+        <div className="why-header">
+          <span className="section-label">Our Advantages</span>
+          <h2 className="section-title">Why Choose AutoMarket</h2>
+          <p className="section-sub">
+            We built every feature with both buyers and sellers in mind — so you always feel in control.
+          </p>
         </div>
 
         <div className="why-features-grid">
@@ -50,8 +54,10 @@ function WhyChooseUsSection({ features }: WhyChooseUsSectionProps) {
               <div className="why-feature-icon">
                 <FeatureIconGraphic icon={feature.icon} />
               </div>
-              <h3>{feature.title}</h3>
-              <p>{feature.description}</p>
+              <div className="why-feature-text">
+                <h3>{feature.title}</h3>
+                <p>{feature.description}</p>
+              </div>
             </article>
           ))}
         </div>

@@ -1,13 +1,14 @@
--- Creare branch
-------------------------------------------
-git checkout -b branch_name
-git push -u origin branch_name
-------------------------------------------
-
-
--- Stergere branch
-------------------------------------------
-git checkout main
-git branch -d branch_name
-git push origin --delete branch_name
-------------------------------------------
+|------------------------------------------|
+|-- Creare branch --                       |
+|------------------------------------------|
+|git checkout -b branch_name               |
+|git push -u origin branch_name            |
+|------------------------------------------|
+|                                          |
+|                                          |
+|-- Stergere branch                        |
+|------------------------------------------|
+|git checkout main                         |
+|git branch -d branch_name                 |
+|git push origin --delete branch_name      |
+|------------------------------------------|
