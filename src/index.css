@@ -32,7 +32,7 @@ body {
   --border: #e5e7eb;
   --accent: #f97316;
   --accent-hover: #ea580c;
-  --navbar-bg: rgba(255, 255, 255, 0.95);
+  --navbar-bg: rgba(255, 255, 255, 0.6);
   --shadow-soft: 0 16px 36px rgba(15, 23, 42, 0.08);
   --hero-bg-start: #f8fbff;
   --hero-bg-mid: #eff5ff;
@@ -60,7 +60,7 @@ body {
   --border: #e5e7eb;
   --accent: #f97316;
   --accent-hover: #ea580c;
-  --navbar-bg: rgba(255, 255, 255, 0.95);
+  --navbar-bg: rgba(255, 255, 255, 0.6);
   --shadow-soft: 0 16px 36px rgba(15, 23, 42, 0.08);
   --hero-bg-start: #f8fbff;
   --hero-bg-mid: #eff5ff;
@@ -88,7 +88,7 @@ body {
   --border: #334155;
   --accent: #fb923c;
   --accent-hover: #f97316;
-  --navbar-bg: rgba(17, 24, 39, 0.95);
+  --navbar-bg: rgba(17, 24, 39, 0.6);
   --shadow-soft: 0 16px 36px rgba(0, 0, 0, 0.35);
   --hero-bg-start: #0f172a;
   --hero-bg-mid: #111827;

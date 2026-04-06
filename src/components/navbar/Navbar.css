@@ -1,5 +1,7 @@
 .navbar {
   background: var(--navbar-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border);
   box-shadow: 0 8px 20px rgba(15, 23, 42, 0.04);
   position: sticky;
@@ -14,7 +16,7 @@
   justify-content: space-between;
   margin: 0 auto;
   padding: 0.85rem 0;
-  width: min(1140px, 92vw);
+  width: min(1200px, 92vw);
 }
 
 .navbar-brand {
@@ -241,7 +243,7 @@
 
 /* ── Dark mode overrides ───────────────────────────────────── */
 [data-theme='dark'] .navbar {
-  background: rgba(15, 23, 42, 0.95);
+  background: rgba(15, 23, 42, 0.6);
   border-bottom-color: #334155;
 }
 

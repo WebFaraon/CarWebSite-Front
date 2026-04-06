@@ -7,6 +7,7 @@ import SiteFooter from '../../components/home/SiteFooter.tsx'
 import type {
   SocialItem,
 } from '../../components/home/types.ts'
+import SmartSearchBar from '../../components/search/SmartSearchBar.tsx'
 import type { FiltersState, SearchPayload } from '../../components/search/SmartSearchBar.tsx'
 import { featuredCars } from '../../data/featuredCars.ts'
 import { getFavoriteIds, setFavoriteIds as storeFavoriteIds } from '../../utils/favoritesStorage.ts'
@@ -117,7 +118,7 @@ function Home() {
       <main className="home-page">
 
         {/* ── Hero ── */}
-        <HeroSection onSearchAction={handleSearchAction} />
+        <HeroSection />
 
         {/* ── Brands bar ── */}
         <section className="brands-section" aria-label="Featured brands">
@@ -127,6 +128,13 @@ function Home() {
             ))}
           </div>
         </section>
+
+        {/* ── Search Bar ── */}
+        <div className="hero-search-wrap">
+          <div className="container">
+            <SmartSearchBar onSearchAction={handleSearchAction} />
+          </div>
+        </div>
 
         {/* ── Search results ── */}
         {hasSearched && (

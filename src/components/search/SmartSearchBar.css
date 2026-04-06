@@ -304,6 +304,12 @@ body.smart-search-open {
 
 /* Dark mode */
 
+[data-theme='dark'] .smart-search-bar {
+  background: #1e293b;
+  border: 1px solid #334155;
+  box-shadow: 0 0 0 1px rgba(251, 146, 60, 0.08), 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
 [data-theme='dark'] .smart-search-filters {
   background: #1e1810;
   border-color: #7c2d12;
@@ -314,14 +320,6 @@ body.smart-search-open {
   background: #241a0e;
 }
 
-[data-theme='dark'] .smart-search-submit {
-  background: #f97316;
-  color: #fff;
-}
-
-[data-theme='dark'] .smart-search-submit:hover {
-  background: #ea580c;
-}
 
 [data-theme='dark'] .smart-search-clear {
   border-color: #475569;

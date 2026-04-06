@@ -44,6 +44,19 @@ function FeaturedCarsSection({
             />
           ))}
         </div>
+
+        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '2rem' }}>
+          <button
+            type="button"
+            className="btn btn-primary btn-lg"
+            onClick={() => navigate('/offers')}
+          >
+            View More
+            <svg viewBox="0 0 20 20" aria-hidden="true" className="btn-icon">
+              <path d="M7 10h6M10 7l3 3-3 3" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+        </div>
       </div>
     </section>
   )
