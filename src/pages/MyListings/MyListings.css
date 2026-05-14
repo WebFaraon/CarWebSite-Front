@@ -533,9 +533,19 @@
   border-bottom-color: #86efac;
 }
 
+.form-step.is-warning {
+  color: #d97706;
+  border-bottom-color: #fbbf24;
+}
+
 [data-theme='dark'] .form-step.is-done {
   color: #4ade80;
   border-bottom-color: #166534;
+}
+
+[data-theme='dark'] .form-step.is-warning {
+  color: #fbbf24;
+  border-bottom-color: #92400e;
 }
 
 .form-step__num {
@@ -576,14 +586,71 @@
   color: #15803d;
 }
 
+.form-step.is-warning .form-step__num {
+  background: #fef3c7;
+  border-color: #fbbf24;
+  color: #b45309;
+}
+
 [data-theme='dark'] .form-step.is-done .form-step__num {
   background: #14532d;
   border-color: #166534;
   color: #4ade80;
 }
 
+[data-theme='dark'] .form-step.is-warning .form-step__num {
+  background: #78350f;
+  border-color: #92400e;
+  color: #fbbf24;
+}
+
+[data-theme='dark'] .form-alert {
+  background: rgba(120, 53, 15, 0.35);
+  border-color: #92400e;
+  color: #fcd34d;
+}
+
 .form-step__label {
   font-size: 0.82rem;
+}
+
+.form-alert {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.85rem;
+  align-items: flex-start;
+  background: #fffbeb;
+  border: 1px solid #fbbf24;
+  border-radius: 12px;
+  color: #92400e;
+  margin-bottom: 1rem;
+  padding: 0.9rem 1rem;
+}
+
+.form-alert > svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.form-alert strong {
+  display: block;
+  font-size: 0.88rem;
+  margin-bottom: 0.35rem;
+}
+
+.form-alert ul {
+  display: grid;
+  gap: 0.2rem;
+  font-size: 0.82rem;
+  line-height: 1.4;
+  list-style: disc;
+  margin: 0;
+  padding-left: 1rem;
 }
 
 /* ── Form card ── */
@@ -657,6 +724,8 @@
   padding: 0.65rem 0.8rem;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
   appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
   box-sizing: border-box;
 }
 
@@ -666,6 +735,10 @@
   background-position: right 0.75rem center;
   background-size: 16px;
   padding-right: 2.25rem;
+}
+
+.form-field select::-ms-expand {
+  display: none;
 }
 
 .form-field textarea {
@@ -680,6 +753,13 @@
   outline: none;
   border-color: #fdba74;
   box-shadow: 0 0 0 3px var(--accent-ring);
+}
+
+.form-field input.is-invalid,
+.form-field select.is-invalid,
+.form-field textarea.is-invalid {
+  border-color: #f59e0b;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.16);
 }
 
 .form-field input::placeholder,
@@ -741,6 +821,18 @@
 
 .field-hint--right {
   text-align: right;
+}
+
+.field-error {
+  color: #b45309;
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.field-error--standalone {
+  display: block;
+  margin-top: 0.25rem;
 }
 
 /* ══════════════════════════════════════════
@@ -1024,6 +1116,10 @@
   padding: 0.85rem 1.75rem !important;
 }
 
+.publish-btn.is-blocked {
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.18);
+}
+
 /* ══════════════════════════════════════════
    SUCCESS STATE
 ══════════════════════════════════════════ */
@@ -1096,12 +1192,26 @@
 
 [data-theme='dark'] .form-field select {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-position: right 0.75rem center;
+  background-repeat: no-repeat;
+  background-size: 16px;
 }
 
 [data-theme='dark'] .form-field input:focus,
 [data-theme='dark'] .form-field select:focus,
 [data-theme='dark'] .form-field textarea:focus {
   border-color: #f97316;
+}
+
+[data-theme='dark'] .form-field input.is-invalid,
+[data-theme='dark'] .form-field select.is-invalid,
+[data-theme='dark'] .form-field textarea.is-invalid {
+  border-color: #f59e0b;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+}
+
+[data-theme='dark'] .field-error {
+  color: #fbbf24;
 }
 
 [data-theme='dark'] .image-upload-drop {

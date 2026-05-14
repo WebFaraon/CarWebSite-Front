@@ -1,5 +1,5 @@
+import { useNavigate } from 'react-router-dom'
 import Navbar from '../../components/navbar/Navbar.tsx'
-import SellYourCarSection from '../../components/home/SellYourCarSection.tsx'
 import SiteFooter from '../../components/home/SiteFooter.tsx'
 import type { SocialItem } from '../../components/home/types'
 import './SellCar.css'
@@ -12,6 +12,7 @@ const socialLinks: SocialItem[] = [
 ]
 
 function SellCar() {
+  const navigate = useNavigate()
   const benefits = [
     'Professional listing structure that looks credible from the first scroll',
     'Buyer conversations organized in one place',
@@ -33,7 +34,11 @@ function SellCar() {
                   deal securely with support at every step.
                 </p>
                 <div className="sell-hero-actions">
-                  <button className="primary-btn" type="button">
+                  <button
+                    className="primary-btn"
+                    type="button"
+                    onClick={() => navigate('/my-listings?tab=new')}
+                  >
                     Start listing
                   </button>
                   <button className="ghost-btn" type="button">
@@ -61,8 +66,6 @@ function SellCar() {
             </div>
           </div>
         </section>
-
-        <SellYourCarSection image="https://placehold.co/800x520/F8FAFC/111827?text=Car+Listing+Image" />
 
         <section className="sell-steps section-spacer">
           <div className="container">

@@ -3,7 +3,7 @@ import type { ReactNode } from 'react'
 
 interface AuthContextValue {
   isLoggedIn: boolean
-  login: () => void
+  login: (username: string, password: string) => boolean
   logout: () => void
 }
 
@@ -14,9 +14,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     () => localStorage.getItem('isLoggedIn') === 'true'
   )
 
-  function login() {
+  function login(username: string, password: string): boolean {
+    const normalizedUsername = username.trim().toLowerCase()
+    const isTestUser = normalizedUsername === 'test' && password === 'test'
+
+    if (!isTestUser) return false
+
     localStorage.setItem('isLoggedIn', 'true')
     setIsLoggedIn(true)
+    return true
   }
 
   function logout() {

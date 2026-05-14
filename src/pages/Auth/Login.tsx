@@ -1,20 +1,43 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import Navbar from '../../components/navbar/Navbar.tsx'
 import { useAdminAuth } from '../../context/AdminAuthContext.tsx'
+import { useAuth } from '../../context/AuthContext.tsx'
 import './Login.css'
+
+type LoginLocationState = {
+  from?: {
+    pathname?: string
+    search?: string
+  }
+}
 
 function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
   const { adminLogin } = useAdminAuth()
+  const { login } = useAuth()
+  const location = useLocation()
   const navigate = useNavigate()
+  const from = (location.state as LoginLocationState | null)?.from
+  const fromPath = `${from?.pathname ?? '/my-listings'}${from?.search ?? ''}`
 
   function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
     e.preventDefault()
+    setError('')
+
     if (adminLogin(email, password)) {
       navigate('/admin')
+      return
     }
+
+    if (login(email, password)) {
+      navigate(fromPath, { replace: true })
+      return
+    }
+
+    setError('Invalid credentials. Use test / test for My Listings.')
   }
 
   return (
@@ -52,10 +75,14 @@ function Login() {
               <input
                 type="text"
                 id="email"
-                placeholder="your@example.com"
+                placeholder="Enter your email"
                 autoComplete="off"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value)
+                  setError('')
+                }}
+                className={error ? 'input-error' : ''}
               />
             </div>
 
@@ -69,8 +96,13 @@ function Login() {
                 id="password"
                 placeholder="Enter your password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value)
+                  setError('')
+                }}
+                className={error ? 'input-error' : ''}
               />
+              {error && <span className="field-error">{error}</span>}
             </div>
 
             <button type="submit" className="primary-btn auth-submit-btn">
