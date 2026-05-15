@@ -1,11 +1,12 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Navbar from '../../components/navbar/Navbar.tsx'
+import { userApi } from '../../services/api.ts'
 import './Signup.css'
 
 const rules = [
-  { id: 'length',  label: 'At least 8 characters',       test: (p: string) => p.length >= 8 },
-  { id: 'number',  label: 'At least one number',          test: (p: string) => /\d/.test(p) },
+  { id: 'length',  label: 'At least 8 characters',        test: (p: string) => p.length >= 8 },
+  { id: 'number',  label: 'At least one number',           test: (p: string) => /\d/.test(p) },
   { id: 'upper',   label: 'At least one uppercase letter', test: (p: string) => /[A-Z]/.test(p) },
   { id: 'special', label: 'At least one special character', test: (p: string) => /[^A-Za-z0-9]/.test(p) },
 ]
@@ -15,7 +16,27 @@ function Signup() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+  const navigate = useNavigate()
+
   const mismatch = confirmPassword.length > 0 && confirmPassword !== password
+  const allRulesMet = rules.every((r) => r.test(password))
+
+  async function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
+    e.preventDefault()
+    if (mismatch || !allRulesMet) return
+    setError('')
+    setLoading(true)
+    try {
+      await userApi.register({ fullName: name, email, password })
+      navigate('/login')
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Registration failed. Try again.')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <>
@@ -46,7 +67,9 @@ function Signup() {
 
           <div className="auth-divider"><span>or</span></div>
 
-          <form className="auth-form">
+          {error && <p className="auth-error">{error}</p>}
+
+          <form className="auth-form" onSubmit={handleSubmit}>
             <div className="form-group">
               <label htmlFor="name">Full name</label>
               <input
@@ -55,6 +78,7 @@ function Signup() {
                 placeholder="John Doe"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                required
               />
             </div>
 
@@ -67,6 +91,7 @@ function Signup() {
                 autoComplete="off"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                required
               />
             </div>
 
@@ -78,6 +103,7 @@ function Signup() {
                 placeholder="Create a password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                required
               />
               {password.length > 0 && (
                 <ul className="password-rules">
@@ -100,6 +126,7 @@ function Signup() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 className={mismatch ? 'input-error' : ''}
+                required
               />
               {mismatch && (
                 <span className="field-error">Passwords do not match.</span>
@@ -107,10 +134,11 @@ function Signup() {
             </div>
 
             <button
-              type="button"
+              type="submit"
               className="primary-btn auth-submit-btn"
+              disabled={loading || mismatch || !allRulesMet || !name || !email}
             >
-              Create account
+              {loading ? 'Creating account…' : 'Create account'}
             </button>
           </form>
         </div>

@@ -1,35 +1,31 @@
-import { createContext, useContext, useState } from 'react'
+import { createContext, useContext } from 'react'
 import type { ReactNode } from 'react'
+import { useAuth } from './AuthContext'
 
 interface AdminAuthContextValue {
   isAdminLoggedIn: boolean
-  adminLogin: (username: string, password: string) => boolean
+  adminLogin: (email: string, password: string) => Promise<boolean>
   adminLogout: () => void
 }
 
 const AdminAuthContext = createContext<AdminAuthContextValue | null>(null)
 
 export function AdminAuthProvider({ children }: { children: ReactNode }) {
-  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(
-    () => localStorage.getItem('isAdminLoggedIn') === 'true'
-  )
+  const { isAdmin, login, logout } = useAuth()
 
-  function adminLogin(username: string, password: string): boolean {
-    if ((username === 'admin' || username === 'admin@admin.com') && password === 'admin') {
-      localStorage.setItem('isAdminLoggedIn', 'true')
-      setIsAdminLoggedIn(true)
-      return true
-    }
-    return false
+  async function adminLogin(email: string, password: string): Promise<boolean> {
+    const user = await login(email, password)
+    return user.role === 'Admin' || user.role === 'Manager'
   }
 
   function adminLogout() {
-    localStorage.removeItem('isAdminLoggedIn')
-    setIsAdminLoggedIn(false)
+    logout()
   }
 
   return (
-    <AdminAuthContext.Provider value={{ isAdminLoggedIn, adminLogin, adminLogout }}>
+    <AdminAuthContext.Provider
+      value={{ isAdminLoggedIn: isAdmin, adminLogin, adminLogout }}
+    >
       {children}
     </AdminAuthContext.Provider>
   )

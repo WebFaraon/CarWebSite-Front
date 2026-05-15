@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import Navbar from '../../components/navbar/Navbar.tsx'
 import SiteFooter from '../../components/home/SiteFooter.tsx'
+import { contactApi } from '../../services/api.ts'
 import './ContactUs.css'
 
 const contactConfig = {
@@ -96,13 +97,46 @@ function ContactIcon({ type }: { type: CardType }) {
   )
 }
 
+const SUBJECT_MAP: Record<string, string> = {
+  general: 'General',
+  buying: 'Buying',
+  selling: 'Selling',
+  partnership: 'Partnership',
+}
+
 function ContactUs() {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [subject, setSubject] = useState('general')
   const [message, setMessage] = useState('')
+  const [sending, setSending] = useState(false)
+  const [sent, setSent] = useState(false)
+  const [sendError, setSendError] = useState('')
 
   const { hero, contactCards, officeNote } = contactConfig
+
+  async function handleSend(e: React.SyntheticEvent<HTMLFormElement>) {
+    e.preventDefault()
+    setSendError('')
+    setSending(true)
+    try {
+      await contactApi.send({
+        name,
+        email,
+        subject: SUBJECT_MAP[subject] ?? 'General',
+        message,
+      })
+      setSent(true)
+      setName('')
+      setEmail('')
+      setSubject('general')
+      setMessage('')
+    } catch (err: unknown) {
+      setSendError(err instanceof Error ? err.message : 'Failed to send. Please try again.')
+    } finally {
+      setSending(false)
+    }
+  }
 
   return (
     <>
@@ -156,7 +190,7 @@ function ContactUs() {
                   <p>Fill in the form below and we&apos;ll get back to you as soon as possible.</p>
                 </div>
 
-                <form className="contact-form">
+                <form className="contact-form" onSubmit={handleSend}>
                   <div className="contact-form-row">
                     <div className="form-group">
                       <label htmlFor="contact-name">Full Name</label>
@@ -206,8 +240,11 @@ function ContactUs() {
                     />
                   </div>
 
-                  <button type="button" className="primary-btn contact-submit-btn">
-                    Send message
+                  {sendError && <p className="field-error">{sendError}</p>}
+                  {sent && <p className="auth-sub" style={{ color: 'var(--success, green)' }}>Message sent! We'll get back to you soon.</p>}
+
+                  <button type="submit" className="primary-btn contact-submit-btn" disabled={sending}>
+                    {sending ? 'Sending…' : 'Send message'}
                   </button>
                 </form>
               </div>

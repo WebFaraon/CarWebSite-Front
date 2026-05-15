@@ -1,43 +1,29 @@
 import { useState } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Navbar from '../../components/navbar/Navbar.tsx'
 import { useAdminAuth } from '../../context/AdminAuthContext.tsx'
-import { useAuth } from '../../context/AuthContext.tsx'
 import './Login.css'
-
-type LoginLocationState = {
-  from?: {
-    pathname?: string
-    search?: string
-  }
-}
 
 function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
   const { adminLogin } = useAdminAuth()
-  const { login } = useAuth()
-  const location = useLocation()
   const navigate = useNavigate()
-  const from = (location.state as LoginLocationState | null)?.from
-  const fromPath = `${from?.pathname ?? '/my-listings'}${from?.search ?? ''}`
 
-  function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
     e.preventDefault()
     setError('')
-
-    if (adminLogin(email, password)) {
-      navigate('/admin')
-      return
+    setLoading(true)
+    try {
+      const isAdmin = await adminLogin(email, password)
+      navigate(isAdmin ? '/admin' : '/')
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Invalid email or password')
+    } finally {
+      setLoading(false)
     }
-
-    if (login(email, password)) {
-      navigate(fromPath, { replace: true })
-      return
-    }
-
-    setError('Invalid credentials. Use test / test for My Listings.')
   }
 
   return (
@@ -69,20 +55,19 @@ function Login() {
 
           <div className="auth-divider"><span>or</span></div>
 
+          {error && <p className="auth-error">{error}</p>}
+
           <form className="auth-form" onSubmit={handleSubmit}>
             <div className="form-group">
               <label htmlFor="email">Email address</label>
               <input
                 type="text"
                 id="email"
-                placeholder="Enter your email"
+                placeholder="your@example.com"
                 autoComplete="off"
                 value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value)
-                  setError('')
-                }}
-                className={error ? 'input-error' : ''}
+                onChange={(e) => setEmail(e.target.value)}
+                required
               />
             </div>
 
@@ -96,17 +81,13 @@ function Login() {
                 id="password"
                 placeholder="Enter your password"
                 value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value)
-                  setError('')
-                }}
-                className={error ? 'input-error' : ''}
+                onChange={(e) => setPassword(e.target.value)}
+                required
               />
-              {error && <span className="field-error">{error}</span>}
             </div>
 
-            <button type="submit" className="primary-btn auth-submit-btn">
-              Sign in
+            <button type="submit" className="primary-btn auth-submit-btn" disabled={loading}>
+              {loading ? 'Signing in…' : 'Sign in'}
             </button>
           </form>
         </div>

@@ -1,7 +1,10 @@
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback, useEffect } from 'react'
 import Navbar from '../../components/navbar/Navbar.tsx'
 import SiteFooter from '../../components/home/SiteFooter.tsx'
 import type { SocialItem } from '../../components/home/types'
+import { announcementApi, brandApi } from '../../services/api.ts'
+import type { BrandDto } from '../../services/api.ts'
+import { useAuth } from '../../context/AuthContext.tsx'
 import './MyListings.css'
 
 type Tab = 'listings' | 'new'
@@ -22,122 +25,36 @@ interface Listing {
   views: number
   inquiries: number
   createdAt: string
-  bodyType: string
-  color: string
-  condition: string
-  doors: string
-  seats: string
-  engineSize: string
-  horsepower: string
-  vin: string
-  description: string
-  features: string[]
-  contactName: string
-  contactPhone: string
-  contactEmail: string
-  contactCity: string
-  negotiable: boolean
-  showPhone: boolean
 }
 
-const mockListings: Listing[] = [
-  {
-    id: '1',
-    title: '2019 BMW 3 Series — Clean, Full History',
-    brand: 'BMW',
-    model: '3 Series',
-    year: 2019,
-    price: 28500,
-    mileage: 52000,
-    fuel: 'Petrol',
-    transmission: 'Automatic',
-    status: 'active',
-    images: ['https://placehold.co/600x400/F8FAFC/111827?text=BMW+3+Series'],
-    views: 342,
-    inquiries: 7,
-    createdAt: '2025-02-14',
-    bodyType: 'Sedan',
-    color: 'Black',
-    condition: 'Excellent',
-    doors: '4',
-    seats: '5',
-    engineSize: '2.0',
-    horsepower: '184',
-    vin: 'WBA8E9G53JNU12345',
-    description: 'Well kept BMW 3 Series with full service history, clean interior, recent tires, and no known mechanical issues.',
-    features: ['Navigation System', 'Parking Sensors', 'Bluetooth', 'Heated Seats'],
-    contactName: 'Test Seller',
-    contactPhone: '40712345678',
-    contactEmail: 'test@example.com',
-    contactCity: 'Chisinau',
-    negotiable: true,
-    showPhone: true,
-  },
-  {
-    id: '2',
-    title: '2021 Toyota Corolla — Low Mileage, One Owner',
-    brand: 'Toyota',
-    model: 'Corolla',
-    year: 2021,
-    price: 19900,
-    mileage: 21000,
-    fuel: 'Hybrid',
-    transmission: 'Automatic',
-    status: 'hidden',
-    images: ['https://placehold.co/600x400/F8FAFC/111827?text=Toyota+Corolla'],
-    views: 89,
-    inquiries: 2,
-    createdAt: '2025-01-28',
-    bodyType: 'Sedan',
-    color: 'White',
-    condition: 'Excellent',
-    doors: '4',
-    seats: '5',
-    engineSize: '1.8',
-    horsepower: '121',
-    vin: 'JTDBR32E720123456',
-    description: 'Low mileage Toyota Corolla Hybrid, one owner, very economical, clean bodywork, and complete maintenance records.',
-    features: ['Backup Camera', 'Bluetooth', 'Cruise Control', 'Apple CarPlay / Android Auto'],
-    contactName: 'Test Seller',
-    contactPhone: '40712345678',
-    contactEmail: 'test@example.com',
-    contactCity: 'Chisinau',
-    negotiable: false,
-    showPhone: true,
-  },
-  {
-    id: '3',
-    title: '2017 Volkswagen Golf GTI — Sport Package',
-    brand: 'Volkswagen',
-    model: 'Golf GTI',
-    year: 2017,
-    price: 16500,
-    mileage: 78000,
-    fuel: 'Petrol',
-    transmission: 'Manual',
-    status: 'pending',
-    images: ['https://placehold.co/600x400/F8FAFC/111827?text=VW+Golf+GTI'],
-    views: 0,
-    inquiries: 0,
-    createdAt: '2025-03-11',
-    bodyType: 'Hatchback',
-    color: 'Red',
-    condition: 'Good',
-    doors: '5',
-    seats: '5',
-    engineSize: '2.0',
-    horsepower: '220',
-    vin: 'WVWZZZAUZHW123456',
-    description: 'Volkswagen Golf GTI with sport package, manual gearbox, strong service record, and clean interior condition.',
-    features: ['Leather Seats', 'Bluetooth', 'Premium Sound System', 'Parking Sensors'],
-    contactName: 'Test Seller',
-    contactPhone: '40712345678',
-    contactEmail: 'test@example.com',
-    contactCity: 'Chisinau',
-    negotiable: true,
-    showPhone: true,
-  },
-]
+const FUEL_MAP: Record<string, string> = {
+  Petrol: 'Petrol', Diesel: 'Diesel', Hybrid: 'Hybrid',
+  Electric: 'Electric', LPG: 'LPG', CNG: 'CNG',
+}
+const TRANSMISSION_MAP: Record<string, string> = {
+  Automatic: 'Automatic', Manual: 'Manual',
+  'Semi-Automatic': 'SemiAutomatic', CVT: 'CVT',
+}
+const CONDITION_MAP: Record<string, string> = {
+  New: 'New', 'Like New': 'LikeNew', Excellent: 'Excellent',
+  Good: 'Good', Fair: 'Fair', 'Parts Only': 'PartsOnly',
+}
+const BODY_TYPE_MAP: Record<string, string> = {
+  Sedan: 'Sedan', SUV: 'Suv', Hatchback: 'Hatchback',
+  Coupe: 'Coupe', Convertible: 'Convertible', Wagon: 'Wagon',
+  Pickup: 'Pickup', Van: 'Van', Minivan: 'Minivan',
+}
+const COLOR_MAP: Record<string, string> = {
+  Black: 'Black', White: 'White', Silver: 'Silver', Gray: 'Gray',
+  Red: 'Red', Blue: 'Blue', Green: 'Green', Brown: 'Brown',
+  Yellow: 'Yellow', Orange: 'Orange', Other: 'Other',
+}
+const DOORS_MAP: Record<string, string> = {
+  '2': 'Two', '3': 'Three', '4': 'Four', '5': 'Five',
+}
+const STATUS_MAP: Record<string, ListingStatus> = {
+  Active: 'active', Hidden: 'hidden', Pending: 'pending',
+}
 
 const FUEL_TYPES = ['Petrol', 'Diesel', 'Hybrid', 'Electric', 'LPG', 'CNG']
 const TRANSMISSIONS = ['Automatic', 'Manual', 'Semi-Automatic', 'CVT']
@@ -203,146 +120,6 @@ const socialLinks: SocialItem[] = [
 ]
 
 const FORM_SECTIONS = ['Photos', 'Basic Info', 'Vehicle Details', 'Description & Features', 'Contact & Review']
-
-type ValidationKey = keyof FormData | 'images' | 'features'
-
-interface SectionValidation {
-  isComplete: boolean
-  errors: Partial<Record<ValidationKey, string>>
-}
-
-const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-const vinPattern = /^[A-HJ-NPR-Z0-9]{17}$/
-
-function isFilled(value: string) {
-  return value.trim().length > 0
-}
-
-function numberValue(value: string) {
-  return Number(value.replace(',', '.'))
-}
-
-function validateSection(section: number, form: FormData, images: { url: string; name: string }[]): SectionValidation {
-  const errors: Partial<Record<ValidationKey, string>> = {}
-  const currentYear = new Date().getFullYear()
-
-  if (section === 0 && images.length === 0) {
-    errors.images = 'Add at least one photo before publishing.'
-  }
-
-  if (section === 1) {
-    const year = Number(form.year)
-    const mileage = Number(form.mileage)
-    const price = Number(form.price)
-
-    if (!isFilled(form.title)) errors.title = 'Listing title is required.'
-    if (!isFilled(form.brand)) errors.brand = 'Select a brand.'
-    if (!isFilled(form.model)) errors.model = 'Enter the model.'
-    if (!Number.isInteger(year) || year < 1950 || year > currentYear + 1) {
-      errors.year = `Enter a year between 1950 and ${currentYear + 1}.`
-    }
-    if (!Number.isFinite(mileage) || mileage < 0) {
-      errors.mileage = 'Mileage must be 0 or higher.'
-    }
-    if (!Number.isFinite(price) || price <= 0) {
-      errors.price = 'Price must be greater than 0.'
-    }
-  }
-
-  if (section === 2) {
-    const seats = Number(form.seats)
-    const engineSize = numberValue(form.engineSize)
-    const horsepower = Number(form.horsepower)
-
-    if (!isFilled(form.fuel)) errors.fuel = 'Select a fuel type.'
-    if (!isFilled(form.transmission)) errors.transmission = 'Select a transmission.'
-    if (!isFilled(form.bodyType)) errors.bodyType = 'Select a body type.'
-    if (!isFilled(form.condition)) errors.condition = 'Select the condition.'
-    if (!isFilled(form.color)) errors.color = 'Select the exterior color.'
-    if (!isFilled(form.doors)) errors.doors = 'Select the number of doors.'
-    if (!Number.isInteger(seats) || seats < 1 || seats > 12) {
-      errors.seats = 'Seats must be between 1 and 12.'
-    }
-    if (!Number.isFinite(engineSize) || engineSize <= 0) {
-      errors.engineSize = 'Enter a valid engine size.'
-    }
-    if (!Number.isFinite(horsepower) || horsepower <= 0) {
-      errors.horsepower = 'Horsepower must be greater than 0.'
-    }
-    if (!vinPattern.test(form.vin.trim().toUpperCase())) {
-      errors.vin = 'VIN must have 17 valid characters.'
-    }
-  }
-
-  if (section === 3) {
-    if (form.description.trim().length < 30) {
-      errors.description = 'Description must be at least 30 characters.'
-    }
-    if (form.features.length === 0) {
-      errors.features = 'Select at least one feature.'
-    }
-  }
-
-  if (section === 4) {
-    const phoneDigits = form.contactPhone.replace(/\D/g, '')
-
-    if (form.contactName.trim().length < 2) errors.contactName = 'Enter your full name.'
-    if (form.contactCity.trim().length < 2) errors.contactCity = 'Enter the city or location.'
-    if (phoneDigits.length < 7) errors.contactPhone = 'Enter a valid phone number.'
-    if (!emailPattern.test(form.contactEmail.trim())) errors.contactEmail = 'Enter a valid email address.'
-  }
-
-  return {
-    isComplete: Object.keys(errors).length === 0,
-    errors,
-  }
-}
-
-function WarningIcon() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
-      <path d="M12 9v4" />
-      <path d="M12 17h.01" />
-    </svg>
-  )
-}
-
-function listingToForm(listing: Listing): FormData {
-  return {
-    title: listing.title,
-    brand: listing.brand,
-    model: listing.model,
-    year: String(listing.year),
-    price: String(listing.price),
-    mileage: String(listing.mileage),
-    fuel: listing.fuel,
-    transmission: listing.transmission,
-    bodyType: listing.bodyType,
-    color: listing.color,
-    condition: listing.condition,
-    doors: listing.doors,
-    seats: listing.seats,
-    engineSize: listing.engineSize,
-    horsepower: listing.horsepower,
-    vin: listing.vin,
-    description: listing.description,
-    features: listing.features,
-    contactName: listing.contactName,
-    contactPhone: listing.contactPhone,
-    contactEmail: listing.contactEmail,
-    contactCity: listing.contactCity,
-    negotiable: listing.negotiable,
-    showPhone: listing.showPhone,
-  }
-}
-
-function listingToImages(listing: Listing) {
-  return listing.images.map((url, index) => ({
-    url,
-    name: `${listing.title} photo ${index + 1}`,
-  }))
-}
 
 function StatusBadge({ status }: { status: ListingStatus }) {
   return (
@@ -435,48 +212,54 @@ function ImageUploadArea({ images, onAdd, onRemove }: ImageUploadAreaProps) {
 }
 
 function MyListings() {
-  const [activeTab, setActiveTab] = useState<Tab>(() =>
-    new URLSearchParams(window.location.search).get('tab') === 'new' ? 'new' : 'listings',
-  )
-  const [listings, setListings] = useState<Listing[]>(mockListings)
+  const { user } = useAuth()
+  const [activeTab, setActiveTab] = useState<Tab>('listings')
+  const [listings, setListings] = useState<Listing[]>([])
+  const [listingsLoading, setListingsLoading] = useState(true)
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
   const [form, setForm] = useState<FormData>(initialForm)
   const [images, setImages] = useState<{ url: string; name: string }[]>([])
   const [formSection, setFormSection] = useState(0)
   const [submitted, setSubmitted] = useState(false)
-  const [editingListingId, setEditingListingId] = useState<string | null>(null)
-  const [validatedSections, setValidatedSections] = useState<number[]>([])
-  const sectionValidations = FORM_SECTIONS.map((_, section) => validateSection(section, form, images))
-  const currentValidation = sectionValidations[formSection]
-  const showCurrentErrors = validatedSections.includes(formSection)
-  const isFormComplete = sectionValidations.every((section) => section.isComplete)
-  const isEditing = editingListingId !== null
+  const [formError, setFormError] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+  const [apiBrands, setApiBrands] = useState<BrandDto[]>([])
 
-  const markSectionValidated = (section: number) => {
-    setValidatedSections((prev) => (prev.includes(section) ? prev : [...prev, section]))
-  }
+  useEffect(() => {
+    brandApi.getAll().then(setApiBrands).catch(() => {})
+  }, [])
 
-  const fieldError = (key: ValidationKey) =>
-    showCurrentErrors ? currentValidation.errors[key] : undefined
-
-  const resetListingForm = () => {
-    setForm(initialForm)
-    setImages([])
-    setFormSection(0)
-    setValidatedSections([])
-    setEditingListingId(null)
-    setSubmitted(false)
-  }
-
-  const openNewListingForm = () => {
-    resetListingForm()
-    setActiveTab('new')
-  }
-
-  const closeListingForm = () => {
-    resetListingForm()
-    setActiveTab('listings')
-  }
+  useEffect(() => {
+    if (!user) {
+      setListingsLoading(false)
+      return
+    }
+    announcementApi
+      .getAll()
+      .then((all) => {
+        const mine = all
+          .filter((a) => a.userId === user.id)
+          .map((a) => ({
+            id: String(a.id),
+            title: a.title || `${a.brand.name} ${a.model} ${a.year}`,
+            brand: a.brand.name,
+            model: a.model,
+            year: a.year,
+            price: Number(a.price),
+            mileage: a.mileage,
+            fuel: a.fuelType,
+            transmission: a.transmission,
+            status: STATUS_MAP[a.status] ?? ('pending' as ListingStatus),
+            images: a.images.map((i) => i.url),
+            views: a.views,
+            inquiries: a.inquiries,
+            createdAt: a.publishedAt.slice(0, 10),
+          }))
+        setListings(mine)
+      })
+      .catch(() => {})
+      .finally(() => setListingsLoading(false))
+  }, [user])
 
   const handleToggleStatus = (id: string) => {
     setListings((prev) =>
@@ -488,21 +271,14 @@ function MyListings() {
     )
   }
 
-  const handleDelete = (id: string) => {
-    setListings((prev) => prev.filter((l) => l.id !== id))
+  const handleDelete = async (id: string) => {
+    try {
+      await announcementApi.delete(parseInt(id))
+      setListings((prev) => prev.filter((l) => l.id !== id))
+    } catch {
+      // keep listing in UI if delete fails
+    }
     setDeleteConfirm(null)
-    if (editingListingId === id) closeListingForm()
-  }
-
-  const handleEdit = (listing: Listing) => {
-    setDeleteConfirm(null)
-    setEditingListingId(listing.id)
-    setForm(listingToForm(listing))
-    setImages(listingToImages(listing))
-    setFormSection(0)
-    setValidatedSections([])
-    setSubmitted(false)
-    setActiveTab('new')
   }
 
   const handleAddImages = (files: FileList) => {
@@ -525,70 +301,73 @@ function MyListings() {
     }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()
-    if (!isFormComplete) {
-      const firstInvalidSection = sectionValidations.findIndex((section) => !section.isComplete)
-      setValidatedSections(FORM_SECTIONS.map((_, section) => section))
-      if (firstInvalidSection >= 0) setFormSection(firstInvalidSection)
+    setFormError('')
+
+    const brand = apiBrands.find(
+      (b) => b.name.toLowerCase() === form.brand.toLowerCase(),
+    )
+    if (!brand) {
+      setFormError('Selected brand is not available. Please try again.')
       return
     }
 
-    const editingListing = listings.find((listing) => listing.id === editingListingId)
-    const savedListing: Listing = {
-      id: editingListing?.id ?? Date.now().toString(),
-      title: form.title || `${form.year} ${form.brand} ${form.model}`.trim(),
-      brand: form.brand,
-      model: form.model,
-      year: parseInt(form.year) || new Date().getFullYear(),
-      price: parseInt(form.price) || 0,
-      mileage: parseInt(form.mileage) || 0,
-      fuel: form.fuel,
-      transmission: form.transmission,
-      status: editingListing?.status ?? 'pending',
-      images: images.map((i) => i.url),
-      views: editingListing?.views ?? 0,
-      inquiries: editingListing?.inquiries ?? 0,
-      createdAt: editingListing?.createdAt ?? new Date().toISOString().slice(0, 10),
-      bodyType: form.bodyType,
-      color: form.color,
-      condition: form.condition,
-      doors: form.doors,
-      seats: form.seats,
-      engineSize: form.engineSize,
-      horsepower: form.horsepower,
-      vin: form.vin.trim().toUpperCase(),
-      description: form.description.trim(),
-      features: form.features,
-      contactName: form.contactName.trim(),
-      contactPhone: form.contactPhone,
-      contactEmail: form.contactEmail.trim(),
-      contactCity: form.contactCity.trim(),
-      negotiable: form.negotiable,
-      showPhone: form.showPhone,
+    setSubmitting(true)
+    try {
+      const created = await announcementApi.create({
+        title: form.title || `${form.year} ${form.brand} ${form.model}`.trim(),
+        negotiable: form.negotiable,
+        showPhone: form.showPhone,
+        model: form.model,
+        year: parseInt(form.year) || new Date().getFullYear(),
+        mileage: parseInt(form.mileage) || 0,
+        price: parseFloat(form.price) || 0,
+        fuelType: FUEL_MAP[form.fuel] ?? 'Petrol',
+        transmission: TRANSMISSION_MAP[form.transmission] ?? 'Automatic',
+        condition: CONDITION_MAP[form.condition] ?? 'Good',
+        description: form.description,
+        bodyType: BODY_TYPE_MAP[form.bodyType] ?? 'Sedan',
+        color: form.color ? COLOR_MAP[form.color] : undefined,
+        doors: form.doors ? DOORS_MAP[form.doors] : undefined,
+        seats: form.seats ? parseInt(form.seats) : undefined,
+        engineSize: form.engineSize || undefined,
+        horsepower: form.horsepower ? parseInt(form.horsepower) : undefined,
+        vin: form.vin || undefined,
+        brandId: brand.id,
+        images: [],
+      })
+
+      const newListing: Listing = {
+        id: String(created.id),
+        title: created.title,
+        brand: created.brand.name,
+        model: created.model,
+        year: created.year,
+        price: Number(created.price),
+        mileage: created.mileage,
+        fuel: created.fuelType,
+        transmission: created.transmission,
+        status: 'pending',
+        images: created.images.map((i) => i.url),
+        views: 0,
+        inquiries: 0,
+        createdAt: created.publishedAt.slice(0, 10),
+      }
+      setListings((prev) => [newListing, ...prev])
+      setSubmitted(true)
+      setTimeout(() => {
+        setSubmitted(false)
+        setActiveTab('listings')
+        setForm(initialForm)
+        setImages([])
+        setFormSection(0)
+      }, 2500)
+    } catch (err: unknown) {
+      setFormError(err instanceof Error ? err.message : 'Failed to create listing.')
+    } finally {
+      setSubmitting(false)
     }
-    setListings((prev) =>
-      editingListing
-        ? prev.map((listing) => (listing.id === savedListing.id ? savedListing : listing))
-        : [savedListing, ...prev],
-    )
-    setSubmitted(true)
-    setTimeout(() => {
-      setSubmitted(false)
-      setActiveTab('listings')
-      resetListingForm()
-    }, 2500)
-  }
-
-  const handleNextSection = () => {
-    markSectionValidated(formSection)
-    if (!currentValidation.isComplete) return
-    setFormSection((section) => section + 1)
-  }
-
-  const handleStepClick = (section: number) => {
-    markSectionValidated(formSection)
-    setFormSection(section)
   }
 
   const activeCount = listings.filter((l) => l.status === 'active').length
@@ -612,11 +391,8 @@ function MyListings() {
                 type="button"
                 className="primary-btn ml-new-btn"
                 onClick={() => {
-                  if (activeTab === 'new') {
-                    closeListingForm()
-                    return
-                  }
-                  openNewListingForm()
+                  setActiveTab(activeTab === 'new' ? 'listings' : 'new')
+                  setFormSection(0)
                 }}
               >
                 {activeTab === 'new' ? (
@@ -641,7 +417,7 @@ function MyListings() {
               <button
                 type="button"
                 className={`ml-tab ${activeTab === 'listings' ? 'is-active' : ''}`}
-                onClick={closeListingForm}
+                onClick={() => setActiveTab('listings')}
               >
                 Your listings
                 {listings.length > 0 && <span className="ml-tab__count">{listings.length}</span>}
@@ -649,9 +425,9 @@ function MyListings() {
               <button
                 type="button"
                 className={`ml-tab ${activeTab === 'new' ? 'is-active' : ''}`}
-                onClick={openNewListingForm}
+                onClick={() => setActiveTab('new')}
               >
-                {isEditing ? 'Edit listing' : 'New listing'}
+                New listing
               </button>
             </div>
           </div>
@@ -687,7 +463,9 @@ function MyListings() {
           ══════════════════════════════════════════ */}
           {activeTab === 'listings' && (
             <div className="listings-panel">
-              {listings.length === 0 ? (
+              {listingsLoading ? (
+                <p style={{ padding: '2rem', textAlign: 'center' }}>Loading your listings…</p>
+              ) : listings.length === 0 ? (
                 <div className="listings-empty">
                   <div className="listings-empty__icon">
                     <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -700,7 +478,7 @@ function MyListings() {
                   <button
                     type="button"
                     className="primary-btn"
-                    onClick={openNewListingForm}
+                    onClick={() => setActiveTab('new')}
                   >
                     Post a listing
                   </button>
@@ -768,11 +546,7 @@ function MyListings() {
                         </div>
 
                         <div className="listing-card__actions">
-                          <button
-                            type="button"
-                            className="ghost-btn lc-action-btn"
-                            onClick={() => handleEdit(listing)}
-                          >
+                          <button type="button" className="ghost-btn lc-action-btn">
                             <svg viewBox="0 0 24 24" aria-hidden="true">
                               <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
                               <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
@@ -857,57 +631,37 @@ function MyListings() {
                       <polyline points="22 4 12 14.01 9 11.01" />
                     </svg>
                   </div>
-                  <h2>{isEditing ? 'Listing updated!' : 'Listing submitted!'}</h2>
-                  <p>{isEditing ? 'Your listing changes were saved.' : 'Your listing is under review and will go live within a few hours.'}</p>
+                  <h2>Listing submitted!</h2>
+                  <p>Your listing is under review and will go live within a few hours.</p>
                 </div>
               ) : (
                 <>
                   {/* Step indicator */}
                   <div className="form-steps">
-                    {FORM_SECTIONS.map((section, i) => {
-                      const validation = sectionValidations[i]
-                      const wasChecked = validatedSections.includes(i)
-                      return (
-                        <button
-                          key={section}
-                          type="button"
-                          className={`form-step ${i === formSection ? 'is-active' : ''} ${validation.isComplete ? 'is-done' : ''} ${wasChecked && !validation.isComplete ? 'is-warning' : ''}`}
-                          onClick={() => handleStepClick(i)}
-                        >
-                          <span className="form-step__num">
-                            {validation.isComplete ? (
-                              <svg viewBox="0 0 24 24" aria-hidden="true">
-                                <polyline points="20 6 9 17 4 12" />
-                              </svg>
-                            ) : wasChecked ? (
-                              <WarningIcon />
-                            ) : (
-                              i + 1
-                            )}
-                          </span>
-                          <span className="form-step__label">{section}</span>
-                        </button>
-                      )
-                    })}
+                    {FORM_SECTIONS.map((section, i) => (
+                      <button
+                        key={section}
+                        type="button"
+                        className={`form-step ${i === formSection ? 'is-active' : ''} ${i < formSection ? 'is-done' : ''}`}
+                        onClick={() => setFormSection(i)}
+                      >
+                        <span className="form-step__num">
+                          {i < formSection ? (
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                              <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                          ) : (
+                            i + 1
+                          )}
+                        </span>
+                        <span className="form-step__label">{section}</span>
+                      </button>
+                    ))}
                     <div
                       className="form-steps__track"
                       style={{ '--progress': `${(formSection / (FORM_SECTIONS.length - 1)) * 100}%` } as React.CSSProperties}
                     />
                   </div>
-
-                  {showCurrentErrors && !currentValidation.isComplete && (
-                    <div className="form-alert" role="alert">
-                      <WarningIcon />
-                      <div>
-                        <strong>Fix this section before continuing.</strong>
-                        <ul>
-                          {Object.values(currentValidation.errors).map((error) => (
-                            <li key={error}>{error}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-                  )}
 
                   <form className="listing-form" onSubmit={handleSubmit} noValidate>
 
@@ -917,7 +671,7 @@ function MyListings() {
                         <div className="form-section__header">
                           <h2>Upload Photos</h2>
                           <p>
-                            {isEditing ? 'Update the gallery for this listing.' : 'Listings with good photos get up to 5× more inquiries.'}
+                            Listings with good photos get up to 5× more inquiries.
                             Add up to 10 images — the first one becomes the cover.
                           </p>
                         </div>
@@ -926,9 +680,6 @@ function MyListings() {
                           onAdd={handleAddImages}
                           onRemove={handleRemoveImage}
                         />
-                        {fieldError('images') && (
-                          <span className="field-error field-error--standalone">{fieldError('images')}</span>
-                        )}
                       </div>
                     )}
 
@@ -941,7 +692,7 @@ function MyListings() {
                         </div>
                         <div className="form-grid">
                           <div className="form-field col-full">
-                            <label htmlFor="f-title">Listing title *</label>
+                            <label htmlFor="f-title">Listing title</label>
                             <input
                               id="f-title"
                               type="text"
@@ -949,12 +700,9 @@ function MyListings() {
                               value={form.title}
                               onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
                               maxLength={120}
-                              className={fieldError('title') ? 'is-invalid' : ''}
-                              aria-invalid={Boolean(fieldError('title'))}
                             />
-                            {fieldError('title') && <span className="field-error">{fieldError('title')}</span>}
                             <span className="field-hint">
-                              Use a clear title with year, brand, model, and one strong selling point.
+                              Leave blank to auto-generate from brand + model + year.
                             </span>
                           </div>
 
@@ -965,15 +713,12 @@ function MyListings() {
                               value={form.brand}
                               onChange={(e) => setForm((f) => ({ ...f, brand: e.target.value }))}
                               required
-                              className={fieldError('brand') ? 'is-invalid' : ''}
-                              aria-invalid={Boolean(fieldError('brand'))}
                             >
                               <option value="">Select brand</option>
-                              {BRANDS.map((b) => (
+                              {(apiBrands.length > 0 ? apiBrands.map((b) => b.name) : BRANDS).map((b) => (
                                 <option key={b} value={b}>{b}</option>
                               ))}
                             </select>
-                            {fieldError('brand') && <span className="field-error">{fieldError('brand')}</span>}
                           </div>
 
                           <div className="form-field">
@@ -985,10 +730,7 @@ function MyListings() {
                               value={form.model}
                               onChange={(e) => setForm((f) => ({ ...f, model: e.target.value }))}
                               required
-                              className={fieldError('model') ? 'is-invalid' : ''}
-                              aria-invalid={Boolean(fieldError('model'))}
                             />
-                            {fieldError('model') && <span className="field-error">{fieldError('model')}</span>}
                           </div>
 
                           <div className="form-field">
@@ -1002,10 +744,7 @@ function MyListings() {
                               value={form.year}
                               onChange={(e) => setForm((f) => ({ ...f, year: e.target.value }))}
                               required
-                              className={fieldError('year') ? 'is-invalid' : ''}
-                              aria-invalid={Boolean(fieldError('year'))}
                             />
-                            {fieldError('year') && <span className="field-error">{fieldError('year')}</span>}
                           </div>
 
                           <div className="form-field">
@@ -1018,10 +757,7 @@ function MyListings() {
                               value={form.mileage}
                               onChange={(e) => setForm((f) => ({ ...f, mileage: e.target.value }))}
                               required
-                              className={fieldError('mileage') ? 'is-invalid' : ''}
-                              aria-invalid={Boolean(fieldError('mileage'))}
                             />
-                            {fieldError('mileage') && <span className="field-error">{fieldError('mileage')}</span>}
                           </div>
 
                           <div className="form-field">
@@ -1036,11 +772,8 @@ function MyListings() {
                                 value={form.price}
                                 onChange={(e) => setForm((f) => ({ ...f, price: e.target.value }))}
                                 required
-                                className={fieldError('price') ? 'is-invalid' : ''}
-                                aria-invalid={Boolean(fieldError('price'))}
                               />
                             </div>
-                            {fieldError('price') && <span className="field-error">{fieldError('price')}</span>}
                           </div>
 
                           <div className="form-field col-full">
@@ -1062,7 +795,7 @@ function MyListings() {
                       <div className="form-section">
                         <div className="form-section__header">
                           <h2>Vehicle Details</h2>
-                          <p>More detail builds trust. Complete every field before publishing.</p>
+                          <p>More detail builds trust. Fill in as many fields as you can.</p>
                         </div>
                         <div className="form-grid">
                           <div className="form-field">
@@ -1072,13 +805,10 @@ function MyListings() {
                               value={form.fuel}
                               onChange={(e) => setForm((f) => ({ ...f, fuel: e.target.value }))}
                               required
-                              className={fieldError('fuel') ? 'is-invalid' : ''}
-                              aria-invalid={Boolean(fieldError('fuel'))}
                             >
                               <option value="">Select fuel</option>
                               {FUEL_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
                             </select>
-                            {fieldError('fuel') && <span className="field-error">{fieldError('fuel')}</span>}
                           </div>
 
                           <div className="form-field">
@@ -1088,28 +818,22 @@ function MyListings() {
                               value={form.transmission}
                               onChange={(e) => setForm((f) => ({ ...f, transmission: e.target.value }))}
                               required
-                              className={fieldError('transmission') ? 'is-invalid' : ''}
-                              aria-invalid={Boolean(fieldError('transmission'))}
                             >
                               <option value="">Select transmission</option>
                               {TRANSMISSIONS.map((t) => <option key={t} value={t}>{t}</option>)}
                             </select>
-                            {fieldError('transmission') && <span className="field-error">{fieldError('transmission')}</span>}
                           </div>
 
                           <div className="form-field">
-                            <label htmlFor="f-bodyType">Body type *</label>
+                            <label htmlFor="f-bodyType">Body type</label>
                             <select
                               id="f-bodyType"
                               value={form.bodyType}
                               onChange={(e) => setForm((f) => ({ ...f, bodyType: e.target.value }))}
-                              className={fieldError('bodyType') ? 'is-invalid' : ''}
-                              aria-invalid={Boolean(fieldError('bodyType'))}
                             >
                               <option value="">Select body type</option>
                               {BODY_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
                             </select>
-                            {fieldError('bodyType') && <span className="field-error">{fieldError('bodyType')}</span>}
                           </div>
 
                           <div className="form-field">
@@ -1119,47 +843,38 @@ function MyListings() {
                               value={form.condition}
                               onChange={(e) => setForm((f) => ({ ...f, condition: e.target.value }))}
                               required
-                              className={fieldError('condition') ? 'is-invalid' : ''}
-                              aria-invalid={Boolean(fieldError('condition'))}
                             >
                               <option value="">Select condition</option>
                               {CONDITIONS.map((c) => <option key={c} value={c}>{c}</option>)}
                             </select>
-                            {fieldError('condition') && <span className="field-error">{fieldError('condition')}</span>}
                           </div>
 
                           <div className="form-field">
-                            <label htmlFor="f-color">Exterior color *</label>
+                            <label htmlFor="f-color">Exterior color</label>
                             <select
                               id="f-color"
                               value={form.color}
                               onChange={(e) => setForm((f) => ({ ...f, color: e.target.value }))}
-                              className={fieldError('color') ? 'is-invalid' : ''}
-                              aria-invalid={Boolean(fieldError('color'))}
                             >
                               <option value="">Select color</option>
                               {COLORS.map((c) => <option key={c} value={c}>{c}</option>)}
                             </select>
-                            {fieldError('color') && <span className="field-error">{fieldError('color')}</span>}
                           </div>
 
                           <div className="form-field">
-                            <label htmlFor="f-doors">Number of doors *</label>
+                            <label htmlFor="f-doors">Number of doors</label>
                             <select
                               id="f-doors"
                               value={form.doors}
                               onChange={(e) => setForm((f) => ({ ...f, doors: e.target.value }))}
-                              className={fieldError('doors') ? 'is-invalid' : ''}
-                              aria-invalid={Boolean(fieldError('doors'))}
                             >
                               <option value="">Select</option>
                               {['2', '3', '4', '5'].map((d) => <option key={d} value={d}>{d}</option>)}
                             </select>
-                            {fieldError('doors') && <span className="field-error">{fieldError('doors')}</span>}
                           </div>
 
                           <div className="form-field">
-                            <label htmlFor="f-seats">Number of seats *</label>
+                            <label htmlFor="f-seats">Number of seats</label>
                             <input
                               id="f-seats"
                               type="number"
@@ -1168,28 +883,22 @@ function MyListings() {
                               max="12"
                               value={form.seats}
                               onChange={(e) => setForm((f) => ({ ...f, seats: e.target.value }))}
-                              className={fieldError('seats') ? 'is-invalid' : ''}
-                              aria-invalid={Boolean(fieldError('seats'))}
                             />
-                            {fieldError('seats') && <span className="field-error">{fieldError('seats')}</span>}
                           </div>
 
                           <div className="form-field">
-                            <label htmlFor="f-engine">Engine size (L) *</label>
+                            <label htmlFor="f-engine">Engine size (L)</label>
                             <input
                               id="f-engine"
                               type="text"
                               placeholder="e.g. 2.0"
                               value={form.engineSize}
                               onChange={(e) => setForm((f) => ({ ...f, engineSize: e.target.value }))}
-                              className={fieldError('engineSize') ? 'is-invalid' : ''}
-                              aria-invalid={Boolean(fieldError('engineSize'))}
                             />
-                            {fieldError('engineSize') && <span className="field-error">{fieldError('engineSize')}</span>}
                           </div>
 
                           <div className="form-field">
-                            <label htmlFor="f-hp">Horsepower (hp) *</label>
+                            <label htmlFor="f-hp">Horsepower (hp)</label>
                             <input
                               id="f-hp"
                               type="number"
@@ -1197,14 +906,11 @@ function MyListings() {
                               min="1"
                               value={form.horsepower}
                               onChange={(e) => setForm((f) => ({ ...f, horsepower: e.target.value }))}
-                              className={fieldError('horsepower') ? 'is-invalid' : ''}
-                              aria-invalid={Boolean(fieldError('horsepower'))}
                             />
-                            {fieldError('horsepower') && <span className="field-error">{fieldError('horsepower')}</span>}
                           </div>
 
                           <div className="form-field">
-                            <label htmlFor="f-vin">VIN number *</label>
+                            <label htmlFor="f-vin">VIN number</label>
                             <input
                               id="f-vin"
                               type="text"
@@ -1212,11 +918,8 @@ function MyListings() {
                               maxLength={17}
                               value={form.vin}
                               onChange={(e) => setForm((f) => ({ ...f, vin: e.target.value.toUpperCase() }))}
-                              className={fieldError('vin') ? 'is-invalid' : ''}
-                              aria-invalid={Boolean(fieldError('vin'))}
                             />
-                            {fieldError('vin') && <span className="field-error">{fieldError('vin')}</span>}
-                            <span className="field-hint">Required VIN, 17 characters without I, O, or Q.</span>
+                            <span className="field-hint">Optional — helps build buyer trust significantly.</span>
                           </div>
                         </div>
                       </div>
@@ -1244,17 +947,14 @@ function MyListings() {
                               }))
                             }
                             required
-                            className={fieldError('description') ? 'is-invalid' : ''}
-                            aria-invalid={Boolean(fieldError('description'))}
                           />
-                          {fieldError('description') && <span className="field-error">{fieldError('description')}</span>}
                           <span className="field-hint field-hint--right">
                             {form.description.length} / 2000
                           </span>
                         </div>
 
                         <div className="form-field">
-                          <label>Features & Equipment *</label>
+                          <label>Features & Equipment</label>
                           <div className="features-grid">
                             {FEATURES.map((feat) => (
                               <label
@@ -1279,7 +979,6 @@ function MyListings() {
                           {form.features.length > 0 && (
                             <span className="field-hint">{form.features.length} feature{form.features.length !== 1 ? 's' : ''} selected</span>
                           )}
-                          {fieldError('features') && <span className="field-error">{fieldError('features')}</span>}
                         </div>
                       </div>
                     )}
@@ -1301,10 +1000,7 @@ function MyListings() {
                               value={form.contactName}
                               onChange={(e) => setForm((f) => ({ ...f, contactName: e.target.value }))}
                               required
-                              className={fieldError('contactName') ? 'is-invalid' : ''}
-                              aria-invalid={Boolean(fieldError('contactName'))}
                             />
-                            {fieldError('contactName') && <span className="field-error">{fieldError('contactName')}</span>}
                           </div>
 
                           <div className="form-field">
@@ -1316,26 +1012,18 @@ function MyListings() {
                               value={form.contactCity}
                               onChange={(e) => setForm((f) => ({ ...f, contactCity: e.target.value }))}
                               required
-                              className={fieldError('contactCity') ? 'is-invalid' : ''}
-                              aria-invalid={Boolean(fieldError('contactCity'))}
                             />
-                            {fieldError('contactCity') && <span className="field-error">{fieldError('contactCity')}</span>}
                           </div>
 
                           <div className="form-field">
-                            <label htmlFor="f-phone">Phone number *</label>
+                            <label htmlFor="f-phone">Phone number</label>
                             <input
                               id="f-phone"
                               type="tel"
-                              inputMode="numeric"
-                              pattern="[0-9]*"
-                              placeholder="e.g. 40712345678"
+                              placeholder="e.g. +40 712 345 678"
                               value={form.contactPhone}
-                              onChange={(e) => setForm((f) => ({ ...f, contactPhone: e.target.value.replace(/\D/g, '') }))}
-                              className={fieldError('contactPhone') ? 'is-invalid' : ''}
-                              aria-invalid={Boolean(fieldError('contactPhone'))}
+                              onChange={(e) => setForm((f) => ({ ...f, contactPhone: e.target.value }))}
                             />
-                            {fieldError('contactPhone') && <span className="field-error">{fieldError('contactPhone')}</span>}
                           </div>
 
                           <div className="form-field">
@@ -1347,10 +1035,7 @@ function MyListings() {
                               value={form.contactEmail}
                               onChange={(e) => setForm((f) => ({ ...f, contactEmail: e.target.value }))}
                               required
-                              className={fieldError('contactEmail') ? 'is-invalid' : ''}
-                              aria-invalid={Boolean(fieldError('contactEmail'))}
                             />
-                            {fieldError('contactEmail') && <span className="field-error">{fieldError('contactEmail')}</span>}
                           </div>
 
                           <div className="form-field col-full">
@@ -1425,7 +1110,7 @@ function MyListings() {
                         <button
                           type="button"
                           className="primary-btn"
-                          onClick={handleNextSection}
+                          onClick={() => setFormSection((s) => s + 1)}
                         >
                           Next: {FORM_SECTIONS[formSection + 1]}
                           <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -1433,15 +1118,16 @@ function MyListings() {
                           </svg>
                         </button>
                       ) : (
-                        <button type="submit" className={`primary-btn publish-btn ${!isFormComplete ? 'is-blocked' : ''}`}>
+                        <button type="submit" className="primary-btn publish-btn" disabled={submitting}>
                           <svg viewBox="0 0 24 24" aria-hidden="true">
                             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
                             <polyline points="22 4 12 14.01 9 11.01" />
                           </svg>
-                          {isEditing ? 'Save changes' : 'Publish listing'}
+                          {submitting ? 'Publishing…' : 'Publish listing'}
                         </button>
                       )}
                     </div>
+                    {formError && <p className="field-error" style={{ marginTop: '0.5rem' }}>{formError}</p>}
                   </form>
                 </>
               )}

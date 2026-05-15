@@ -18,7 +18,7 @@ import PrivateRoute from './components/PrivateRoute.tsx'
 
 function AdminRoute({ children }: { children: React.ReactNode }) {
   const { isAdminLoggedIn } = useAdminAuth()
-  return isAdminLoggedIn ? <>{children}</> : <Navigate to="/admin/login" replace />
+  return isAdminLoggedIn ? <>{children}</> : <Navigate to="/login" replace />
 }
 
 function AppRoutes() {
@@ -28,7 +28,7 @@ function AppRoutes() {
     <div className="page-frame" key={location.pathname}>
       <Routes location={location}>
         <Route path="/" element={<Home />} />
-        <Route path="/favorites" element={<Favorites/>} />
+        <Route path="/favorites" element={<Favorites />} />
         <Route path="/sell" element={<SellCar />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
@@ -38,7 +38,7 @@ function AppRoutes() {
         <Route path="/offers" element={<CatalogPage />} />
         <Route path="/help" element={<Help />} />
         <Route path="/my-listings" element={<PrivateRoute><MyListings /></PrivateRoute>} />
-<Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
+        <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
       </Routes>
     </div>
   )
@@ -46,15 +46,15 @@ function AppRoutes() {
 
 function App() {
   return (
-    <AdminAuthProvider>
-      <AuthProvider>
+    <AuthProvider>
+      <AdminAuthProvider>
         <ThemeProvider>
           <BrowserRouter>
             <AppRoutes />
           </BrowserRouter>
         </ThemeProvider>
-      </AuthProvider>
-    </AdminAuthProvider>
+      </AdminAuthProvider>
+    </AuthProvider>
   )
 }
 

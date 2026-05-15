@@ -218,3 +218,9 @@
 [data-theme='dark'] .form-group input {
   background: #1e293b;
 }
+
+.auth-error {
+  color: #ef4444;
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+}
