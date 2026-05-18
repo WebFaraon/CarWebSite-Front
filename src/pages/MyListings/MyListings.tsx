@@ -61,12 +61,6 @@ const TRANSMISSIONS = ['Automatic', 'Manual', 'Semi-Automatic', 'CVT']
 const BODY_TYPES = ['Sedan', 'SUV', 'Hatchback', 'Coupe', 'Convertible', 'Wagon', 'Pickup', 'Van', 'Minivan']
 const CONDITIONS = ['New', 'Like New', 'Excellent', 'Good', 'Fair', 'Parts Only']
 const COLORS = ['Black', 'White', 'Silver', 'Gray', 'Red', 'Blue', 'Green', 'Brown', 'Yellow', 'Orange', 'Other']
-const BRANDS = [
-  'Audi', 'BMW', 'Chevrolet', 'Dacia', 'Ferrari', 'Ford', 'Honda', 'Hyundai',
-  'Kia', 'Lamborghini', 'Land Rover', 'Mazda', 'Mercedes-Benz', 'Nissan',
-  'Opel', 'Peugeot', 'Porsche', 'Renault', 'Seat', 'Skoda', 'Subaru',
-  'Tesla', 'Toyota', 'Volkswagen', 'Volvo', 'Other',
-]
 const FEATURES = [
   'Air Conditioning', 'Heated Seats', 'Leather Seats', 'Sunroof / Moonroof',
   'Navigation System', 'Backup Camera', 'Parking Sensors', 'Bluetooth',
