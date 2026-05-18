@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import { useTheme } from '../../context/ThemeContext'
+import { useAuth } from '../../context/AuthContext'
 import './Navbar.css'
 
 interface NavItem {
@@ -52,9 +53,17 @@ function Navbar({
   navItems = defaultNavItems,
 }: NavbarProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const { isLoggedIn, user, logout } = useAuth()
+  const navigate = useNavigate()
 
   const handleLinkClick = () => {
     setIsMenuOpen(false)
+  }
+
+  const handleLogout = () => {
+    logout()
+    setIsMenuOpen(false)
+    navigate('/')
   }
 
   const renderLink = (item: NavItem, className: string) => {
@@ -108,12 +117,25 @@ function Navbar({
               <path d="M12 20.25 10.55 19C5.4 14.36 2 11.28 2 7.5A5.38 5.38 0 0 1 7.5 2 6.16 6.16 0 0 1 12 4.09 6.16 6.16 0 0 1 16.5 2 5.38 5.38 0 0 1 22 7.5c0 3.78-3.4 6.86-8.55 11.51L12 20.25Z" />
             </svg>
           </NavLink>
-          <a href="login" className="navbar-login">
-            Login
-          </a>
-          <a href="signup" className="navbar-signup">
-            Sign Up
-          </a>
+          {isLoggedIn ? (
+            <>
+              <span className="navbar-user-greeting">
+                Hi, {user?.fullName?.split(' ')[0] ?? 'User'}
+              </span>
+              <button type="button" className="navbar-logout" onClick={handleLogout}>
+                Log Out
+              </button>
+            </>
+          ) : (
+            <>
+              <NavLink to="/login" className="navbar-login" onClick={handleLinkClick}>
+                Login
+              </NavLink>
+              <NavLink to="/signup" className="navbar-signup" onClick={handleLinkClick}>
+                Sign Up
+              </NavLink>
+            </>
+          )}
         </div>
 
         <button
@@ -132,6 +154,16 @@ function Navbar({
       <div className={`navbar-mobile-menu ${isMenuOpen ? 'is-open' : ''}`}>
         <nav aria-label="Mobile primary navigation" className="mobile-links">
           {navItems.map((item) => renderLink(item, 'mobile-link'))}
+          {isLoggedIn ? (
+            <button type="button" className="mobile-link mobile-logout" onClick={handleLogout}>
+              Log Out
+            </button>
+          ) : (
+            <>
+              <NavLink to="/login" className="mobile-link" onClick={handleLinkClick}>Login</NavLink>
+              <NavLink to="/signup" className="mobile-link" onClick={handleLinkClick}>Sign Up</NavLink>
+            </>
+          )}
         </nav>
       </div>
     </header>

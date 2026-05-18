@@ -138,6 +138,39 @@
   transform: translateY(-1px);
 }
 
+.navbar-user-greeting {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.navbar-logout {
+  background: transparent;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 0.45rem 0.85rem;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.navbar-logout:hover {
+  background: #fee2e2;
+  border-color: #fca5a5;
+  color: #dc2626;
+}
+
+.mobile-logout {
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+}
+
 .navbar-menu-btn {
   align-items: center;
   background: var(--surface-soft);
@@ -277,6 +310,21 @@
 [data-theme='dark'] .navbar-login:hover {
   background: #1e293b;
   color: #f1f5f9;
+}
+
+[data-theme='dark'] .navbar-user-greeting {
+  color: #94a3b8;
+}
+
+[data-theme='dark'] .navbar-logout {
+  border-color: #334155;
+  color: #cbd5e1;
+}
+
+[data-theme='dark'] .navbar-logout:hover {
+  background: #3b1515;
+  border-color: #f87171;
+  color: #f87171;
 }
 
 [data-theme='dark'] .navbar-menu-btn {
