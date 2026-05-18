@@ -131,6 +131,12 @@ function StatusBadge({ status }: { status: ListingStatus }) {
   )
 }
 
+interface ImageEntry {
+  url: string
+  name: string
+  file: File
+}
+
 interface ImageUploadAreaProps {
   images: { url: string; name: string }[]
   onAdd: (files: FileList) => void
@@ -212,7 +218,7 @@ function MyListings() {
   const [listingsLoading, setListingsLoading] = useState(true)
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
   const [form, setForm] = useState<FormData>(initialForm)
-  const [images, setImages] = useState<{ url: string; name: string }[]>([])
+  const [images, setImages] = useState<ImageEntry[]>([])
   const [formSection, setFormSection] = useState(0)
   const [submitted, setSubmitted] = useState(false)
   const [formError, setFormError] = useState('')
@@ -283,8 +289,17 @@ function MyListings() {
   const handleAddImages = (files: FileList) => {
     const remaining = 10 - images.length
     const toAdd = Array.from(files).slice(0, remaining)
-    const newImages = toAdd.map((f) => ({ url: URL.createObjectURL(f), name: f.name }))
+    const newImages = toAdd.map((f) => ({ url: URL.createObjectURL(f), name: f.name, file: f }))
     setImages((prev) => [...prev, ...newImages])
+  }
+
+  function fileToBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = () => resolve(reader.result as string)
+      reader.onerror = reject
+      reader.readAsDataURL(file)
+    })
   }
 
   const handleRemoveImage = (index: number) => {
@@ -337,6 +352,12 @@ function MyListings() {
 
     setSubmitting(true)
     try {
+      const base64Images = await Promise.all(
+        images.map((img, i) =>
+          fileToBase64(img.file).then((url) => ({ url, isCover: i === 0 }))
+        )
+      )
+
       const created = await announcementApi.create({
         title: form.title || `${form.year} ${form.brand} ${form.model}`.trim(),
         negotiable: form.negotiable,
@@ -357,7 +378,7 @@ function MyListings() {
         horsepower: form.horsepower ? parseInt(form.horsepower) : undefined,
         vin: form.vin || undefined,
         brandId: brand.id,
-        images: [],
+        images: base64Images,
       })
 
       const newListing: Listing = {
@@ -685,7 +706,15 @@ function MyListings() {
                     />
                   </div>
 
-                  <form className="listing-form" onSubmit={handleSubmit} noValidate>
+                  <form
+                    className="listing-form"
+                    onSubmit={handleSubmit}
+                    noValidate
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && (e.target as HTMLElement).tagName !== 'TEXTAREA')
+                        e.preventDefault()
+                    }}
+                  >
 
                     {/* ── SECTION 0: Photos ── */}
                     {formSection === 0 && (
@@ -698,7 +727,7 @@ function MyListings() {
                           </p>
                         </div>
                         <ImageUploadArea
-                          images={images}
+                          images={images.map(({ url, name }) => ({ url, name }))}
                           onAdd={handleAddImages}
                           onRemove={handleRemoveImage}
                         />
