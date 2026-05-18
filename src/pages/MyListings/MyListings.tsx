@@ -224,9 +224,14 @@ function MyListings() {
   const [formError, setFormError] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [apiBrands, setApiBrands] = useState<BrandDto[]>([])
+  const [brandsLoading, setBrandsLoading] = useState(true)
 
   useEffect(() => {
-    brandApi.getAll().then(setApiBrands).catch(() => {})
+    brandApi
+      .getAll()
+      .then(setApiBrands)
+      .catch(() => {})
+      .finally(() => setBrandsLoading(false))
   }, [])
 
   useEffect(() => {
@@ -301,15 +306,38 @@ function MyListings() {
     }))
   }
 
+  const handleNext = () => {
+    if (formSection === 0 && images.length === 0) {
+      setFormError('Please add at least one photo before continuing.')
+      return
+    }
+    setFormError('')
+    setFormSection((s) => s + 1)
+  }
+
   const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()
     setFormError('')
+
+    if (images.length === 0) {
+      setFormError('Please add at least one photo before publishing.')
+      return
+    }
+
+    if (!form.brand) {
+      setFormError('Please select a brand.')
+      return
+    }
 
     const brand = apiBrands.find(
       (b) => b.name.toLowerCase() === form.brand.toLowerCase(),
     )
     if (!brand) {
-      setFormError('Selected brand is not available. Please try again.')
+      setFormError(
+        brandsLoading
+          ? 'Brands are still loading, please wait a moment and try again.'
+          : `Brand "${form.brand}" was not found. Please re-select a brand from the list.`,
+      )
       return
     }
 
@@ -713,12 +741,18 @@ function MyListings() {
                               value={form.brand}
                               onChange={(e) => setForm((f) => ({ ...f, brand: e.target.value }))}
                               required
+                              disabled={brandsLoading}
                             >
-                              <option value="">Select brand</option>
-                              {(apiBrands.length > 0 ? apiBrands.map((b) => b.name) : BRANDS).map((b) => (
-                                <option key={b} value={b}>{b}</option>
+                              <option value="">
+                                {brandsLoading ? 'Loading brands…' : 'Select brand'}
+                              </option>
+                              {apiBrands.map((b) => (
+                                <option key={b.id} value={b.name}>{b.name}</option>
                               ))}
                             </select>
+                            {brandsLoading && (
+                              <span className="field-hint">Loading available brands…</span>
+                            )}
                           </div>
 
                           <div className="form-field">
@@ -1095,7 +1129,7 @@ function MyListings() {
                         <button
                           type="button"
                           className="ghost-btn"
-                          onClick={() => setFormSection((s) => s - 1)}
+                          onClick={() => { setFormError(''); setFormSection((s) => s - 1) }}
                         >
                           <svg viewBox="0 0 24 24" aria-hidden="true">
                             <path d="M19 12H5M12 5l-7 7 7 7" />
@@ -1110,7 +1144,7 @@ function MyListings() {
                         <button
                           type="button"
                           className="primary-btn"
-                          onClick={() => setFormSection((s) => s + 1)}
+                          onClick={handleNext}
                         >
                           Next: {FORM_SECTIONS[formSection + 1]}
                           <svg viewBox="0 0 24 24" aria-hidden="true">
