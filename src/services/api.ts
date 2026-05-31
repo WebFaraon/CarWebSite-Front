@@ -33,8 +33,9 @@ export interface UserDto {
 }
 
 export interface LoginResponse {
-  token: string
-  user: UserDto
+    accessToken: string
+    refreshToken: string
+    user: UserDto
 }
 
 export interface BrandDto {
@@ -106,7 +107,7 @@ export interface AnnouncementCreateData {
 
 export const userApi = {
   login: (email: string, password: string) =>
-    request<LoginResponse>('/api/user/login', {
+    request<LoginResponse>('/api/Session/auth', {
       method: 'POST',
       body: JSON.stringify({ email, password }),
     }),
@@ -116,14 +117,11 @@ export const userApi = {
     email: string
     password: string
     phoneNumber?: string
-    city?: string
   }) =>
-    request<UserDto>('/api/user/register', {
+    request<{ isSuccess: boolean; message: string }>('/api/Session/register', {
       method: 'POST',
       body: JSON.stringify(data),
     }),
-
-  me: () => request<UserDto>('/api/user/me'),
 }
 
 export const announcementApi = {
