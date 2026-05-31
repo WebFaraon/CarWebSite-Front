@@ -31,7 +31,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   async function login(email: string, password: string): Promise<UserDto> {
     const res = await userApi.login(email, password)
-    localStorage.setItem('token', res.token)
+    localStorage.setItem('token', res.accessToken)
+    localStorage.setItem('refreshToken', res.refreshToken)
     localStorage.setItem('user', JSON.stringify(res.user))
     setUser(res.user)
     setIsLoggedIn(true)
@@ -39,13 +40,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   function logout() {
-    localStorage.removeItem('token')
-    localStorage.removeItem('user')
-    localStorage.removeItem('isLoggedIn')
-    localStorage.removeItem('isAdminLoggedIn')
-    setUser(null)
-    setIsLoggedIn(false)
-  }
+  localStorage.removeItem('token')
+  localStorage.removeItem('refreshToken')
+  localStorage.removeItem('user')
+  localStorage.removeItem('isLoggedIn')
+  localStorage.removeItem('isAdminLoggedIn')
+  setUser(null)
+  setIsLoggedIn(false)
+}
 
   return (
     <AuthContext.Provider value={{ isLoggedIn, isAdmin, user, login, logout }}>
