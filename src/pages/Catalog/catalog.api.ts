@@ -49,7 +49,7 @@ function mapAnnouncementToOffer(a: AnnouncementDto): Offer {
     fuel: mapFuelType(a.fuelType),
     transmission: mapTransmission(a.transmission),
     powerHp: a.horsepower ?? undefined,
-    location: a.ownerName || 'Moldova',
+    location: a.ownerCity || 'Moldova',
     imageUrl: coverImage,
     isNew: a.status === 'Active',
   }

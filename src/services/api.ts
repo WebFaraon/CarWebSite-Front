@@ -62,6 +62,7 @@ export interface AnnouncementDto {
   userId: number
   ownerName: string
   ownerPhone?: string
+  ownerCity?: string
   carId: number
   brand: BrandDto
   model: string
