@@ -79,7 +79,7 @@ function toFavoriteVehicleFromOffer(offer: Offer, favoriteId: number): FavoriteV
     title: offer.title,
     year: offer.year,
     price: `${new Intl.NumberFormat('de-DE').format(offer.price)} ${offer.currency}`,
-    image: offer.imageUrl,
+    image: offer.imageUrl ?? '',
     mileage: `${new Intl.NumberFormat('de-DE').format(offer.km)} km`,
     fuel: offer.fuel.charAt(0).toUpperCase() + offer.fuel.slice(1),
     transmission,

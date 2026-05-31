@@ -37,7 +37,7 @@ function mapTransmission(transmission: string): Transmission {
 
 function mapAnnouncementToOffer(a: AnnouncementDto): Offer {
   const coverImage =
-    a.images.find((img) => img.isCover)?.url ?? a.images[0]?.url ?? ''
+    a.images.find((img) => img.isCover)?.url ?? a.images[0]?.url ?? null
 
   return {
     id: String(a.id),
@@ -51,6 +51,7 @@ function mapAnnouncementToOffer(a: AnnouncementDto): Offer {
     powerHp: a.horsepower ?? undefined,
     location: a.ownerCity || 'Moldova',
     imageUrl: coverImage,
+    images: a.images.map((img) => img.url),
     isNew: a.status === 'Active',
   }
 }

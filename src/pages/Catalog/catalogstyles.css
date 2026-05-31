@@ -608,3 +608,38 @@
   background: #1e293b;
   border-color: #f97316;
 }
+
+.oc__img--placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--surface-soft);
+  color: var(--text-muted);
+  width: 100%;
+  height: 100%;
+  font-size: 12px;
+}
+
+.oc__img--placeholder svg {
+  width: 32px;
+  height: 32px;
+  opacity: 0.5;
+}
+
+.oc:hover .oc__img--placeholder {
+  transform: none;
+}
+
+@media (min-width: 768px) {
+  .oc__img--placeholder {
+    font-size: 14px;
+    gap: 12px;
+  }
+
+  .oc__img--placeholder svg {
+    width: 48px;
+    height: 48px;
+  }
+}
