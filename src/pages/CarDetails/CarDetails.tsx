@@ -49,7 +49,7 @@ function buildCarDataFromOffer(offer: Offer) {
   return {
     title: offer.title,
     price,
-    images: [offer.imageUrl, offer.imageUrl, offer.imageUrl, offer.imageUrl],
+    images: offer.images,
     description: `${offer.title} is available now in ${offer.location}. This listing includes ${offer.fuel} propulsion, ${new Intl.NumberFormat('de-DE').format(offer.km)} km mileage, and a ${offer.year} registration year.`,
     specs: [
       { label: 'Mileage', value: `${new Intl.NumberFormat('de-DE').format(offer.km)} km`, icon: 'mileage' },

@@ -12,7 +12,8 @@ export type Offer = {
   transmission?: Transmission;
   powerHp?: number;
   location: string;
-  imageUrl: string;
+  imageUrl: string | null;
+  images: string[];
   isNew?: boolean;
   discountPct?: number;
 };
