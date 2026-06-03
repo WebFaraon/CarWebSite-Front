@@ -305,8 +305,8 @@
   color: #86efac;
 }
 [data-theme='dark'] .listing-status--hidden {
-  background: rgba(31, 41, 55, 0.85);
-  border-color: #374151;
+  background: rgba(48, 48, 48, 0.86);
+  border-color: var(--border);
   color: #9ca3af;
 }
 [data-theme='dark'] .listing-status--pending {
@@ -1185,9 +1185,9 @@
 [data-theme='dark'] .form-field input,
 [data-theme='dark'] .form-field select,
 [data-theme='dark'] .form-field textarea {
-  background: #1e293b;
-  border-color: #334155;
-  color: #f1f5f9;
+  background: var(--control-bg);
+  border-color: var(--border);
+  color: var(--text);
 }
 
 [data-theme='dark'] .form-field select {
@@ -1200,7 +1200,7 @@
 [data-theme='dark'] .form-field input:focus,
 [data-theme='dark'] .form-field select:focus,
 [data-theme='dark'] .form-field textarea:focus {
-  border-color: #f97316;
+  border-color: var(--accent);
 }
 
 [data-theme='dark'] .form-field input.is-invalid,
@@ -1215,41 +1215,41 @@
 }
 
 [data-theme='dark'] .image-upload-drop {
-  background: #1e293b;
-  border-color: #334155;
+  background: var(--control-bg);
+  border-color: var(--border);
 }
 
 [data-theme='dark'] .image-upload-drop__icon {
-  background: #0f172a;
-  border-color: #334155;
+  background: var(--surface);
+  border-color: var(--border);
 }
 
 [data-theme='dark'] .listing-form {
-  background: #0f172a;
-  border-color: #1e293b;
+  background: var(--surface);
+  border-color: var(--border);
 }
 
 [data-theme='dark'] .form-section__header {
-  border-bottom-color: #1e293b;
+  border-bottom-color: var(--border);
 }
 
 [data-theme='dark'] .form-nav {
-  background: #0a101c;
-  border-top-color: #1e293b;
+  background: var(--surface-soft);
+  border-top-color: var(--border);
 }
 
 [data-theme='dark'] .review-summary {
-  background: #0f172a;
-  border-color: #1e293b;
+  background: var(--surface-soft);
+  border-color: var(--border);
 }
 
 [data-theme='dark'] .ml-stats-strip {
-  background: #0f172a;
-  border-color: #1e293b;
+  background: var(--surface);
+  border-color: var(--border);
 }
 
 [data-theme='dark'] .ml-stat {
-  border-right-color: #1e293b;
+  border-right-color: var(--border);
 }
 
 /* ══════════════════════════════════════════
@@ -1287,7 +1287,7 @@
 
   [data-theme='dark'] .ml-stat:nth-child(4),
   [data-theme='dark'] .ml-stat:nth-child(5) {
-    border-top-color: #1e293b;
+    border-top-color: var(--border);
   }
 }
 
@@ -1344,8 +1344,8 @@
   }
 
   [data-theme='dark'] .ml-stat:nth-child(3) {
-    border-right-color: #1e293b;
-    border-top-color: #1e293b;
+    border-right-color: var(--border);
+    border-top-color: var(--border);
   }
 }
 

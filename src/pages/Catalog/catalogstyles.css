@@ -429,8 +429,8 @@
 /* Fav button */
 .oc__fav {
   backdrop-filter: blur(6px);
-  background: rgba(255, 255, 255, 0.85);
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: var(--floating-control-bg);
+  border: 1px solid var(--floating-control-border);
   border-radius: 999px;
   cursor: pointer;
   display: grid;
@@ -599,14 +599,14 @@
 
 /* ===== Dark mode ===== */
 [data-theme='dark'] .oc__fav {
-  background: rgba(15, 23, 42, 0.85);
-  border-color: #334155;
+  background: var(--floating-control-bg);
+  border-color: var(--floating-control-border);
 }
 
 [data-theme='dark'] .oc__fav:hover,
 [data-theme='dark'] .oc__fav.is-active {
-  background: #1e293b;
-  border-color: #f97316;
+  background: var(--surface-soft);
+  border-color: var(--accent);
 }
 
 .oc__img--placeholder {

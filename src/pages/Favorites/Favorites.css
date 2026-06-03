@@ -306,8 +306,8 @@
   position: sticky;
   bottom: 0;
   z-index: 30;
-  background: rgba(10, 16, 28, 0.72);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
   backdrop-filter: blur(10px);
   border-radius: 18px;
   padding: 14px 16px;
@@ -324,8 +324,8 @@
 }
 
 .comparePill {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
   padding: 6px 10px;
   border-radius: 999px;
   font-size: 12px;
@@ -456,57 +456,57 @@
 
 /* Dark mode overrides */
 [data-theme='dark'] .favorites-header {
-  background: #1e293b;
+  background: var(--surface);
 }
 
 [data-theme='dark'] .title span {
-  background: #334155;
-  color: #94a3b8;
+  background: var(--surface-soft);
+  color: var(--text-muted);
 }
 
 [data-theme='dark'] .tags {
-  color: #94a3b8;
+  color: var(--text-muted);
 }
 
 [data-theme='dark'] .tags span {
-  background: #334155;
+  background: var(--surface-soft);
 }
 
 [data-theme='dark'] .ghost-btn {
-  background: #1e293b;
-  border-color: #334155;
-  color: #f1f5f9;
+  background: var(--surface-soft);
+  border-color: var(--border);
+  color: var(--text);
 }
 
 [data-theme='dark'] .ghost-btn:hover {
-  background: #2d3748;
+  background: var(--surface-muted);
 }
 
 [data-theme='dark'] .ghost-btn.is-active {
-  background: #2d2010;
-  border-color: #f97316;
-  color: #f97316;
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 [data-theme='dark'] .favorites-empty {
-  background: #1e293b;
+  background: var(--surface);
 }
 
 [data-theme='dark'] .compare-cell {
-  background: #1e293b;
-  border-color: #334155;
+  background: var(--surface-soft);
+  border-color: var(--border);
 }
 
 [data-theme='dark'] .compare-label {
-  background: #0f172a;
-  color: #94a3b8;
+  background: var(--surface);
+  color: var(--text-muted);
 }
 
 [data-theme='dark'] .compare-row-head .compare-value {
-  background: #1e293b;
+  background: var(--surface);
 }
 
 [data-theme='dark'] .compare-row.is-different .compare-value {
-  background: #2d1f0a;
-  border-color: #f97316;
+  background: var(--accent-soft);
+  border-color: var(--accent);
 }

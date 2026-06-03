@@ -45,7 +45,7 @@
   overflow: hidden;
   position: relative;
   width: 100%;
-  background: #eef2f7;
+  background: var(--surface-soft);
 }
 
 .thumb-strip {
@@ -57,7 +57,7 @@
 }
 
 .thumb-btn {
-  background: #ffffff;
+  background: var(--surface);
   border: 2px solid transparent;
   border-radius: 10px;
   cursor: pointer;
@@ -74,7 +74,7 @@
   object-fit: contain;
   object-position: center;
   width: 100%;
-  background: #eef2f7;
+  background: var(--surface-soft);
 }
 
 .thumb-btn:hover {
@@ -255,13 +255,13 @@
 }
 
 .secondary-action {
-  background: #f3f4f6;
+  background: var(--surface-soft);
   border: 1px solid var(--border);
-  color: #111827;
+  color: var(--text);
 }
 
 .secondary-action:hover {
-  background: #e5e7eb;
+  background: var(--surface-muted);
 }
 
 .primary-action:hover,
@@ -273,10 +273,10 @@
 .image-nav-btn {
   align-items: center;
   backdrop-filter: blur(5px);
-  background: rgba(255, 255, 255, 0.85);
-  border: 1px solid #ffffff;
+  background: var(--floating-control-bg);
+  border: 1px solid var(--floating-control-border);
   border-radius: 999px;
-  color: #111827;
+  color: var(--text);
   cursor: pointer;
   display: inline-flex;
   height: 42px;
@@ -289,7 +289,7 @@
 }
 
 .image-nav-btn:hover {
-  background: #ffffff;
+  background: var(--surface);
   transform: translateY(-50%) scale(1.02);
 }
 
@@ -356,33 +356,33 @@
 
 /* ── Dark mode overrides ───────────────────────────────────── */
 [data-theme='dark'] .main-image-wrap {
-  background: #1e293b;
+  background: var(--surface-soft);
 }
 
 [data-theme='dark'] .thumb-btn {
-  background: #1e293b;
+  background: var(--surface);
 }
 
 [data-theme='dark'] .thumb-btn img {
-  background: #1e293b;
+  background: var(--surface-soft);
 }
 
 [data-theme='dark'] .secondary-action {
-  background: #1e293b;
-  border-color: #334155;
-  color: #f1f5f9;
+  background: var(--surface-soft);
+  border-color: var(--border);
+  color: var(--text);
 }
 
 [data-theme='dark'] .secondary-action:hover {
-  background: #2d3748;
+  background: var(--surface-muted);
 }
 
 [data-theme='dark'] .image-nav-btn {
-  background: rgba(15, 23, 42, 0.85);
-  border-color: #334155;
-  color: #f1f5f9;
+  background: var(--floating-control-bg);
+  border-color: var(--floating-control-border);
+  color: var(--text);
 }
 
 [data-theme='dark'] .image-nav-btn:hover {
-  background: rgba(15, 23, 42, 1);
+  background: var(--surface);
 }

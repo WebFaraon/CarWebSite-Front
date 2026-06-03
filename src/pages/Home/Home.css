@@ -130,8 +130,8 @@
    HERO SECTION
    ════════════════════════════════════════════════════════════════ */
 .hero-section {
-  background: linear-gradient(155deg, #0b1221 0%, #111d36 45%, #0e1829 100%);
-  color: #f8fafc;
+  background: linear-gradient(155deg, var(--hero-bg-start) 0%, var(--hero-bg-mid) 45%, var(--hero-bg-end) 100%);
+  color: var(--hero-text);
   isolation: isolate;
   overflow: hidden;
   padding: 2.5rem 0 0;
@@ -212,7 +212,7 @@
 
 /* ── Heading ── */
 .hero-heading {
-  color: #f8fafc;
+  color: var(--hero-text);
   font-size: clamp(2.4rem, 4.5vw, 4rem);
   font-weight: 900;
   letter-spacing: -0.035em;
@@ -250,7 +250,7 @@
 
 /* ── Sub text ── */
 .hero-sub {
-  color: #94a3b8;
+  color: var(--hero-muted);
   font-size: 1.05rem;
   line-height: 1.7;
   margin: 0 0 2rem;
@@ -267,13 +267,13 @@
 }
 
 .hero-actions .btn-secondary {
-  border-color: rgba(255, 255, 255, 0.22);
-  color: #f8fafc;
+  border-color: var(--hero-tile-border);
+  color: var(--hero-text);
 }
 .hero-actions .btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--hero-tile-bg);
   border-color: #f97316;
-  color: #fdba74;
+  color: var(--accent-hover);
 }
 
 /* ── Stats strip ── */
@@ -290,7 +290,7 @@
 }
 
 .hero-stat__value {
-  color: #f8fafc;
+  color: var(--hero-text);
   font-size: 1.35rem;
   font-weight: 800;
   letter-spacing: -0.02em;
@@ -298,7 +298,7 @@
 }
 
 .hero-stat__label {
-  color: #64748b;
+  color: var(--hero-muted);
   font-size: 0.75rem;
   font-weight: 500;
   letter-spacing: 0.02em;
@@ -321,8 +321,8 @@
 
 .brand-tile {
   align-items: center;
-  background: rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: var(--hero-tile-bg);
+  border: 1px solid var(--hero-tile-border);
   border-radius: 16px;
   display: flex;
   height: 72px;
@@ -332,8 +332,8 @@
 }
 
 .brand-tile:hover {
-  background: rgba(255, 255, 255, 0.13);
-  border-color: rgba(255, 255, 255, 0.22);
+  background: var(--surface);
+  border-color: var(--accent-border);
 }
 
 .brand-tile__logo {
@@ -730,7 +730,7 @@
    SELL CTA BANNER
    ════════════════════════════════════════════════════════════════ */
 .sell-cta-section {
-  background: linear-gradient(135deg, #0b1221 0%, #1a2540 50%, #0e1829 100%);
+  background: linear-gradient(135deg, var(--hero-bg-start) 0%, var(--hero-bg-mid) 50%, var(--hero-bg-end) 100%);
   overflow: hidden;
   position: relative;
 }
@@ -761,12 +761,12 @@
 }
 
 .sell-cta-copy .section-title {
-  color: #f8fafc;
+  color: var(--hero-text);
   margin-bottom: 0.75rem;
 }
 
 .sell-cta-copy .section-sub {
-  color: #94a3b8;
+  color: var(--hero-muted);
 }
 
 .sell-cta-actions {
@@ -778,13 +778,13 @@
 }
 
 .sell-cta-actions .btn-secondary {
-  border-color: rgba(255, 255, 255, 0.2);
-  color: #f8fafc;
+  border-color: var(--hero-tile-border);
+  color: var(--hero-text);
 }
 .sell-cta-actions .btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.07);
+  background: var(--hero-tile-bg);
   border-color: #f97316;
-  color: #fdba74;
+  color: var(--accent-hover);
 }
 
 .sell-cta-deco {
@@ -795,10 +795,10 @@
 
 .sell-cta-chip {
   align-items: center;
-  background: rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--hero-tile-bg);
+  border: 1px solid var(--hero-tile-border);
   border-radius: 999px;
-  color: #94a3b8;
+  color: var(--hero-muted);
   display: flex;
   font-size: 0.78rem;
   font-weight: 600;
@@ -871,9 +871,9 @@
    SITE FOOTER
    ════════════════════════════════════════════════════════════════ */
 .site-footer {
-  background: #0a1120;
-  border-top: 1px solid #1e293b;
-  color: #94a3b8;
+  background: var(--footer-bg);
+  border-top: 1px solid var(--border);
+  color: var(--footer-text);
   padding: 4rem 0 0;
 }
 
@@ -885,7 +885,7 @@
 }
 
 .footer-brand__logo {
-  color: #f8fafc;
+  color: var(--footer-heading);
   display: block;
   font-size: 1.2rem;
   font-weight: 900;
@@ -898,7 +898,7 @@
 }
 
 .footer-brand__tagline {
-  color: #64748b;
+  color: var(--footer-text);
   font-size: 0.88rem;
   line-height: 1.6;
   margin: 0 0 1.25rem;
@@ -912,10 +912,10 @@
 
 .social-btn {
   align-items: center;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid #1e293b;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
   border-radius: 999px;
-  color: #64748b;
+  color: var(--footer-text);
   display: inline-flex;
   height: 34px;
   justify-content: center;
@@ -936,7 +936,7 @@
 }
 
 .footer-col__title {
-  color: #f8fafc;
+  color: var(--footer-heading);
   font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -951,7 +951,7 @@
 }
 
 .footer-links a {
-  color: #64748b;
+  color: var(--footer-text);
   font-size: 0.9rem;
   transition: color 0.2s ease;
 }
@@ -961,7 +961,7 @@
 }
 
 .footer-newsletter p {
-  color: #64748b;
+  color: var(--footer-text);
   font-size: 0.88rem;
   line-height: 1.6;
   margin: 0 0 0.85rem;
@@ -973,10 +973,10 @@
 }
 
 .footer-input-row input {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1.5px solid #1e293b;
+  background: var(--control-bg);
+  border: 1.5px solid var(--border);
   border-radius: 9px;
-  color: #f8fafc;
+  color: var(--text);
   flex: 1;
   font: inherit;
   font-size: 0.88rem;
@@ -986,7 +986,7 @@
 }
 
 .footer-input-row input::placeholder {
-  color: #475569;
+  color: var(--footer-muted);
 }
 
 .footer-input-row input:focus {
@@ -996,7 +996,7 @@
 
 .footer-bottom {
   align-items: center;
-  border-top: 1px solid #1e293b;
+  border-top: 1px solid var(--border);
   display: flex;
   gap: 1rem;
   justify-content: space-between;
@@ -1004,7 +1004,7 @@
 }
 
 .footer-copy {
-  color: #475569;
+  color: var(--footer-muted);
   font-size: 0.82rem;
   margin: 0;
 }
@@ -1015,7 +1015,7 @@
 }
 
 .footer-legal a {
-  color: #475569;
+  color: var(--footer-muted);
   font-size: 0.82rem;
   transition: color 0.2s ease;
 }
@@ -1118,7 +1118,7 @@
    DARK MODE OVERRIDES
    ════════════════════════════════════════════════════════════════ */
 [data-theme='dark'] .hero-section {
-  background: linear-gradient(155deg, #050d1a 0%, #0a1628 45%, #060e1c 100%);
+  background: linear-gradient(155deg, var(--hero-bg-start) 0%, var(--hero-bg-mid) 45%, var(--hero-bg-end) 100%);
 }
 
 [data-theme='dark'] .brands-section {
@@ -1131,7 +1131,7 @@
 
 [data-theme='dark'] .field input,
 [data-theme='dark'] .field select {
-  background: #1e293b;
+  background: var(--control-bg);
   color: var(--text);
 }
 
@@ -1140,12 +1140,12 @@
 }
 
 [data-theme='dark'] .favorite-btn {
-  background: rgba(15, 23, 42, 0.92);
-  border-color: #334155;
+  background: var(--floating-control-bg);
+  border-color: var(--floating-control-border);
 }
 
 [data-theme='dark'] .favorite-btn:hover {
-  background: #1e293b;
+  background: var(--surface-soft);
 }
 
 [data-theme='dark'] .car-card {
@@ -1154,5 +1154,5 @@
 }
 
 [data-theme='dark'] .sell-cta-section {
-  background: linear-gradient(135deg, #050d1a 0%, #0f1c30 50%, #060e1c 100%);
+  background: linear-gradient(135deg, var(--hero-bg-start) 0%, var(--hero-bg-mid) 50%, var(--hero-bg-end) 100%);
 }
