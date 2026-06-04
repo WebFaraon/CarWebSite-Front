@@ -121,6 +121,16 @@ const socialLinks: SocialItem[] = [
 
 const FORM_SECTIONS = ['Photos', 'Basic Info', 'Vehicle Details', 'Description & Features', 'Contact & Review']
 
+function fileToBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve(reader.result as string)
+    reader.onerror = reject
+    reader.readAsDataURL(file)
+  })
+}
+
+
 function StatusBadge({ status }: { status: ListingStatus }) {
   return (
     <span className={`listing-status listing-status--${status}`}>
@@ -218,7 +228,7 @@ function MyListings() {
   const [listingsLoading, setListingsLoading] = useState(true)
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
   const [form, setForm] = useState<FormData>(initialForm)
-  const [images, setImages] = useState<{ url: string; name: string }[]>([])
+  const [images, setImages] = useState<{ url: string; name: string; file: File }[]>([])
   const [formSection, setFormSection] = useState(0)
   const [submitted, setSubmitted] = useState(false)
   const [formError, setFormError] = useState('')
@@ -226,7 +236,7 @@ function MyListings() {
   const [apiBrands, setApiBrands] = useState<BrandDto[]>([])
 
   useEffect(() => {
-    brandApi.getAll().then(setApiBrands).catch(() => {})
+    brandApi.getAll().then(setApiBrands).catch(() => { })
   }, [])
 
   useEffect(() => {
@@ -257,7 +267,7 @@ function MyListings() {
           }))
         setListings(mine)
       })
-      .catch(() => {})
+      .catch(() => { })
       .finally(() => setListingsLoading(false))
   }, [user])
 
@@ -284,7 +294,11 @@ function MyListings() {
   const handleAddImages = (files: FileList) => {
     const remaining = 10 - images.length
     const toAdd = Array.from(files).slice(0, remaining)
-    const newImages = toAdd.map((f) => ({ url: URL.createObjectURL(f), name: f.name }))
+    const newImages = toAdd.map((f) => ({
+      url: URL.createObjectURL(f),
+      name: f.name,
+      file: f
+    }))
     setImages((prev) => [...prev, ...newImages])
   }
 
@@ -315,6 +329,10 @@ function MyListings() {
 
     setSubmitting(true)
     try {
+      const base64Images = await Promise.all(
+        images.map((img, i) =>
+          fileToBase64(img.file).then((url) => ({ url, isCover: i === 0 }))
+        ))
       const created = await announcementApi.create({
         title: form.title || `${form.year} ${form.brand} ${form.model}`.trim(),
         negotiable: form.negotiable,
@@ -335,7 +353,7 @@ function MyListings() {
         horsepower: form.horsepower ? parseInt(form.horsepower) : undefined,
         vin: form.vin || undefined,
         brandId: brand.id,
-        images: [],
+        images: base64Images,
       })
 
       const newListing: Listing = {
@@ -500,7 +518,7 @@ function MyListings() {
                         {listing.status === 'hidden' && (
                           <div className="listing-card__hidden-overlay">
                             <svg viewBox="0 0 24 24" aria-hidden="true">
-                              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
                               <line x1="1" y1="1" x2="23" y2="23" />
                             </svg>
                             <span>Not visible to buyers</span>
@@ -570,7 +588,7 @@ function MyListings() {
                             ) : (
                               <>
                                 <svg viewBox="0 0 24 24" aria-hidden="true">
-                                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
                                   <line x1="1" y1="1" x2="23" y2="23" />
                                 </svg>
                                 Hide
@@ -676,7 +694,7 @@ function MyListings() {
                           </p>
                         </div>
                         <ImageUploadArea
-                          images={images}
+                          images={images.map(({ url, name }) => ({ url, name }))}
                           onAdd={handleAddImages}
                           onRemove={handleRemoveImage}
                         />
