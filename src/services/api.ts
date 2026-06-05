@@ -125,18 +125,53 @@ export const userApi = {
     }),
 }
 
+
+export interface AnnouncementUpdateData {
+  title?: string
+  negotiable?: boolean
+  showPhone?: boolean
+  status?: 'Active' | 'Hidden' | 'Pending'
+  model?: string
+  year?: number
+  mileage?: number
+  price?: number
+  fuelType?: string
+  transmission?: string
+  condition?: string
+  description?: string
+  bodyType?: string
+  color?: string
+  doors?: string
+  seats?: number
+  engineSize?: string
+  horsepower?: number
+  vin?: string
+  brandId?: number
+}
+
+
 export const announcementApi = {
   getAll: () => request<AnnouncementDto[]>('/api/announcement/getAll'),
-
+  
+  getById: (id: number) =>
+  request<AnnouncementDto>(`/api/announcement?id=${id}`, { method: 'GET' }),
+  
   create: (data: AnnouncementCreateData) =>
     request<AnnouncementDto>('/api/announcement', {
       method: 'POST',
       body: JSON.stringify(data),
     }),
 
+  update: (id: number, data: AnnouncementUpdateData) =>
+    request<unknown>(`/api/announcement/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }),
+
   delete: (id: number) =>
     request<unknown>(`/api/announcement?id=${id}`, { method: 'DELETE' }),
 }
+
 
 export const brandApi = {
   getAll: () => request<BrandDto[]>('/api/brand/getAll'),
