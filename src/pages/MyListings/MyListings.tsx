@@ -121,6 +121,16 @@ const socialLinks: SocialItem[] = [
 
 const FORM_SECTIONS = ['Photos', 'Basic Info', 'Vehicle Details', 'Description & Features', 'Contact & Review']
 
+function fileToBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve(reader.result as string)
+    reader.onerror = reject
+    reader.readAsDataURL(file)
+  })
+}
+
+
 function StatusBadge({ status }: { status: ListingStatus }) {
   return (
     <span className={`listing-status listing-status--${status}`}>
@@ -218,15 +228,17 @@ function MyListings() {
   const [listingsLoading, setListingsLoading] = useState(true)
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
   const [form, setForm] = useState<FormData>(initialForm)
-  const [images, setImages] = useState<{ url: string; name: string }[]>([])
+  const [images, setImages] = useState<{ url: string; name: string; file: File }[]>([])
   const [formSection, setFormSection] = useState(0)
   const [submitted, setSubmitted] = useState(false)
   const [formError, setFormError] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [apiBrands, setApiBrands] = useState<BrandDto[]>([])
+  const [editingId, setEditingId] = useState<number | null>(null)
+
 
   useEffect(() => {
-    brandApi.getAll().then(setApiBrands).catch(() => {})
+    brandApi.getAll().then(setApiBrands).catch(() => { })
   }, [])
 
   useEffect(() => {
@@ -257,19 +269,70 @@ function MyListings() {
           }))
         setListings(mine)
       })
-      .catch(() => {})
+      .catch(() => { })
       .finally(() => setListingsLoading(false))
   }, [user])
 
-  const handleToggleStatus = (id: string) => {
+
+  const handleEdit = async (id: string) => {
+  try {
+    const announcement = await announcementApi.getById(parseInt(id))
+
+    setForm({
+      title: announcement.title,
+      brand: announcement.brand.name,
+      model: announcement.model,
+      year: String(announcement.year),
+      price: String(announcement.price),
+      mileage: String(announcement.mileage),
+      fuel: announcement.fuelType,
+      transmission: announcement.transmission,
+      bodyType: announcement.bodyType,
+      color: announcement.color ?? '',
+      condition: announcement.condition,
+      doors: announcement.doors ? String(announcement.doors) : '',
+      seats: announcement.seats ? String(announcement.seats) : '',
+      engineSize: announcement.engineSize ?? '',
+      horsepower: announcement.horsepower ? String(announcement.horsepower) : '',
+      vin: announcement.vin ?? '',
+      description: announcement.description,
+      features: [],
+      contactName: announcement.ownerName,
+      contactPhone: announcement.ownerPhone ?? '',
+      contactEmail: '',
+      contactCity: announcement.ownerCity ?? '',
+      negotiable: announcement.negotiable,
+      showPhone: announcement.showPhone,
+    })
+
+    setImages([])
+    setEditingId(parseInt(id))
+    setActiveTab('new')
+    setFormSection(0)
+  } catch {
+    // silent fail
+  }
+}
+
+  const handleToggleStatus = async (id: string) => {
+  const listing = listings.find((l) => l.id === id)
+  if (!listing) return
+
+  const newStatus = listing.status === 'hidden' ? 'Active' : 'Hidden'
+
+  try {
+    await announcementApi.update(parseInt(id), { status: newStatus })
     setListings((prev) =>
       prev.map((l) =>
         l.id === id
-          ? { ...l, status: l.status === 'hidden' ? 'active' : 'hidden' }
+          ? { ...l, status: newStatus === 'Active' ? 'active' : 'hidden' }
           : l,
       ),
     )
+  } catch {
+    // keep listing in UI if update fails
   }
+}
 
   const handleDelete = async (id: string) => {
     try {
@@ -284,7 +347,11 @@ function MyListings() {
   const handleAddImages = (files: FileList) => {
     const remaining = 10 - images.length
     const toAdd = Array.from(files).slice(0, remaining)
-    const newImages = toAdd.map((f) => ({ url: URL.createObjectURL(f), name: f.name }))
+    const newImages = toAdd.map((f) => ({
+      url: URL.createObjectURL(f),
+      name: f.name,
+      file: f
+    }))
     setImages((prev) => [...prev, ...newImages])
   }
 
@@ -301,20 +368,72 @@ function MyListings() {
     }))
   }
 
-  const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setFormError('')
+ const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
+  e.preventDefault()
+  setFormError('')
 
-    const brand = apiBrands.find(
-      (b) => b.name.toLowerCase() === form.brand.toLowerCase(),
-    )
-    if (!brand) {
-      setFormError('Selected brand is not available. Please try again.')
-      return
-    }
+  const brand = apiBrands.find(
+    (b) => b.name.toLowerCase() === form.brand.toLowerCase(),
+  )
+  if (!brand) {
+    setFormError('Selected brand is not available. Please try again.')
+    return
+  }
 
-    setSubmitting(true)
-    try {
+  setSubmitting(true)
+  try {
+    if (editingId) {
+      // Edit existing announcement
+      await announcementApi.update(editingId, {
+        title: form.title || `${form.year} ${form.brand} ${form.model}`.trim(),
+        negotiable: form.negotiable,
+        showPhone: form.showPhone,
+        model: form.model,
+        year: parseInt(form.year) || new Date().getFullYear(),
+        mileage: parseInt(form.mileage) || 0,
+        price: parseFloat(form.price) || 0,
+        fuelType: FUEL_MAP[form.fuel] ?? 'Petrol',
+        transmission: TRANSMISSION_MAP[form.transmission] ?? 'Automatic',
+        condition: CONDITION_MAP[form.condition] ?? 'Good',
+        description: form.description,
+        bodyType: BODY_TYPE_MAP[form.bodyType] ?? 'Sedan',
+        color: form.color ? COLOR_MAP[form.color] : undefined,
+        doors: form.doors ? DOORS_MAP[form.doors] : undefined,
+        seats: form.seats ? parseInt(form.seats) : undefined,
+        engineSize: form.engineSize || undefined,
+        horsepower: form.horsepower ? parseInt(form.horsepower) : undefined,
+        vin: form.vin || undefined,
+        brandId: brand.id,
+      })
+      // Reload list to reflect updated fields
+      const all = await announcementApi.getAll()
+      if (user) {
+        const mine = all
+          .filter((a) => a.userId === user.id)
+          .map((a) => ({
+            id: String(a.id),
+            title: a.title || `${a.brand.name} ${a.model} ${a.year}`,
+            brand: a.brand.name,
+            model: a.model,
+            year: a.year,
+            price: Number(a.price),
+            mileage: a.mileage,
+            fuel: a.fuelType,
+            transmission: a.transmission,
+            status: STATUS_MAP[a.status] ?? ('pending' as ListingStatus),
+            images: a.images.map((i) => i.url),
+            views: a.views,
+            inquiries: a.inquiries,
+            createdAt: a.publishedAt.slice(0, 10),
+          }))
+        setListings(mine)
+      }
+    } else {
+      // Create new announcement
+      const base64Images = await Promise.all(
+        images.map((img, i) =>
+          fileToBase64(img.file).then((url) => ({ url, isCover: i === 0 }))
+        ))
       const created = await announcementApi.create({
         title: form.title || `${form.year} ${form.brand} ${form.model}`.trim(),
         negotiable: form.negotiable,
@@ -335,7 +454,7 @@ function MyListings() {
         horsepower: form.horsepower ? parseInt(form.horsepower) : undefined,
         vin: form.vin || undefined,
         brandId: brand.id,
-        images: [],
+        images: base64Images,
       })
 
       const newListing: Listing = {
@@ -348,27 +467,30 @@ function MyListings() {
         mileage: created.mileage,
         fuel: created.fuelType,
         transmission: created.transmission,
-        status: 'pending',
+        status: STATUS_MAP[created.status] ?? 'pending',
         images: created.images.map((i) => i.url),
         views: 0,
         inquiries: 0,
         createdAt: created.publishedAt.slice(0, 10),
       }
       setListings((prev) => [newListing, ...prev])
-      setSubmitted(true)
-      setTimeout(() => {
-        setSubmitted(false)
-        setActiveTab('listings')
-        setForm(initialForm)
-        setImages([])
-        setFormSection(0)
-      }, 2500)
-    } catch (err: unknown) {
-      setFormError(err instanceof Error ? err.message : 'Failed to create listing.')
-    } finally {
-      setSubmitting(false)
     }
+
+    setSubmitted(true)
+    setTimeout(() => {
+      setSubmitted(false)
+      setActiveTab('listings')
+      setForm(initialForm)
+      setImages([])
+      setFormSection(0)
+      setEditingId(null)
+    }, 2500)
+  } catch (err: unknown) {
+    setFormError(err instanceof Error ? err.message : 'Failed to save listing.')
+  } finally {
+    setSubmitting(false)
   }
+}
 
   const activeCount = listings.filter((l) => l.status === 'active').length
   const hiddenCount = listings.filter((l) => l.status === 'hidden').length
@@ -500,7 +622,7 @@ function MyListings() {
                         {listing.status === 'hidden' && (
                           <div className="listing-card__hidden-overlay">
                             <svg viewBox="0 0 24 24" aria-hidden="true">
-                              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
                               <line x1="1" y1="1" x2="23" y2="23" />
                             </svg>
                             <span>Not visible to buyers</span>
@@ -546,13 +668,17 @@ function MyListings() {
                         </div>
 
                         <div className="listing-card__actions">
-                          <button type="button" className="ghost-btn lc-action-btn">
-                            <svg viewBox="0 0 24 24" aria-hidden="true">
-                              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                            </svg>
-                            Edit
-                          </button>
+                          <button 
+                        type="button" 
+                        className="ghost-btn lc-action-btn"
+                        onClick={() => handleEdit(listing.id)}
+                      >
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                        </svg>
+                        Edit
+                        </button>
 
                           <button
                             type="button"
@@ -570,7 +696,7 @@ function MyListings() {
                             ) : (
                               <>
                                 <svg viewBox="0 0 24 24" aria-hidden="true">
-                                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
                                   <line x1="1" y1="1" x2="23" y2="23" />
                                 </svg>
                                 Hide
@@ -676,7 +802,7 @@ function MyListings() {
                           </p>
                         </div>
                         <ImageUploadArea
-                          images={images}
+                          images={images.map(({ url, name }) => ({ url, name }))}
                           onAdd={handleAddImages}
                           onRemove={handleRemoveImage}
                         />
