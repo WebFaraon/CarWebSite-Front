@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>AutoMarket — Homepage Redesign</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="styles.css" />
+
+<style>
+  /* design-canvas page styling */
+  html, body { margin: 0; height: 100%; font-family: "Geist", -apple-system, system-ui, sans-serif; background: #f0eee9; }
+
+  /* Artboard frame sits inside DCArtboard; this gives each artboard a real
+     scrollable viewport instead of letting content blow it out vertically. */
+  .am-frame {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg, #f8f7f4);
+    position: relative;
+  }
+
+  /* Spec card on the canvas */
+  .spec-card {
+    background: #fff;
+    border: 1px solid #e1ddd4;
+    border-radius: 14px;
+    padding: 28px;
+    width: 100%;
+    box-shadow: 0 1px 0 rgba(0,0,0,.03);
+    font-family: "Geist", system-ui, sans-serif;
+    color: #1a1a1a;
+    font-size: 13px;
+    line-height: 1.55;
+  }
+  .spec-card h2 {
+    margin: 0 0 16px;
+    font-size: 22px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+  .spec-card h3 {
+    margin: 24px 0 8px;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: "Geist Mono", monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #76736b;
+  }
+  .spec-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px 32px;
+  }
+  .spec-grid p { margin: 0; }
+  .spec-swatch-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+  .swatch {
+    display: inline-flex; flex-direction: column; align-items: flex-start;
+    font-family: "Geist Mono", monospace; font-size: 10px; color: #76736b;
+    gap: 4px;
+  }
+  .swatch i {
+    display: block; width: 80px; height: 36px;
+    border-radius: 6px;
+    border: 1px solid rgba(0,0,0,.08);
+  }
+  .swatch.dark i { border-color: rgba(255,255,255,.1); }
+  .tokens { font-family: "Geist Mono", monospace; font-size: 12px; color: #3f3d38; }
+  .tokens b { color: #1a1a1a; font-weight: 500; }
+  .anno-list { padding-left: 18px; margin: 8px 0 0; }
+  .anno-list li { margin-bottom: 6px; color: #3f3d38; }
+  .anno-list li b { color: #1a1a1a; font-weight: 500; }
+</style>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="design-canvas.jsx"></script>
+<script type="text/babel" src="homepage.jsx"></script>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useEffect, useRef } = React;
+
+/* Render the AutoMarketHome React tree into a div inside each artboard.
+   We do this via a tiny "mount" component so each artboard owns its own
+   React subtree (independent state — theme/viewport/typewriter all isolated). */
+function Mount({ theme, vp, loggedIn }) {
+  return (
+    <div className="am-frame">
+      <AutoMarketHome theme={theme} vp={vp} loggedIn={loggedIn} />
+    </div>
+  );
+}
+
+const SystemSpec = () => (
+  <div className="spec-card">
+    <h2>Design system — AutoMarket homepage</h2>
+    <p style={{color:"#3f3d38", margin: 0}}>
+      A restrained system rooted in calm neutrals and a single warm copper accent.
+      One typeface (Geist) carries everything; the mono cut handles numerics and small UI labels for a precision feel.
+      Imagery uses subtle striped placeholders during design — production swaps in real listing photos.
+    </p>
+
+    <h3>Palette · Light</h3>
+    <div className="spec-swatch-row">
+      <div className="swatch"><i style={{background:"#f8f7f4"}}></i>bg #f8f7f4</div>
+      <div className="swatch"><i style={{background:"#ffffff"}}></i>surface</div>
+      <div className="swatch"><i style={{background:"#f1efe9"}}></i>surface-2</div>
+      <div className="swatch"><i style={{background:"#e5e2db"}}></i>border</div>
+      <div className="swatch"><i style={{background:"#76736b"}}></i>muted</div>
+      <div className="swatch"><i style={{background:"#0c0c0b"}}></i>text</div>
+      <div className="swatch"><i style={{background:"oklch(0.62 0.14 40)"}}></i>accent</div>
+    </div>
+
+    <h3>Palette · Dark</h3>
+    <div className="spec-swatch-row">
+      <div className="swatch dark"><i style={{background:"#0c0c0b"}}></i>bg</div>
+      <div className="swatch dark"><i style={{background:"#141413"}}></i>surface</div>
+      <div className="swatch dark"><i style={{background:"#1c1c1a"}}></i>surface-2</div>
+      <div className="swatch dark"><i style={{background:"#262624"}}></i>border</div>
+      <div className="swatch dark"><i style={{background:"#8b877d"}}></i>muted</div>
+      <div className="swatch dark"><i style={{background:"#f5f3ee"}}></i>text</div>
+      <div className="swatch dark"><i style={{background:"oklch(0.72 0.14 45)"}}></i>accent</div>
+    </div>
+
+    <div className="spec-grid" style={{marginTop: 24}}>
+      <div>
+        <h3>Type scale</h3>
+        <p className="tokens">
+          display · <b>104 / 80 / 44 px</b><br/>
+          h2 · <b>44 / 32 px</b><br/>
+          body · <b>15 px</b><br/>
+          small · <b>13 / 12 px</b><br/>
+          mono · numerics &amp; meta
+        </p>
+      </div>
+      <div>
+        <h3>Spacing</h3>
+        <p className="tokens">4 · 8 · 12 · 16 · 24 · 32 · <b>48 · 64 · 96</b> · 128</p>
+        <h3 style={{marginTop:18}}>Radii</h3>
+        <p className="tokens">4 · 6 · 10 · <b>14</b> · 20 · pill</p>
+      </div>
+      <div>
+        <h3>Type families</h3>
+        <p className="tokens">
+          <b>Geist</b> 300/400/500/600<br/>
+          <b>Geist Mono</b> 400/500<br/>
+          fallback: -apple-system, system-ui
+        </p>
+      </div>
+      <div>
+        <h3>Shadows</h3>
+        <p className="tokens">
+          shadow-1 · <b>0 1px 3px rgba(0,0,0,.04)</b><br/>
+          shadow-2 · <b>0 6px 24px rgba(0,0,0,.06)</b>
+        </p>
+      </div>
+    </div>
+  </div>
+);
+
+const MotionNotes = () => (
+  <div className="spec-card">
+    <h2>Motion &amp; accessibility</h2>
+    <ul className="anno-list">
+      <li><b>Typewriter caret</b> in the hero cycles "car → deal → ride". Under <code>prefers-reduced-motion</code>, the word stays static (no typing, no caret blink) — the accent italic still differentiates it visually.</li>
+      <li><b>Search bar</b> has a 220ms focus-ring transition (color + 4px ring). No layout shift on focus.</li>
+      <li><b>Card hover</b> = single property: border color shifts from <code>--border</code> to <code>--text-2</code>. Heart toggle pops to scale 1.04 on hover; never animates location.</li>
+      <li><b>Filter modal</b> fades scrim 220ms, body slides up 360ms (desktop popover, mobile bottom sheet). Closes on outside click, Escape, or the X. Apply commits and closes.</li>
+      <li><b>Mobile menu</b> drops from the navbar with a tiny 8px translate; no overlay, no scroll-lock.</li>
+      <li><b>Smooth scroll</b> on search submit uses <code>scrollIntoView</code> with behavior:smooth — the browser respects reduced-motion automatically.</li>
+      <li><b>Focus states:</b> 2px solid accent ring with 2px offset on every interactive element (buttons, inputs, cards, modal close).</li>
+      <li><b>Contrast:</b> body text on bg ≥ 12:1 (light) / 14:1 (dark). Muted text ≥ 4.6:1. Accent on background ≥ 4.5:1.</li>
+    </ul>
+  </div>
+);
+
+const AnnoList = ({ items }) => (
+  <div className="spec-card">
+    <h2 style={{ fontSize: 18 }}>Section annotations</h2>
+    <ul className="anno-list">
+      {items.map((it, i) => (
+        <li key={i}><b>{it.t}.</b> {it.d}</li>
+      ))}
+    </ul>
+  </div>
+);
+
+const ANNOTATIONS = [
+  { t: "Navbar", d: "Sticky w/ blurred translucent bg. Wordmark + 6 routes + theme toggle + favorites + auth buttons. Mobile collapses to a hamburger sheet that contains every desktop control including auth state." },
+  { t: "Hero", d: "Single dense column: eyebrow, big typeset headline with cycling accent word, one-line subtitle, two CTAs (primary = dark, secondary = outline), four mono-numeric stats divided by a 1px rule. Right column carries the verified-brand presence as a labeled placeholder + 8-brand grid overlay." },
+  { t: "Search (integrated)", d: "Lives inside the hero band, separated by a hairline. Single elongated capsule contains: free-text input → divider → Filters button (with count badge) → primary Search button. On submit, scrolls to results section. Clear control reveals when query/filters active." },
+  { t: "Filters modal", d: "Desktop dialog / mobile bottom sheet. 13 fields grouped into 4 named sets (Vehicle, Year & mileage, Drivetrain, Price & specifics). Brand drives Model. Foot has Reset (left) + Cancel + Apply (right). Outside click + Escape close." },
+  { t: "Brands rail", d: "Demoted from full band to a quiet chip row under a mono label 'JUMP TO A BRAND'. On mobile, becomes a horizontal scroll-snap rail (no visible scrollbar)." },
+  { t: "Results", d: "Only mounts when query or filters present. Heading + count + 'Clear' button + same card grid as Popular. Empty state is a single dashed empty card with one line of copy — no illustration." },
+  { t: "Popular offers", d: "Same card system: 4:3 placeholder media with brand-stamped corner, top-right heart toggle (independent of card click), title + year (year de-emphasized), mono price aligned right, mono meta line. Whole card is keyboard-activatable; heart stops propagation." },
+  { t: "Footer", d: "Brand block + tagline + 4 social icons (small, outlined). Explore + Company columns. Newsletter as compact input/button pair. Bottom bar = copyright + 3 legal links, mono-small, no extra weight." }
+];
+
+function App() {
+  return (
+    <DesignCanvas>
+      <DCSection id="system" title="System" subtitle="Tokens, type, motion & section annotations">
+        <DCArtboard id="spec" label="Design system" width={760} height={760}>
+          <SystemSpec />
+        </DCArtboard>
+        <DCArtboard id="anno" label="Section annotations" width={760} height={760}>
+          <AnnoList items={ANNOTATIONS} />
+        </DCArtboard>
+        <DCArtboard id="motion" label="Motion + a11y notes" width={760} height={520}>
+          <MotionNotes />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection id="desktop" title="Desktop" subtitle="1440 × 900 — both themes">
+        <DCArtboard id="d-light" label="Desktop · Light" width={1440} height={900}>
+          <Mount theme="light" vp="desktop" loggedIn={false} />
+        </DCArtboard>
+        <DCArtboard id="d-dark"  label="Desktop · Dark"  width={1440} height={900}>
+          <Mount theme="dark"  vp="desktop" loggedIn={true} />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection id="mobile" title="Mobile" subtitle="390 × 844 — both themes (independent scroll)">
+        <DCArtboard id="m-light" label="Mobile · Light" width={390} height={844}>
+          <Mount theme="light" vp="mobile" loggedIn={false} />
+        </DCArtboard>
+        <DCArtboard id="m-dark"  label="Mobile · Dark"  width={390} height={844}>
+          <Mount theme="dark"  vp="mobile" loggedIn={true} />
+        </DCArtboard>
+      </DCSection>
+    </DesignCanvas>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+</body>
+</html>

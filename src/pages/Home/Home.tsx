@@ -1,188 +1,214 @@
-import { useEffect, useMemo, useState } from 'react'
-import CarCard from '../../components/home/CarCard.tsx'
-import FeaturedCarsSection from '../../components/home/FeaturedCarsSection.tsx'
-import HeroSection from '../../components/home/HeroSection.tsx'
-import Navbar from '../../components/navbar/Navbar.tsx'
-import SiteFooter from '../../components/home/SiteFooter.tsx'
-import type {
-  SocialItem,
-} from '../../components/home/types.ts'
-import SmartSearchBar from '../../components/search/SmartSearchBar.tsx'
-import type { FiltersState, SearchPayload } from '../../components/search/SmartSearchBar.tsx'
-import { featuredCars } from '../../data/featuredCars.ts'
-import { getFavoriteIds, setFavoriteIds as storeFavoriteIds } from '../../utils/favoritesStorage.ts'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
+import AmCarCard from '../../components/home/am/AmCarCard'
+import AmFooter from '../../components/home/am/AmFooter'
+import AmHero from '../../components/home/am/AmHero'
+import AmNavbar from '../../components/home/am/AmNavbar'
+import AmSearch, {
+  countFilters,
+  type Filters,
+} from '../../components/home/am/AmSearch'
+import { ArrowRightIcon } from '../../components/home/am/AmIcons'
+import { featuredCars } from '../../data/featuredCars'
+import { useTheme } from '../../context/ThemeContext'
+import { getFavoriteIds, setFavoriteIds as storeFavoriteIds } from '../../utils/favoritesStorage'
+import type { FeaturedCar } from '../../components/home/types'
 import './Home.css'
 
+function parseNumber(value: string | undefined): number | null {
+  if (!value) return null
+  const digits = value.replace(/[^\d]/g, '')
+  return digits ? Number(digits) : null
+}
 
-const socialLinks: SocialItem[] = [
-  { platform: 'facebook', href: '#' },
-  { platform: 'instagram', href: '#' },
-  { platform: 'x', href: '#' },
-  { platform: 'linkedin', href: '#' },
-]
-
-const brands = ['BMW', 'Audi', 'Tesla', 'Toyota', 'Mercedes-Benz', 'Honda', 'Volkswagen', 'Ford']
-
-function Home() {
-  const [favoriteIds, setFavoriteIds] = useState<number[]>(() => getFavoriteIds())
-  const [hasSearched, setHasSearched] = useState(false)
-  const [submittedSearch, setSubmittedSearch] = useState<SearchPayload>({
-    query: '',
-    filters: {
-      brand: '',
-      model: '',
-      bodyType: '',
-      yearFrom: '',
-      yearTo: '',
-      mileageMin: '',
-      mileageMax: '',
-      engineCapacity: '',
-      fuelType: '',
-      transmission: '',
-      driveType: '',
-      priceMin: '',
-      priceMax: '',
-      condition: '',
-      color: '',
-      doors: '',
-    },
-  })
-
-  const toggleFavorite = (carId: number) => {
-    setFavoriteIds((prev) => {
-      if (prev.includes(carId)) return prev.filter((id) => id !== carId)
-      return [...prev, carId]
-    })
+function matches(car: FeaturedCar, query: string, filters: Filters): boolean {
+  if (query) {
+    const blob = [
+      car.name,
+      car.model,
+      String(car.year),
+      car.fuel,
+      car.transmission,
+      car.body,
+      car.engine,
+    ]
+      .join(' ')
+      .toLowerCase()
+    if (!blob.includes(query)) return false
   }
 
+  if (filters.brand) {
+    const brand = filters.brand.toLowerCase()
+    const carBrand = car.name.toLowerCase()
+    if (!carBrand.includes(brand) && !brand.includes(carBrand)) return false
+  }
+  if (filters.model && !car.model.toLowerCase().includes(filters.model.toLowerCase())) {
+    return false
+  }
+  if (filters.body && car.body.toLowerCase() !== filters.body.toLowerCase()) return false
+  if (filters.fuel && car.fuel.toLowerCase() !== filters.fuel.toLowerCase()) return false
+  if (
+    filters.transmission &&
+    car.transmission.toLowerCase() !== filters.transmission.toLowerCase()
+  ) {
+    return false
+  }
+
+  const yearFrom = filters.yearFrom ? Number(filters.yearFrom) : null
+  const yearTo = filters.yearTo ? Number(filters.yearTo) : null
+  if (yearFrom != null && car.year < yearFrom) return false
+  if (yearTo != null && car.year > yearTo) return false
+
+  const carMileage = parseNumber(car.mileage)
+  const kmMin = parseNumber(filters.kmMin)
+  const kmMax = parseNumber(filters.kmMax)
+  if (kmMin != null && (carMileage == null || carMileage < kmMin)) return false
+  if (kmMax != null && (carMileage == null || carMileage > kmMax)) return false
+
+  const carPrice = parseNumber(car.price)
+  const priceMin = parseNumber(filters.priceMin)
+  const priceMax = parseNumber(filters.priceMax)
+  if (priceMin != null && (carPrice == null || carPrice < priceMin)) return false
+  if (priceMax != null && (carPrice == null || carPrice > priceMax)) return false
+
+  return true
+}
+
+function Home() {
+  const { theme } = useTheme()
+  const [query, setQuery] = useState('')
+  const [submittedQuery, setSubmittedQuery] = useState('')
+  const [filters, setFilters] = useState<Filters>({})
+  const [favIds, setFavIds] = useState<number[]>(() => getFavoriteIds())
+  const resultsRef = useRef<HTMLElement | null>(null)
+
   useEffect(() => {
-    storeFavoriteIds(favoriteIds)
-  }, [favoriteIds])
+    storeFavoriteIds(favIds)
+  }, [favIds])
 
-  const normalizedQuery = useMemo(
-    () => submittedSearch.query.trim().toLowerCase().replace(/\s+/g, ' '),
-    [submittedSearch.query],
-  )
+  const toggleFav = (id: number) => {
+    setFavIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
+    )
+  }
 
-  const searchResults = useMemo(() => {
-    const filters: FiltersState = submittedSearch.filters
-    const parseNumber = (value: string) => {
-      const digits = value.replace(/[^\d]/g, '')
-      return digits ? Number(digits) : null
-    }
+  const filterCount = useMemo(() => countFilters(filters), [filters])
+  const showResults = submittedQuery !== '' || filterCount > 0
 
-    const yearFrom = filters.yearFrom ? Number(filters.yearFrom) : null
-    const yearTo = filters.yearTo ? Number(filters.yearTo) : null
-    const mileageMin = parseNumber(filters.mileageMin)
-    const mileageMax = parseNumber(filters.mileageMax)
-    const priceMin = parseNumber(filters.priceMin)
-    const priceMax = parseNumber(filters.priceMax)
+  const results = useMemo(() => {
+    if (!showResults) return []
+    const q = submittedQuery.trim().toLowerCase()
+    return featuredCars.filter((c) => matches(c, q, filters))
+  }, [submittedQuery, filters, showResults])
 
-    return featuredCars.filter((car) => {
-      const searchableText = [
-        `${car.name} ${car.model}`, car.name, car.model,
-        car.fuel, car.body, car.transmission, String(car.year),
-      ].join(' ').toLowerCase().replace(/\s+/g, ' ')
-
-      const carMileage = parseNumber(car.mileage)
-      const carPrice = parseNumber(car.price)
-
-      return (
-        (!normalizedQuery || searchableText.includes(normalizedQuery)) &&
-        (!filters.brand || car.name.toLowerCase() === filters.brand.toLowerCase()) &&
-        (!filters.model || car.model.toLowerCase() === filters.model.toLowerCase()) &&
-        (!filters.bodyType || car.body.toLowerCase() === filters.bodyType.toLowerCase()) &&
-        (!filters.fuelType || car.fuel.toLowerCase() === filters.fuelType.toLowerCase()) &&
-        (!filters.transmission || car.transmission.toLowerCase() === filters.transmission.toLowerCase()) &&
-        (yearFrom == null || car.year >= yearFrom) &&
-        (yearTo == null || car.year <= yearTo) &&
-        (mileageMin == null || (carMileage != null && carMileage >= mileageMin)) &&
-        (mileageMax == null || (carMileage != null && carMileage <= mileageMax)) &&
-        (priceMin == null || (carPrice != null && carPrice >= priceMin)) &&
-        (priceMax == null || (carPrice != null && carPrice <= priceMax))
-      )
-    })
-  }, [normalizedQuery, submittedSearch.filters])
-
-  const handleSearchAction = (payload: SearchPayload) => {
-    setHasSearched(true)
-    setSubmittedSearch({ query: payload.query.trim(), filters: payload.filters })
+  const handleSubmit = () => {
+    setSubmittedQuery(query.trim())
     window.setTimeout(() => {
-      document.getElementById('search-results')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    }, 0)
+      resultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }, 60)
+  }
+
+  const handleClearAll = () => {
+    setQuery('')
+    setSubmittedQuery('')
+    setFilters({})
   }
 
   return (
-    <>
-      <Navbar />
-      <main className="home-page">
+    <div className="am" data-theme={theme}>
+      <AmNavbar />
 
-        {/* ── Hero ── */}
-        <HeroSection />
-
-        {/* ── Brands bar ── */}
-        <section className="brands-section" aria-label="Featured brands">
-          <div className="container brands-list">
-            {brands.map((b) => (
-              <span key={b} className="brand-pill">{b}</span>
-            ))}
-          </div>
-        </section>
-
-        {/* ── Search Bar ── */}
-        <div className="hero-search-wrap">
-          <div className="container">
-            <SmartSearchBar onSearchAction={handleSearchAction} />
-          </div>
-        </div>
-
-        {/* ── Search results ── */}
-        {hasSearched && (
-          <section
-            id="search-results"
-            className="search-results-section section-spacer"
-            aria-live="polite"
-          >
-            <div className="container">
-              <div className="section-header">
-                <h2>Search Results</h2>
-                <button
-                  type="button"
-                  className="btn btn-secondary btn-sm"
-                  onClick={() => setHasSearched(false)}
-                >
-                  Clear
-                </button>
-              </div>
-              {searchResults.length === 0 ? (
-                <div className="search-results-empty">No results found for your search.</div>
-              ) : (
-                <div className="cars-grid">
-                  {searchResults.map((car) => (
-                    <CarCard
-                      key={`search-${car.id}`}
-                      car={car}
-                      isFavorite={favoriteIds.includes(car.id)}
-                      onToggleFavorite={toggleFavorite}
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
-          </section>
-        )}
-
-        {/* ── Featured Cars ── */}
-        <FeaturedCarsSection
-          cars={featuredCars}
-          favoriteIds={favoriteIds}
-          onToggleFavorite={toggleFavorite}
+      <section className="am-shell am-hero">
+        <AmHero />
+        <AmSearch
+          query={query}
+          onQueryChange={setQuery}
+          filters={filters}
+          onFiltersChange={setFilters}
+          onSubmit={handleSubmit}
+          onClearAll={handleClearAll}
+          hasActiveSearch={showResults}
         />
+      </section>
 
-      </main>
+      {showResults && (
+        <section className="am-shell am-section" ref={resultsRef}>
+          <div className="am-section-head">
+            <div>
+              <h2 className="am-section-title">Search results</h2>
+              <div className="am-section-sub">
+                {results.length} match{results.length === 1 ? '' : 'es'}
+                {submittedQuery && (
+                  <>
+                    {' '}for “
+                    <b className="am-section-sub-em">{submittedQuery}</b>”
+                  </>
+                )}
+                {filterCount > 0 && (
+                  <>
+                    {' '}· {filterCount} filter{filterCount === 1 ? '' : 's'} active
+                  </>
+                )}
+              </div>
+            </div>
+            <button
+              type="button"
+              className="am-btn am-btn--ghost"
+              onClick={handleClearAll}
+            >
+              Clear
+            </button>
+          </div>
+          {results.length === 0 ? (
+            <div className="am-empty">No results found for your search.</div>
+          ) : (
+            <div className="am-grid">
+              {results.map((c) => (
+                <AmCarCard
+                  key={`r-${c.id}`}
+                  car={c}
+                  isFav={favIds.includes(c.id)}
+                  onToggleFav={toggleFav}
+                />
+              ))}
+            </div>
+          )}
+        </section>
+      )}
 
-      <SiteFooter socialLinks={socialLinks} />
-    </>
+      <section className="am-shell am-section">
+        <div className="am-section-head">
+          <div>
+            <h2 className="am-section-title">Popular offers</h2>
+            <div className="am-section-sub">
+              Hand-picked listings updated this week
+            </div>
+          </div>
+          <Link to="/offers" className="am-text-link">
+            View all offers →
+          </Link>
+        </div>
+        <div className="am-grid">
+          {featuredCars.map((c) => (
+            <AmCarCard
+              key={c.id}
+              car={c}
+              isFav={favIds.includes(c.id)}
+              onToggleFav={toggleFav}
+            />
+          ))}
+        </div>
+        <div className="am-section-cta">
+          <Link to="/offers" className="am-btn am-btn--primary am-btn--lg">
+            View more <ArrowRightIcon size={16} />
+          </Link>
+        </div>
+      </section>
+
+      <div className="am-shell">
+        <AmFooter />
+      </div>
+    </div>
   )
 }
 
