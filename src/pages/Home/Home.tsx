@@ -205,9 +205,7 @@ function Home() {
         </div>
       </section>
 
-      <div className="am-shell">
-        <AmFooter />
-      </div>
+      <AmFooter />
     </div>
   )
 }

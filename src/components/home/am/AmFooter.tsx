@@ -6,7 +6,7 @@ const SOCIAL_KEYS: SocialKey[] = ['facebook', 'instagram', 'x', 'linkedin']
 function AmFooter() {
   const year = new Date().getFullYear()
   return (
-    <footer className="am-foot">
+    <footer className="am-shell am-foot">
       <div className="am-foot-grid">
         <div className="am-foot-brand">
           <Link to="/" className="am-brand" aria-label="AutoMarket home">
