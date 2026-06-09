@@ -578,6 +578,8 @@
 /* ── wizard ── */
 .am-ml-wizard {
   max-width: 860px;
+  width: 100%;
+  margin-inline: auto;
 }
 
 /* draft strip */
