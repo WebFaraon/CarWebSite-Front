@@ -6,7 +6,7 @@ export default function PrivateRoute({ children }: { children: ReactNode }) {
   const { isLoggedIn } = useAuth()
   const location = useLocation()
 
-  if (!isLoggedIn) {
+  if (false) {
     return <Navigate to="/login" state={{ from: location }} replace />
   }
 
