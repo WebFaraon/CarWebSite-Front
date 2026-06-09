@@ -1,0 +1,401 @@
+/* ============================================================
+   AutoMarket — Sell (marketing landing) page
+   Scoped to .am so it inherits the existing --am-* tokens.
+   ============================================================ */
+
+.am-sell {
+  padding-top: var(--sp-9);
+  padding-bottom: var(--sp-9);
+}
+@media (max-width: 1023px) {
+  .am-sell {
+    padding-top: var(--sp-7);
+    padding-bottom: var(--sp-7);
+  }
+}
+
+/* hero */
+.am-sell-hero-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: var(--sp-8);
+  align-items: end;
+}
+@media (max-width: 1023px) {
+  .am-sell-hero-grid {
+    grid-template-columns: 1fr;
+    gap: var(--sp-6);
+    align-items: start;
+  }
+}
+.am-sell-hero-copy .am-eyebrow {
+  margin-bottom: var(--sp-4);
+}
+.am-sell-fromhelp {
+  font-family: var(--ff-mono);
+  font-size: var(--fs-12);
+  letter-spacing: 0.03em;
+  color: var(--am-accent);
+  margin-bottom: var(--sp-3);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.am-sell-display {
+  font-size: var(--fs-104);
+  line-height: 0.99;
+  letter-spacing: -0.035em;
+  font-weight: 500;
+  margin: 0;
+  max-width: 16ch;
+  text-wrap: balance;
+  color: var(--am-text);
+}
+@media (max-width: 1279px) {
+  .am-sell-display {
+    font-size: var(--fs-80);
+  }
+}
+@media (max-width: 1023px) {
+  .am-sell-display {
+    font-size: var(--fs-44);
+  }
+}
+.am-sell-sub {
+  margin-top: var(--sp-5);
+  font-size: var(--fs-18);
+  color: var(--am-text-2);
+  max-width: 44ch;
+  line-height: 1.5;
+}
+@media (max-width: 1023px) {
+  .am-sell-sub {
+    font-size: var(--fs-16);
+  }
+}
+.am-sell-cta-row {
+  display: flex;
+  gap: var(--sp-3);
+  margin-top: var(--sp-6);
+  flex-wrap: wrap;
+}
+
+.am-sell-hero-panel {
+  background: var(--am-surface);
+  border: 1px solid var(--am-border);
+  border-radius: var(--r-6);
+  padding: var(--sp-7);
+  box-shadow: var(--am-shadow-1);
+}
+@media (max-width: 1023px) {
+  .am-sell-hero-panel {
+    padding: var(--sp-6);
+  }
+}
+.am-sell-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-4);
+  padding-bottom: var(--sp-5);
+  border-bottom: 1px solid var(--am-border);
+}
+.am-sell-stat strong {
+  display: block;
+  font-family: var(--ff-mono);
+  font-size: var(--fs-32);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  color: var(--am-text);
+}
+.am-sell-stat span {
+  display: block;
+  font-size: var(--fs-13);
+  color: var(--am-muted);
+  margin-top: 4px;
+  line-height: 1.4;
+}
+.am-sell-benefits {
+  list-style: none;
+  margin: var(--sp-5) 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+.am-sell-benefit {
+  display: flex;
+  gap: 10px;
+  font-size: var(--fs-14);
+  color: var(--am-text-2);
+  line-height: 1.45;
+}
+.am-sell-check {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--am-accent) 15%, var(--am-surface));
+  color: var(--am-accent);
+  display: grid;
+  place-items: center;
+  margin-top: 1px;
+}
+
+/* prep checklist */
+.am-sell-prep {
+  margin-top: var(--sp-8);
+  background: var(--am-surface);
+  border: 1px solid var(--am-border);
+  border-radius: var(--r-5);
+  padding: var(--sp-6);
+  box-shadow: var(--am-shadow-1);
+  max-width: 720px;
+}
+@media (max-width: 1023px) {
+  .am-sell-prep {
+    margin-top: var(--sp-6);
+  }
+}
+.am-sell-prep .am-eyebrow {
+  margin-bottom: var(--sp-3);
+}
+.am-sell-prep-title {
+  font-size: var(--fs-21);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  margin: 0 0 var(--sp-4);
+  color: var(--am-text);
+}
+.am-sell-prep-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.am-sell-prep-item {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: var(--fs-14);
+  color: var(--am-text-2);
+}
+.am-sell-prep-item .am-sell-check {
+  margin-top: 0;
+}
+.am-sell-prep-item em {
+  color: var(--am-muted);
+  font-style: normal;
+}
+
+/* steps */
+.am-sell-steps {
+  margin-top: var(--sp-9);
+}
+@media (max-width: 1023px) {
+  .am-sell-steps {
+    margin-top: var(--sp-7);
+  }
+}
+.am-sell-steps-head {
+  max-width: 56ch;
+  margin-bottom: var(--sp-6);
+}
+.am-sell-steps-title {
+  font-size: var(--fs-44);
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  margin: 0;
+  color: var(--am-text);
+}
+@media (max-width: 1023px) {
+  .am-sell-steps-title {
+    font-size: var(--fs-32);
+  }
+}
+.am-sell-steps-sub {
+  margin-top: var(--sp-3);
+  font-size: var(--fs-16);
+  color: var(--am-muted);
+}
+.am-sell-steps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--sp-4);
+}
+@media (max-width: 1023px) {
+  .am-sell-steps-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.am-sell-step {
+  position: relative;
+  text-align: left;
+  background: var(--am-surface);
+  border: 1px solid var(--am-border);
+  border-radius: var(--r-5);
+  padding: var(--sp-5);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.am-sell-step-num {
+  font-family: var(--ff-mono);
+  font-size: var(--fs-21);
+  font-weight: 500;
+  color: var(--am-muted-2);
+  letter-spacing: -0.02em;
+}
+.am-sell-step-title {
+  font-size: var(--fs-18);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  margin: 0;
+  color: var(--am-text);
+}
+.am-sell-step-body {
+  font-size: var(--fs-14);
+  color: var(--am-text-2);
+  margin: 0;
+  line-height: 1.5;
+}
+.am-sell-step--clickable {
+  cursor: pointer;
+  transition: border-color var(--dur-2) var(--ease), transform var(--dur-2) var(--ease),
+    box-shadow var(--dur-2) var(--ease);
+}
+.am-sell-step--clickable:hover {
+  border-color: var(--am-text-2);
+  transform: translateY(-1px);
+  box-shadow: var(--am-shadow-2);
+}
+.am-sell-step--clickable:focus-visible {
+  outline: 2px solid var(--am-focus);
+  outline-offset: 2px;
+}
+.am-sell-step-arrow {
+  position: absolute;
+  top: var(--sp-5);
+  right: var(--sp-5);
+  color: var(--am-accent);
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: opacity var(--dur-2) var(--ease), transform var(--dur-2) var(--ease);
+}
+.am-sell-step--clickable:hover .am-sell-step-arrow,
+.am-sell-step--clickable:focus-visible .am-sell-step-arrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* support strip */
+.am-sell-support {
+  margin-top: var(--sp-9);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-6);
+  padding: var(--sp-7);
+  border: 1px solid var(--am-border);
+  border-radius: var(--r-6);
+  background: var(--am-surface);
+  box-shadow: var(--am-shadow-1);
+  position: relative;
+  overflow: hidden;
+}
+@media (max-width: 1023px) {
+  .am-sell-support {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: var(--sp-6);
+    margin-top: var(--sp-7);
+  }
+}
+.am-sell-support::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    80% 140% at 100% 0%,
+    color-mix(in oklab, var(--am-accent) 10%, transparent),
+    transparent 60%
+  );
+  pointer-events: none;
+}
+.am-sell-support-text {
+  position: relative;
+}
+.am-sell-support-title {
+  font-size: var(--fs-26);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  margin: var(--sp-2) 0 0;
+  color: var(--am-text);
+}
+.am-sell-support .am-btn {
+  position: relative;
+  flex: none;
+}
+
+/* faq rail */
+.am-sell-faq {
+  margin-top: var(--sp-8);
+}
+@media (max-width: 1023px) {
+  .am-sell-faq {
+    margin-top: var(--sp-6);
+  }
+}
+.am-sell-faq-label {
+  font-family: var(--ff-mono);
+  font-size: var(--fs-12);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--am-muted);
+  margin-bottom: var(--sp-4);
+}
+.am-sell-faq-list {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--am-border);
+  border-radius: var(--r-5);
+  overflow: hidden;
+  background: var(--am-surface);
+}
+.am-sell-faq-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  text-align: left;
+  padding: var(--sp-4) var(--sp-5);
+  font-size: var(--fs-15);
+  color: var(--am-text);
+  border-bottom: 1px solid var(--am-border);
+  background: none;
+  border-left: 0;
+  border-right: 0;
+  border-top: 0;
+  cursor: pointer;
+  transition: background var(--dur-1) var(--ease);
+}
+.am-sell-faq-item:last-child {
+  border-bottom: 0;
+}
+.am-sell-faq-item:hover {
+  background: var(--am-surface-2);
+}
+.am-sell-faq-item:focus-visible {
+  outline: 2px solid var(--am-focus);
+  outline-offset: -2px;
+}
+.am-sell-faq-item svg {
+  color: var(--am-muted);
+  flex: none;
+  transition: color var(--dur-1) var(--ease), transform var(--dur-1) var(--ease);
+}
+.am-sell-faq-item:hover svg {
+  color: var(--am-accent);
+  transform: translateX(2px);
+}
