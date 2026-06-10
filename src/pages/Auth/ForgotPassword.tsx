@@ -1,9 +1,12 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import Navbar from '../../components/navbar/Navbar.tsx'
+import AmNavbar from '../../components/home/am/AmNavbar'
+import { useTheme } from '../../context/ThemeContext'
+import '../Home/Home.css'
 import './ForgotPassword.css'
 
 function ForgotPassword() {
+  const { theme } = useTheme()
   const [email, setEmail] = useState('')
   const [submitted, setSubmitted] = useState(false)
 
@@ -14,8 +17,8 @@ function ForgotPassword() {
   ]
 
   return (
-    <>
-      <Navbar />
+    <div className="am" data-theme={theme}>
+      <AmNavbar />
       <main className="fp-page">
         <section className="fp-hero-section">
           <div className="fp-container">
@@ -101,7 +104,7 @@ function ForgotPassword() {
           </div>
         </section>
       </main>
-    </>
+    </div>
   )
 }
 

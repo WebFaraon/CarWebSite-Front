@@ -469,7 +469,7 @@ function AmContact() {
                         id="c-name"
                         className="am-contact-input"
                         type="text"
-                        placeholder="John Doe"
+                        placeholder="John Car"
                         autoComplete="name"
                         value={name}
                         aria-invalid={!!errors.name}

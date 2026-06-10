@@ -147,9 +147,11 @@ function AuthScreen({ mode }: AuthScreenProps) {
   const validate = () => {
     const e: Record<string, string> = {}
     if (isSignup && name.trim().length < 2) e.name = 'Please enter your name.'
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+    if (isSignup && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
       e.email = 'Enter a valid email address.'
-    if (pw.length < 8) e.pw = 'Password must be at least 8 characters.'
+    if (!isSignup && !email.trim()) e.email = 'Enter your email or username.'
+    if (isSignup && pw.length < 8) e.pw = 'Password must be at least 8 characters.'
+    if (!isSignup && pw.length < 1) e.pw = 'Enter your password.'
     if (isSignup && pw2 !== pw) e.pw2 = "Passwords don't match."
     setErrors(e)
     return Object.keys(e).length === 0
@@ -236,7 +238,7 @@ function AuthScreen({ mode }: AuthScreenProps) {
               {isSignup && (
                 <AuthField
                   label="Full name"
-                  placeholder="John Doe"
+                  placeholder="John Car"
                   value={name}
                   onChange={setName}
                   error={errors.name}
@@ -245,9 +247,9 @@ function AuthScreen({ mode }: AuthScreenProps) {
               )}
 
               <AuthField
-                label="Email address"
-                type="email"
-                placeholder="you@example.com"
+                label={isSignup ? 'Email address' : 'Email or username'}
+                type={isSignup ? 'email' : 'text'}
+                placeholder={isSignup ? 'you@example.com' : 'JohnCar@example.com'}
                 value={email}
                 onChange={setEmail}
                 error={errors.email}

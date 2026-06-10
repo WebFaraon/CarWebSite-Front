@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAdminAuth } from '../../context/AdminAuthContext'
+import { useTheme } from '../../context/ThemeContext'
 import { announcementApi, getApiErrorMessage } from '../../services/api'
 import type { AnnouncementDto } from '../../services/api'
+import '../Home/Home.css'
 import './AdminDashboard.css'
 
 type ListingStatus = 'active' | 'inactive'
@@ -117,7 +119,7 @@ function DonutChart({ label, segments }: { label: string; segments: DonutSegment
       <div className="donut-wrap">
         <svg width={120} height={120} viewBox="0 0 120 120">
           {total === 0 ? (
-            <circle cx={cx} cy={cy} r={(r + inner) / 2} fill="none" stroke="var(--border)" strokeWidth={r - inner} />
+            <circle cx={cx} cy={cy} r={(r + inner) / 2} fill="none" stroke="var(--am-border)" strokeWidth={r - inner} />
           ) : (
             arcs.map(({ seg, i, path, sweep }) => sweep > 0 && (
               <path
@@ -137,7 +139,7 @@ function DonutChart({ label, segments }: { label: string; segments: DonutSegment
           )}
         </svg>
         <div className="donut-center">
-          <span className="donut-total" style={{ color: hovered ? hovered.color : 'var(--text)' }}>
+          <span className="donut-total" style={{ color: hovered ? hovered.color : 'var(--am-text)' }}>
             {hovered ? hovered.value : total}
           </span>
         </div>
@@ -338,6 +340,7 @@ function AdminDashboard() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const { adminLogout } = useAdminAuth()
+  const { theme } = useTheme()
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -398,67 +401,70 @@ function AdminDashboard() {
   }
 
   return (
-    <div className="admin-layout">
-      <aside className="admin-sidebar">
-        <div className="admin-sidebar-brand">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-          AutoMarket
-          <span className="brand-badge">Admin</span>
-        </div>
-
-        <nav className="admin-nav">
-          {SECTION_LABELS.map((s) => {
-            const badge = getBadge(s.id)
-            return (
-              <button
-                key={s.id}
-                className={`admin-nav-item ${section === s.id ? 'active' : ''}`}
-                onClick={() => setSection(s.id)}
-              >
-                {s.icon}
-                {s.label}
-                {badge > 0 && <span className="admin-nav-badge">{badge}</span>}
-              </button>
-            )
-          })}
-        </nav>
-
-        <div className="admin-sidebar-footer">
-          <button className="admin-logout-btn" onClick={handleLogout}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-            Sign out
-          </button>
-        </div>
-      </aside>
-
-      <div className="admin-main">
-        <div className="admin-topbar">
-          <h1 className="admin-topbar-title">{SECTION_TITLES[section]}</h1>
-          <div className="admin-topbar-right">
-            <div className="admin-avatar">A</div>
+    <div className="am" data-theme={theme}>
+      <div className="admin-layout">
+        <aside className="admin-sidebar">
+          <div className="admin-sidebar-brand">
+            <span className="am-brand-mark">A</span>
+            <span>AutoMarket</span>
+            <span className="brand-badge">Admin</span>
           </div>
-        </div>
 
-        <div className="admin-content">
-          {error && <div className="am-alert" role="alert">{error}</div>}
-          {loading ? (
-            <div className="admin-empty">Loading live dashboard data...</div>
-          ) : (
-            <>
-              {section === 'overview' && <OverviewSection listings={listings} />}
-              {section === 'listings' && (
-                <ListingsSection
-                  listings={listings}
-                  onStatus={handleStatus}
-                  onDelete={handleDelete}
-                />
+          <nav className="admin-nav">
+            {SECTION_LABELS.map((s) => {
+              const badge = getBadge(s.id)
+              return (
+                <button
+                  key={s.id}
+                  className={`admin-nav-item ${section === s.id ? 'active' : ''}`}
+                  onClick={() => setSection(s.id)}
+                >
+                  {s.icon}
+                  {s.label}
+                  {badge > 0 && <span className="admin-nav-badge">{badge}</span>}
+                </button>
               )}
-            </>
-          )}
+            )}
+          </nav>
+
+          <div className="admin-sidebar-footer">
+            <button className="admin-logout-btn" onClick={handleLogout}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              Sign out
+            </button>
+          </div>
+        </aside>
+
+        <div className="admin-main">
+          <div className="admin-topbar">
+            <div>
+              <p className="admin-kicker">Control center</p>
+              <h1 className="admin-topbar-title">{SECTION_TITLES[section]}</h1>
+            </div>
+            <div className="admin-topbar-right">
+              <div className="admin-avatar">A</div>
+            </div>
+          </div>
+
+          <div className="admin-content">
+            {error && <div className="am-alert" role="alert">{error}</div>}
+            {loading ? (
+              <div className="admin-empty">Loading live dashboard data...</div>
+            ) : (
+              <>
+                {section === 'overview' && <OverviewSection listings={listings} />}
+                {section === 'listings' && (
+                  <ListingsSection
+                    listings={listings}
+                    onStatus={handleStatus}
+                    onDelete={handleDelete}
+                  />
+                )}
+              </>
+            )}
+          </div>
         </div>
       </div>
     </div>
