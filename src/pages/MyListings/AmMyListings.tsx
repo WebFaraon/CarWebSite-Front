@@ -969,7 +969,7 @@ function Wizard({
           negotiable: created.negotiable,
           showPhone: created.showPhone,
           features: created.features ?? payload.features,
-          status: 'pending',
+          status: API_STATUS_MAP[created.status] ?? 'pending',
           images: created.images.map((i) => i.url),
           views: 0,
           inquiries: 0,
