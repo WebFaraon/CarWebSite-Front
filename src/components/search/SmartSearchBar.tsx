@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import './SmartSearchBar.css'
 
 export type FiltersState = {
@@ -81,6 +82,7 @@ interface SmartSearchBarProps {
 }
 
 function SmartSearchBar({ onSearchAction }: SmartSearchBarProps) {
+  const navigate = useNavigate()
   const [query, setQuery] = useState('')
   const [filters, setFilters] = useState<FiltersState>(defaultFilters)
   const [isOpen, setIsOpen] = useState(false)
@@ -135,15 +137,26 @@ function SmartSearchBar({ onSearchAction }: SmartSearchBarProps) {
     }
   }, [isOpen])
 
-  const onSearch = (payload: SearchPayload) => {
-    console.log('SmartSearchBar search', payload)
-  }
-
   const runSearchAction = () => {
     const normalizedQuery = query.trim()
     const payload: SearchPayload = { query: normalizedQuery, filters }
-    onSearch(payload)
-    onSearchAction?.(payload)
+    if (onSearchAction) {
+      onSearchAction(payload)
+      return
+    }
+
+    const params = new URLSearchParams()
+    if (normalizedQuery) params.set('q', normalizedQuery)
+    if (filters.brand) params.set('brand', filters.brand)
+    if (filters.priceMin) params.set('minPrice', filters.priceMin)
+    if (filters.priceMax) params.set('maxPrice', filters.priceMax)
+    if (filters.yearFrom) params.set('yearFrom', filters.yearFrom)
+    if (filters.yearTo) params.set('yearTo', filters.yearTo)
+    if (filters.mileageMax) params.set('maxKm', filters.mileageMax)
+    if (filters.fuelType) params.set('fuel', filters.fuelType.toLowerCase())
+    if (filters.transmission) params.set('transmission', filters.transmission.toLowerCase())
+
+    navigate(`/offers${params.toString() ? `?${params.toString()}` : ''}`)
   }
 
   const handleApply = () => {

@@ -329,7 +329,7 @@ function OfferCard({ offer, fav, onFav, view }: OfferCardProps) {
     >
       <div className="am-offer-media">
         <img
-          src={offer.imageUrl}
+          src={offer.imageUrl ?? '/template_images/audi-sq7.png'}
           alt={offer.title}
           className="am-offer-img"
           loading="lazy"
@@ -411,6 +411,7 @@ function AmOffers() {
     sort,
     setSort,
     isLoading,
+    error,
     pageSize,
   } = cat
 
@@ -785,6 +786,8 @@ function AmOffers() {
             </button>
           </div>
         </div>
+
+        {error && <div className="am-alert" role="alert">{error}</div>}
 
         {/* grid / states */}
         {isLoading ? (

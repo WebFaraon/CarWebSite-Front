@@ -9,10 +9,12 @@ import AmSearch, {
   type Filters,
 } from '../../components/home/am/AmSearch'
 import { ArrowRightIcon } from '../../components/home/am/AmIcons'
-import { featuredCars } from '../../data/featuredCars'
 import { useTheme } from '../../context/ThemeContext'
+import { getApiErrorMessage } from '../../services/api'
 import { getFavoriteIds, setFavoriteIds as storeFavoriteIds } from '../../utils/favoritesStorage'
+import { featuredCarFromOffer } from '../../utils/listingMappers'
 import type { FeaturedCar } from '../../components/home/types'
+import { fetchOffers } from '../Catalog/catalog.api'
 import './Home.css'
 
 function parseNumber(value: string | undefined): number | null {
@@ -80,7 +82,31 @@ function Home() {
   const [submittedQuery, setSubmittedQuery] = useState('')
   const [filters, setFilters] = useState<Filters>({})
   const [favIds, setFavIds] = useState<number[]>(() => getFavoriteIds())
+  const [cars, setCars] = useState<FeaturedCar[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
   const resultsRef = useRef<HTMLElement | null>(null)
+
+  useEffect(() => {
+    let alive = true
+
+    ;(async () => {
+      try {
+        setLoading(true)
+        setError('')
+        const offers = await fetchOffers()
+        if (alive) setCars(offers.map(featuredCarFromOffer))
+      } catch (err) {
+        if (alive) setError(getApiErrorMessage(err))
+      } finally {
+        if (alive) setLoading(false)
+      }
+    })()
+
+    return () => {
+      alive = false
+    }
+  }, [])
 
   useEffect(() => {
     storeFavoriteIds(favIds)
@@ -98,8 +124,8 @@ function Home() {
   const results = useMemo(() => {
     if (!showResults) return []
     const q = submittedQuery.trim().toLowerCase()
-    return featuredCars.filter((c) => matches(c, q, filters))
-  }, [submittedQuery, filters, showResults])
+    return cars.filter((c) => matches(c, q, filters))
+  }, [cars, submittedQuery, filters, showResults])
 
   const handleSubmit = () => {
     setSubmittedQuery(query.trim())
@@ -119,7 +145,7 @@ function Home() {
       <AmNavbar />
 
       <section className="am-shell am-hero">
-        <AmHero />
+        <AmHero featuredCar={cars[0]} totalListings={cars.length} />
         <AmSearch
           query={query}
           onQueryChange={setQuery}
@@ -131,6 +157,12 @@ function Home() {
         />
       </section>
 
+      {error && (
+        <section className="am-shell">
+          <div className="am-alert" role="alert">{error}</div>
+        </section>
+      )}
+
       {showResults && (
         <section className="am-shell am-section" ref={resultsRef}>
           <div className="am-section-head">
@@ -140,13 +172,13 @@ function Home() {
                 {results.length} match{results.length === 1 ? '' : 'es'}
                 {submittedQuery && (
                   <>
-                    {' '}for “
-                    <b className="am-section-sub-em">{submittedQuery}</b>”
+                    {' '}for "
+                    <b className="am-section-sub-em">{submittedQuery}</b>"
                   </>
                 )}
                 {filterCount > 0 && (
                   <>
-                    {' '}· {filterCount} filter{filterCount === 1 ? '' : 's'} active
+                    {' '} / {filterCount} filter{filterCount === 1 ? '' : 's'} active
                   </>
                 )}
               </div>
@@ -159,7 +191,9 @@ function Home() {
               Clear
             </button>
           </div>
-          {results.length === 0 ? (
+          {loading ? (
+            <div className="am-empty">Loading live offers...</div>
+          ) : results.length === 0 ? (
             <div className="am-empty">No results found for your search.</div>
           ) : (
             <div className="am-grid">
@@ -180,24 +214,28 @@ function Home() {
         <div className="am-section-head">
           <div>
             <h2 className="am-section-title">Popular offers</h2>
-            <div className="am-section-sub">
-              Hand-picked listings updated this week
-            </div>
+            <div className="am-section-sub">Live listings from the database</div>
           </div>
           <Link to="/offers" className="am-text-link">
-            View all offers →
+            View all offers -&gt;
           </Link>
         </div>
-        <div className="am-grid">
-          {featuredCars.map((c) => (
-            <AmCarCard
-              key={c.id}
-              car={c}
-              isFav={favIds.includes(c.id)}
-              onToggleFav={toggleFav}
-            />
-          ))}
-        </div>
+        {loading ? (
+          <div className="am-empty">Loading live offers...</div>
+        ) : cars.length === 0 ? (
+          <div className="am-empty">No offers are available right now.</div>
+        ) : (
+          <div className="am-grid">
+            {cars.slice(0, 6).map((c) => (
+              <AmCarCard
+                key={c.id}
+                car={c}
+                isFav={favIds.includes(c.id)}
+                onToggleFav={toggleFav}
+              />
+            ))}
+          </div>
+        )}
         <div className="am-section-cta">
           <Link to="/offers" className="am-btn am-btn--primary am-btn--lg">
             View more <ArrowRightIcon size={16} />

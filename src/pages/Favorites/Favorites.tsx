@@ -3,9 +3,8 @@ import type { KeyboardEvent, ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
 import AmNavbar from '../../components/home/am/AmNavbar'
 import AmFooter from '../../components/home/am/AmFooter'
-import type { FeaturedCar } from '../../components/home/types'
 import { useTheme } from '../../context/ThemeContext'
-import { featuredCars } from '../../data/featuredCars'
+import { getApiErrorMessage } from '../../services/api'
 import { getFavoriteIds, setFavoriteIds } from '../../utils/favoritesStorage'
 import { fetchOffers, fromCatalogFavoriteId, isCatalogFavoriteId } from '../Catalog/catalog.api'
 import type { Offer } from '../Catalog/catalog.types'
@@ -26,7 +25,6 @@ type FavoriteVehicle = {
   detailB: string
   features: string[]
   offer?: Offer
-  featuredCar?: FeaturedCar
 }
 
 type IconProps = {
@@ -96,24 +94,6 @@ const TrashIcon = (p: IconProps) => (
 const ArrowIcon = (p: IconProps) => <Svg {...p} d="M5 12h14M13 5l7 7-7 7" />
 const XIcon = (p: IconProps) => <Svg {...p} d="M6 6l12 12M18 6L6 18" />
 
-function toFavoriteVehicleFromFeaturedCar(car: FeaturedCar): FavoriteVehicle {
-  return {
-    favoriteId: car.id,
-    title: `${car.name} ${car.model}`,
-    year: car.year,
-    price: car.price,
-    image: car.image,
-    mileage: car.mileage,
-    fuel: car.fuel,
-    transmission: car.transmission,
-    category: car.body,
-    detailA: car.engine,
-    detailB: car.consumption,
-    features: car.features,
-    featuredCar: car,
-  }
-}
-
 function toFavoriteVehicleFromOffer(offer: Offer, favoriteId: number): FavoriteVehicle {
   const transmission =
     offer.transmission === 'automatic'
@@ -149,6 +129,8 @@ function Favorites() {
   const [favoriteIds, setFavoriteIdsState] = useState<number[]>(() => getFavoriteIds())
   const [compareIds, setCompareIds] = useState<number[]>([])
   const [catalogOffers, setCatalogOffers] = useState<Offer[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
 
   useEffect(() => {
     setFavoriteIds(favoriteIds)
@@ -158,9 +140,17 @@ function Favorites() {
     let alive = true
 
     ;(async () => {
-      const offers = await fetchOffers()
-      if (alive) {
-        setCatalogOffers(offers)
+      try {
+        setLoading(true)
+        setError('')
+        const offers = await fetchOffers()
+        if (alive) {
+          setCatalogOffers(offers)
+        }
+      } catch (err) {
+        if (alive) setError(getApiErrorMessage(err))
+      } finally {
+        if (alive) setLoading(false)
       }
     })()
 
@@ -181,18 +171,12 @@ function Favorites() {
   }, [])
 
   const favoriteCars = useMemo(() => {
-    const featuredMap = new Map(featuredCars.map((car) => [car.id, toFavoriteVehicleFromFeaturedCar(car)]))
     const catalogMap = new Map(catalogOffers.map((offer) => [offer.id, offer]))
 
     return favoriteIds.flatMap((favoriteId) => {
-      if (isCatalogFavoriteId(favoriteId)) {
-        const offerId = fromCatalogFavoriteId(favoriteId)
-        const offer = offerId ? catalogMap.get(offerId) : undefined
-        return offer ? [toFavoriteVehicleFromOffer(offer, favoriteId)] : []
-      }
-
-      const featuredCar = featuredMap.get(favoriteId)
-      return featuredCar ? [featuredCar] : []
+      const offerId = isCatalogFavoriteId(favoriteId) ? fromCatalogFavoriteId(favoriteId) : null
+      const offer = offerId ? catalogMap.get(offerId) : undefined
+      return offer ? [toFavoriteVehicleFromOffer(offer, favoriteId)] : []
     })
   }, [catalogOffers, favoriteIds])
 
@@ -223,11 +207,7 @@ function Favorites() {
   const openDetails = (car: FavoriteVehicle) => {
     navigate(
       '/car-details',
-      car.offer
-        ? { state: { offer: car.offer } }
-        : car.featuredCar
-          ? { state: { featuredCar: car.featuredCar } }
-          : undefined,
+      car.offer ? { state: { offer: car.offer } } : undefined,
     )
   }
 
@@ -268,7 +248,13 @@ function Favorites() {
           </div>
         </header>
 
-        {favoriteCars.length === 0 ? (
+        {error && <div className="am-alert" role="alert">{error}</div>}
+
+        {loading ? (
+          <section className="am-fav-empty">
+            <h2>Loading saved cars...</h2>
+          </section>
+        ) : favoriteCars.length === 0 ? (
           <section className="am-fav-empty">
             <div className="am-fav-empty-mark">
               <HeartIcon size={24} />

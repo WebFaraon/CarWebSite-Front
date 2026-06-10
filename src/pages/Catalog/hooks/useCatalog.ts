@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { fetchOffers } from "../catalog.api";
 import type { Filters, Offer, SortKey } from "../catalog.types";
+import { getApiErrorMessage } from "../../../services/api";
 
 const BRAND_FILTER_PRESET = [
   "Audi",
@@ -33,6 +34,7 @@ const DEFAULT_FILTERS: Filters = {
 export default function useCatalog() {
   const [offers, setOffers] = useState<Offer[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
 
   const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS);
   const [sort, setSort] = useState<SortKey>("relevance");
@@ -45,8 +47,11 @@ export default function useCatalog() {
     (async () => {
       try {
         setIsLoading(true);
+        setError("");
         const data = await fetchOffers();
         if (alive) setOffers(data);
+      } catch (err) {
+        if (alive) setError(getApiErrorMessage(err));
       } finally {
         if (alive) setIsLoading(false);
       }
@@ -150,5 +155,6 @@ export default function useCatalog() {
     sort,
     setSort,
     isLoading,
+    error,
   };
 }

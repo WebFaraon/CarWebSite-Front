@@ -314,7 +314,7 @@
   width: 0;
   margin-left: 2px;
   color: var(--accent);
-  animation: am-caret 1s steps(2) infinite;
+  animation: am-caret 1s steps(8) infinite;
 }
 @keyframes am-caret { 50% { opacity: 0; } }
 

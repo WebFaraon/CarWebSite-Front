@@ -1,4 +1,54 @@
-const API_URL = import.meta.env.VITE_API_URL as string
+const API_URL = ((import.meta.env.VITE_API_URL as string | undefined) || 'http://localhost:5229')
+  .replace(/\/$/, '')
+
+export class ApiError extends Error {
+  status: number
+  details?: unknown
+
+  constructor(message: string, status: number, details?: unknown) {
+    super(message)
+    this.name = 'ApiError'
+    this.status = status
+    this.details = details
+  }
+}
+
+function readMessage(body: unknown, fallback: string): string {
+  if (body && typeof body === 'object') {
+    const data = body as Record<string, unknown>
+    const message = data.message ?? data.detail ?? data.title
+    if (typeof message === 'string' && message.trim()) return message
+  }
+
+  if (typeof body === 'string' && body.trim()) return body
+  return fallback
+}
+
+async function parseResponseBody(res: Response): Promise<unknown> {
+  const text = await res.text()
+  if (!text) return null
+
+  try {
+    return JSON.parse(text)
+  } catch {
+    return text
+  }
+}
+
+export function getApiErrorMessage(error: unknown): string {
+  if (error instanceof ApiError) {
+    if (error.status === 0 || error.status === 503) {
+      return 'Serviciul este momentan indisponibil. Verificați dacă Backend-ul și SQL Server sunt pornite.'
+    }
+    return error.message
+  }
+
+  if (error instanceof TypeError) {
+    return 'Serviciul este momentan indisponibil. Verificați dacă Backend-ul este pornit.'
+  }
+
+  return error instanceof Error ? error.message : 'A apărut o eroare neașteptată.'
+}
 
 function getToken(): string | null {
   return localStorage.getItem('token')
@@ -13,13 +63,19 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   if (token) {
     headers['Authorization'] = `Bearer ${token}`
   }
-  const res = await fetch(`${API_URL}${path}`, { ...options, headers })
-  if (!res.ok) {
-    const text = await res.text()
-    throw new Error(text || res.statusText)
+  let res: Response
+  try {
+    res = await fetch(`${API_URL}${path}`, { ...options, headers })
+  } catch (error) {
+    throw new ApiError(getApiErrorMessage(error), 0, error)
   }
-  const text = await res.text()
-  return (text ? JSON.parse(text) : null) as T
+
+  const body = await parseResponseBody(res)
+  if (!res.ok) {
+    throw new ApiError(readMessage(body, res.statusText), res.status, body)
+  }
+
+  return body as T
 }
 
 export interface UserDto {
@@ -183,4 +239,12 @@ export const contactApi = {
       method: 'POST',
       body: JSON.stringify(data),
     }),
+}
+
+export const favoriteApi = {
+  getMine: () => request<unknown[]>('/api/favorite'),
+  add: (carId: number) =>
+    request<unknown>(`/api/favorite?carId=${carId}`, { method: 'POST' }),
+  remove: (id: number) =>
+    request<unknown>(`/api/favorite/${id}`, { method: 'DELETE' }),
 }

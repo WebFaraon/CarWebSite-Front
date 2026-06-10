@@ -4,7 +4,7 @@ import AmNavbar from '../../components/home/am/AmNavbar'
 import AmFooter from '../../components/home/am/AmFooter'
 import { useTheme } from '../../context/ThemeContext'
 import { useAuth } from '../../context/AuthContext'
-import { announcementApi, brandApi } from '../../services/api'
+import { announcementApi, brandApi, getApiErrorMessage } from '../../services/api'
 import type { BrandDto } from '../../services/api'
 import '../Home/Home.css'
 import './AmMyListings.css'
@@ -176,7 +176,7 @@ function fileToBase64(file: File): Promise<string> {
 
 /* ── icons ── */
 
-interface IconProps { size?: number }
+interface IconProps { size?: number; className?: string }
 
 const ico = (d: string, extra?: React.ReactNode) => ({ size = 18 }: IconProps) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -195,8 +195,8 @@ const TrashIcon = ico('M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2M19 6l-1 14a
 const MsgIcon = ico('M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.8-.9L3 21l1.9-5.7A8.38 8.38 0 0 1 4 11.5 8.5 8.5 0 0 1 12.5 3 8.38 8.38 0 0 1 21 11.5z')
 const XIcon = ico('M6 6l12 12M18 6L6 18')
 const ImgIcon = ico('M3 5h18v14H3zM21 15l-5-5L5 21', <circle cx="9" cy="9" r="2" />)
-const CheckIcon = ({ size = 18 }: IconProps) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor"
+const CheckIcon = ({ size = 18, className }: IconProps) => (
+  <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor"
        strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <path d="M20 6L9 17l-5-5" />
   </svg>
@@ -1329,11 +1329,12 @@ function AmMyListings() {
   const [listingsLoading, setListingsLoading] = useState(true)
   const [apiBrands, setApiBrands] = useState<BrandDto[]>([])
   const [brandsLoading, setBrandsLoading] = useState(true)
+  const [pageError, setPageError] = useState('')
 
   useEffect(() => {
     brandApi.getAll()
       .then(setApiBrands)
-      .catch(() => {})
+      .catch((err) => setPageError(getApiErrorMessage(err)))
       .finally(() => setBrandsLoading(false))
   }, [])
 
@@ -1341,6 +1342,7 @@ function AmMyListings() {
     if (!user) { setListingsLoading(false); return }
     announcementApi.getAll()
       .then((all) => {
+        setPageError('')
         const mine = all
           .filter((a) => a.userId === user.id)
           .map((a) => ({
@@ -1362,30 +1364,58 @@ function AmMyListings() {
           }))
         setListings(mine)
       })
-      .catch(() => {})
+      .catch((err) => setPageError(getApiErrorMessage(err)))
       .finally(() => setListingsLoading(false))
   }, [user])
 
-  const handleToggle = (l: Listing) =>
-    setListings((prev) =>
-      prev.map((x) =>
-        x.id === l.id
-          ? { ...x, status: x.status === 'hidden' ? 'active' : x.status === 'active' ? 'hidden' : x.status }
-          : x
+  const handleToggle = async (l: Listing) => {
+    if (l.status === 'pending') return
+    const nextStatus = l.status === 'hidden' ? 'active' : 'hidden'
+    try {
+      setPageError('')
+      await announcementApi.update(parseInt(l.id, 10), {
+        status: nextStatus === 'active' ? 'Active' : 'Hidden',
+      })
+      setListings((prev) =>
+        prev.map((x) => (x.id === l.id ? { ...x, status: nextStatus } : x)),
       )
-    )
+    } catch (err) {
+      setPageError(getApiErrorMessage(err))
+    }
+  }
 
   const handleDelete = async (id: string) => {
     try {
-      await announcementApi.delete(parseInt(id))
+      setPageError('')
+      await announcementApi.delete(parseInt(id, 10))
       setListings((prev) => prev.filter((l) => l.id !== id))
-    } catch { /* keep card in UI on failure */ }
+    } catch (err) {
+      setPageError(getApiErrorMessage(err))
+    }
   }
 
   const handleEdit = (_l: Listing) => switchTab('new')
 
   const handleOpen = (l: Listing) =>
-    navigate('/car-details', { state: { offer: l } })
+    navigate('/car-details', {
+      state: {
+        offer: {
+          id: l.id,
+          title: l.title,
+          price: l.price,
+          currency: 'EUR',
+          year: l.year,
+          km: l.mileage,
+          fuel: l.fuel.toLowerCase(),
+          transmission: l.transmission.toLowerCase(),
+          powerHp: undefined,
+          location: user?.city || 'Moldova',
+          imageUrl: l.images[0] ?? null,
+          images: l.images,
+          isNew: l.status === 'active',
+        },
+      },
+    })
 
   const handlePublished = (newListing: Listing) => {
     setListings((prev) => [newListing, ...prev])
@@ -1437,6 +1467,7 @@ function AmMyListings() {
         </div>
 
         <div role="tabpanel" aria-label={tab === 'listings' ? 'Your listings' : 'New listing'}>
+          {pageError && <div className="am-alert" role="alert">{pageError}</div>}
           {tab === 'listings' ? (
             <ListingsTab
               listings={listings}

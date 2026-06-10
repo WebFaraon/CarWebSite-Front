@@ -123,6 +123,26 @@ function AuthScreen({ mode }: AuthScreenProps) {
   const [submitting, setSubmitting] = useState(false)
 
   const signupReady = !!(name.trim() && email && pw && pw2)
+  const from = (location.state as { from?: string | { pathname?: string; search?: string; hash?: string } } | null)?.from
+
+  const handleBack = () => {
+    if (typeof from === 'string' && from !== location.pathname) {
+      navigate(from)
+      return
+    }
+
+    if (from && typeof from === 'object' && from.pathname && from.pathname !== location.pathname) {
+      navigate(`${from.pathname}${from.search ?? ''}${from.hash ?? ''}`)
+      return
+    }
+
+    if (window.history.length > 1) {
+      navigate(-1)
+      return
+    }
+
+    navigate('/')
+  }
 
   const validate = () => {
     const e: Record<string, string> = {}
@@ -170,6 +190,17 @@ function AuthScreen({ mode }: AuthScreenProps) {
             <span className="am-brand-mark">A</span>
             <span>AutoMarket</span>
           </Link>
+          <button
+            type="button"
+            className="am-auth-back"
+            onClick={handleBack}
+            aria-label="Go back"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M19 12H5M11 5l-7 7 7 7" />
+            </svg>
+            Back
+          </button>
         </div>
 
         <div className="am-auth-body">

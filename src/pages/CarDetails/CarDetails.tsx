@@ -1,36 +1,9 @@
 import { useMemo, useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import Navbar from '../../components/navbar/Navbar.tsx'
 import type { FeaturedCar } from '../../components/home/types'
 import type { Offer } from '../Catalog/catalog.types'
 import './CarDetails.css'
-
-const fallbackCarData = {
-  title: '2024 Mercedes-Benz S-Class',
-  price: '$112,000',
-  
-  images: [
-    'https://images.unsplash.com/photo-1629019879059-2a0345f93aea?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    'https://images.unsplash.com/photo-1609521233053-345bfa8b6f17?q=80&w=626&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-    'https://images.unsplash.com/photo-1609521247503-8de40462e427?q=80&w=627&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-  ],
-  description:
-    'Its and sclass, what do you expect.',
-  specs: [
-    { label: 'Mileage', value: '1,200 mi', icon: 'mileage' },
-    { label: 'Year', value: '2024', icon: 'year' },
-    { label: 'Transmission', value: 'Automatic', icon: 'transmission' },
-    { label: 'Fuel Type', value: 'Gasoline', icon: 'fuel' },
-    { label: 'Color', value: 'White', icon: 'color' },
-  ],
-  features: [
-    'Massage Seats',
-    'Burmester Sound',
-    'Air Suspension',
-    'Executive Package',
-    'Night Vision',
-  ],
-}
 
 type CarDetailsState = {
   offer?: Offer
@@ -49,7 +22,7 @@ function buildCarDataFromOffer(offer: Offer) {
   return {
     title: offer.title,
     price,
-    images: offer.images,
+    images: offer.images.length > 0 ? offer.images : [offer.imageUrl ?? '/template_images/audi-sq7.png'],
     description: `${offer.title} is available now in ${offer.location}. This listing includes ${offer.fuel} propulsion, ${new Intl.NumberFormat('de-DE').format(offer.km)} km mileage, and a ${offer.year} registration year.`,
     specs: [
       { label: 'Mileage', value: `${new Intl.NumberFormat('de-DE').format(offer.km)} km`, icon: 'mileage' },
@@ -134,19 +107,49 @@ function CarDetails() {
         ? buildCarDataFromOffer(state.offer)
         : state?.featuredCar
           ? buildCarDataFromFeaturedCar(state.featuredCar)
-          : fallbackCarData,
+          : null,
     [state],
   )
   const [activeImageIndex, setActiveImageIndex] = useState(0)
-  const totalImages = carData.images.length
+  const navigate = useNavigate()
+  const totalImages = carData?.images.length ?? 0
 
   const showNextImage = () => {
+    if (totalImages === 0) return
     setActiveImageIndex((currentIndex) => (currentIndex + 1) % totalImages)
   }
 
   const showPreviousImage = () => {
+    if (totalImages === 0) return
     setActiveImageIndex((currentIndex) =>
       currentIndex === 0 ? totalImages - 1 : currentIndex - 1
+    )
+  }
+
+  if (!carData) {
+    return (
+      <>
+        <Navbar />
+        <main className="car-details-page">
+          <section className="car-details-shell">
+            <article className="car-info-card">
+              <div className="info-block">
+                <h1>Listing not selected</h1>
+                <p>Open a car from the live catalog to view its details.</p>
+              </div>
+              <div className="actions-row">
+                <button
+                  type="button"
+                  className="primary-action"
+                  onClick={() => navigate('/offers')}
+                >
+                  Browse offers
+                </button>
+              </div>
+            </article>
+          </section>
+        </main>
+      </>
     )
   }
 
