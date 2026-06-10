@@ -25,6 +25,7 @@ export function featuredCarFromOffer(offer: Offer): FeaturedCar {
     body: offer.location,
     engine: offer.powerHp ? `${offer.powerHp} hp` : 'N/A',
     consumption: offer.location,
+    description: offer.description,
     features: [
       offer.isNew ? 'Active listing' : 'Verified listing',
       `${label(offer.transmission)} transmission`,

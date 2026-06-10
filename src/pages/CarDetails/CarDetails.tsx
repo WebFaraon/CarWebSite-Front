@@ -1,8 +1,11 @@
 import { useMemo, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import Navbar from '../../components/navbar/Navbar.tsx'
+import AmFooter from '../../components/home/am/AmFooter'
+import AmNavbar from '../../components/home/am/AmNavbar'
 import type { FeaturedCar } from '../../components/home/types'
+import { useTheme } from '../../context/ThemeContext'
 import type { Offer } from '../Catalog/catalog.types'
+import '../Home/Home.css'
 import './CarDetails.css'
 
 type CarDetailsState = {
@@ -23,7 +26,7 @@ function buildCarDataFromOffer(offer: Offer) {
     title: offer.title,
     price,
     images: offer.images.length > 0 ? offer.images : [offer.imageUrl ?? '/template_images/audi-sq7.png'],
-    description: `${offer.title} is available now in ${offer.location}. This listing includes ${offer.fuel} propulsion, ${new Intl.NumberFormat('de-DE').format(offer.km)} km mileage, and a ${offer.year} registration year.`,
+    description: offer.description,
     specs: [
       { label: 'Mileage', value: `${new Intl.NumberFormat('de-DE').format(offer.km)} km`, icon: 'mileage' },
       { label: 'Year', value: `${offer.year}`, icon: 'year' },
@@ -46,7 +49,9 @@ function buildCarDataFromFeaturedCar(featuredCar: FeaturedCar) {
     title: `${featuredCar.name} ${featuredCar.model}`,
     price: featuredCar.price,
     images: [featuredCar.image, featuredCar.image, featuredCar.image],
-    description: `${featuredCar.name} ${featuredCar.model} from ${featuredCar.year} with ${featuredCar.mileage}, ${featuredCar.transmission} transmission and ${featuredCar.fuel} fuel type.`,
+    description:
+      featuredCar.description ??
+      `${featuredCar.name} ${featuredCar.model} from ${featuredCar.year} with ${featuredCar.mileage}, ${featuredCar.transmission} transmission and ${featuredCar.fuel} fuel type.`,
     specs: [
       { label: 'Mileage', value: featuredCar.mileage, icon: 'mileage' },
       { label: 'Year', value: `${featuredCar.year}`, icon: 'year' },
@@ -99,6 +104,7 @@ function SpecIcon({ icon }: { icon: string }) {
 }
 
 function CarDetails() {
+  const { theme } = useTheme()
   const location = useLocation()
   const state = location.state as CarDetailsState | null
   const carData = useMemo(
@@ -128,19 +134,20 @@ function CarDetails() {
 
   if (!carData) {
     return (
-      <>
-        <Navbar />
-        <main className="car-details-page">
-          <section className="car-details-shell">
-            <article className="car-info-card">
-              <div className="info-block">
+      <div className="am" data-theme={theme}>
+        <AmNavbar />
+        <main className="am-shell am-detail-page">
+          <section className="am-detail-empty">
+            <article className="am-detail-panel">
+              <div className="am-detail-copy">
+                <div className="am-eyebrow">Car details</div>
                 <h1>Listing not selected</h1>
                 <p>Open a car from the live catalog to view its details.</p>
               </div>
-              <div className="actions-row">
+              <div className="am-detail-actions">
                 <button
                   type="button"
-                  className="primary-action"
+                  className="am-btn am-btn--primary am-btn--lg"
                   onClick={() => navigate('/offers')}
                 >
                   Browse offers
@@ -149,25 +156,40 @@ function CarDetails() {
             </article>
           </section>
         </main>
-      </>
+        <AmFooter />
+      </div>
     )
   }
 
   return (
-    <>
-      <Navbar />
-      <main className="car-details-page">
-        <section className="car-details-shell">
-          <article className="car-media-card">
-            <div className="main-image-wrap">
+    <div className="am" data-theme={theme}>
+      <AmNavbar />
+      <main className="am-shell am-detail-page">
+        <div className="am-detail-kicker">
+          <button
+            type="button"
+            className="am-detail-back"
+            onClick={() => navigate(-1)}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m15 5-7 7 7 7" />
+            </svg>
+            Back
+          </button>
+          <span className="am-eyebrow">Car details</span>
+        </div>
+
+        <section className="am-detail-layout">
+          <article className="am-detail-media">
+            <div className="am-detail-image-wrap">
               <img
                 src={carData.images[activeImageIndex]}
                 alt={`${carData.title} view ${activeImageIndex + 1}`}
-                className="car-main-image"
+                className="am-detail-main-image"
               />
               <button
                 type="button"
-                className="image-nav-btn image-nav-prev"
+                className="am-detail-image-btn am-detail-image-prev"
                 onClick={showPreviousImage}
                 aria-label="Show previous photo"
               >
@@ -177,7 +199,7 @@ function CarDetails() {
               </button>
               <button
                 type="button"
-                className="image-nav-btn image-nav-next"
+                className="am-detail-image-btn am-detail-image-next"
                 onClick={showNextImage}
                 aria-label="Show next photo"
               >
@@ -186,12 +208,12 @@ function CarDetails() {
                 </svg>
               </button>
             </div>
-            <div className="thumb-strip" aria-label="Car photo gallery">
+            <div className="am-detail-thumbs" aria-label="Car photo gallery">
               {carData.images.map((image, index) => (
                 <button
-                  key={image}
+                  key={`${image}-${index}`}
                   type="button"
-                  className={`thumb-btn ${index === activeImageIndex ? 'is-active' : ''}`}
+                  className={`am-detail-thumb ${index === activeImageIndex ? 'is-active' : ''}`}
                   onClick={() => setActiveImageIndex(index)}
                   aria-label={`Show photo ${index + 1}`}
                 >
@@ -201,19 +223,18 @@ function CarDetails() {
             </div>
           </article>
 
-          <article className="car-info-card">
-            <div className="car-info-top">
+          <article className="am-detail-panel">
+            <div className="am-detail-head">
               <div>
                 <h1>{carData.title}</h1>
-                <p className="car-price">{carData.price}</p>
+                <p className="am-detail-price">{carData.price}</p>
               </div>
-              
             </div>
 
-            <div className="spec-grid">
+            <div className="am-detail-spec-grid">
               {carData.specs.map((spec) => (
-                <div key={spec.label} className="spec-item">
-                  <span className="spec-icon">
+                <div key={spec.label} className="am-detail-spec">
+                  <span className="am-detail-spec-icon">
                     <SpecIcon icon={spec.icon} />
                   </span>
                   <div>
@@ -224,19 +245,19 @@ function CarDetails() {
               ))}
             </div>
 
-            <div className="divider" />
+            <div className="am-detail-divider" />
 
-            <section className="info-block">
+            <section className="am-detail-copy">
               <h2>Description</h2>
-              <p>{carData.description}</p>
+              <p>{carData.description || 'No description was provided for this listing.'}</p>
             </section>
 
-            <section className="info-block">
+            <section className="am-detail-copy">
               <h2>Features</h2>
-              <ul className="feature-grid">
+              <ul className="am-detail-feature-grid">
                 {carData.features.map((feature) => (
                   <li key={feature}>
-                    <span className="check-icon" aria-hidden="true">
+                    <span className="am-detail-check" aria-hidden="true">
                       <svg viewBox="0 0 24 24">
                         <path d="m5 12 5 5 9-10" />
                       </svg>
@@ -247,15 +268,20 @@ function CarDetails() {
               </ul>
             </section>
 
-            <div className="actions-row">
-              <button type="button" className="primary-action">
-                Contact Us
+            <div className="am-detail-actions">
+              <button
+                type="button"
+                className="am-btn am-btn--primary am-btn--lg"
+                onClick={() => navigate('/contact-us')}
+              >
+                Contact us
               </button>
             </div>
           </article>
         </section>
       </main>
-    </>
+      <AmFooter />
+    </div>
   )
 }
 

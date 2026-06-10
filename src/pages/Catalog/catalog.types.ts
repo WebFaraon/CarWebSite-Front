@@ -12,6 +12,7 @@ export type Offer = {
   transmission?: Transmission;
   powerHp?: number;
   location: string;
+  description: string;
   imageUrl: string | null;
   images: string[];
   isNew?: boolean;

@@ -14,6 +14,7 @@ export interface FeaturedCar {
   body: string
   engine: string
   consumption: string
+  description?: string
   features: string[]
 }
 

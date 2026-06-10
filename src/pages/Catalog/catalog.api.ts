@@ -50,6 +50,7 @@ function mapAnnouncementToOffer(a: AnnouncementDto): Offer {
     transmission: mapTransmission(a.transmission),
     powerHp: a.horsepower ?? undefined,
     location: a.ownerCity || 'Moldova',
+    description: a.description ?? '',
     imageUrl: coverImage,
     images: a.images.map((img) => img.url),
     isNew: a.status === 'Active',
