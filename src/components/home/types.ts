@@ -9,11 +9,13 @@ export interface FeaturedCar {
   mileage: string
   price: string
   image: string
+  images?: string[]
   fuel: string
   transmission: string
   body: string
   engine: string
   consumption: string
+  location?: string
   description?: string
   features: string[]
 }

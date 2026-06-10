@@ -13,6 +13,15 @@ export type Offer = {
   powerHp?: number;
   location: string;
   description: string;
+  bodyType?: string;
+  condition?: string;
+  color?: string;
+  doors?: number;
+  seats?: number;
+  engineSize?: string;
+  vin?: string;
+  negotiable?: boolean;
+  showPhone?: boolean;
   imageUrl: string | null;
   images: string[];
   isNew?: boolean;

@@ -35,6 +35,13 @@ function mapTransmission(transmission: string): Transmission {
   return transmission === 'Manual' ? 'manual' : 'automatic'
 }
 
+function normalizeEnumLabel(value?: string): string | undefined {
+  if (!value) return undefined
+  return value
+    .replace(/([a-z])([A-Z])/g, '$1 $2')
+    .replace(/^Suv$/, 'SUV')
+}
+
 function mapAnnouncementToOffer(a: AnnouncementDto): Offer {
   const coverImage =
     a.images.find((img) => img.isCover)?.url ?? a.images[0]?.url ?? null
@@ -51,6 +58,15 @@ function mapAnnouncementToOffer(a: AnnouncementDto): Offer {
     powerHp: a.horsepower ?? undefined,
     location: a.ownerCity || 'Moldova',
     description: a.description ?? '',
+    bodyType: normalizeEnumLabel(a.bodyType),
+    condition: normalizeEnumLabel(a.condition),
+    color: normalizeEnumLabel(a.color),
+    doors: a.doors,
+    seats: a.seats,
+    engineSize: a.engineSize,
+    vin: a.vin,
+    negotiable: a.negotiable,
+    showPhone: a.showPhone,
     imageUrl: coverImage,
     images: a.images.map((img) => img.url),
     isNew: a.status === 'Active',

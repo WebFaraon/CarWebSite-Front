@@ -19,6 +19,7 @@ type StatusFilter = ListingStatus | 'all'
 interface Listing {
   id: string
   title: string
+  brandId?: number
   brand: string
   model: string
   year: number
@@ -27,6 +28,19 @@ interface Listing {
   fuel: string
   transmission: string
   condition: string
+  bodyType?: string
+  color?: string
+  doors?: number | string
+  seats?: number
+  engineSize?: string
+  horsepower?: number
+  vin?: string
+  description: string
+  contactName: string
+  contactPhone?: string
+  contactCity: string
+  negotiable: boolean
+  showPhone: boolean
   status: ListingStatus
   images: string[]
   views: number
@@ -65,7 +79,7 @@ interface ImageEntry {
   url: string
   name: string
   size: number
-  file: File
+  file?: File
 }
 
 interface DraftState {
@@ -102,6 +116,63 @@ const COLOR_MAP: Record<string, string> = {
 const DOORS_MAP: Record<string, string> = {
   '2': 'Two', '3': 'Three', '4': 'Four', '5': 'Five',
 }
+const reverseMap = (map: Record<string, string>, value?: string | number | null) => {
+  if (value === undefined || value === null || value === '') return ''
+  const raw = String(value)
+  const found = Object.entries(map).find(([label, apiValue]) => apiValue === raw || label === raw)
+  return found?.[0] ?? raw
+}
+
+const blankForm = (initialContactName: string, initialEmail: string): FormData => ({
+  title: '', brand: '', model: '', year: '', price: '', mileage: '',
+  fuel: '', transmission: '', bodyType: '', color: '', condition: '',
+  doors: '', seats: '', engineSize: '', horsepower: '', vin: '',
+  description: '',
+  contactName: initialContactName,
+  contactPhone: '',
+  contactEmail: initialEmail,
+  contactCity: '',
+  negotiable: false,
+  showPhone: true,
+})
+
+const listingToForm = (
+  listing: Listing,
+  initialEmail: string,
+): FormData => ({
+  title: listing.title,
+  brand: listing.brand,
+  model: listing.model,
+  year: String(listing.year),
+  price: String(listing.price),
+  mileage: String(listing.mileage),
+  fuel: reverseMap(FUEL_MAP, listing.fuel),
+  transmission: reverseMap(TRANSMISSION_MAP, listing.transmission),
+  bodyType: reverseMap(BODY_TYPE_MAP, listing.bodyType),
+  color: reverseMap(COLOR_MAP, listing.color),
+  condition: reverseMap(CONDITION_MAP, listing.condition),
+  doors: typeof listing.doors === 'number' ? String(listing.doors) : reverseMap(DOORS_MAP, listing.doors),
+  seats: listing.seats ? String(listing.seats) : '',
+  engineSize: listing.engineSize ?? '',
+  horsepower: listing.horsepower ? String(listing.horsepower) : '',
+  vin: listing.vin ?? '',
+  description: listing.description,
+  contactName: listing.contactName,
+  contactPhone: listing.contactPhone ?? '',
+  contactEmail: initialEmail,
+  contactCity: listing.contactCity,
+  negotiable: listing.negotiable,
+  showPhone: listing.showPhone,
+})
+
+const imagesFromListing = (listing?: Listing | null): ImageEntry[] =>
+  listing?.images.map((url, index) => ({
+    id: `${listing.id}-${index}`,
+    url,
+    name: `Photo ${index + 1}`,
+    size: 0,
+  })) ?? []
+
 const API_STATUS_MAP: Record<string, ListingStatus> = {
   Active: 'active', Hidden: 'hidden', Pending: 'pending',
 }
@@ -292,7 +363,7 @@ function ImageUploader({ images, setImages, onToast }: ImageUploaderProps) {
   const removeImage = (id: string) => {
     setImages((prev) => {
       const entry = prev.find((im) => im.id === id)
-      if (entry) URL.revokeObjectURL(entry.url)
+      if (entry?.file) URL.revokeObjectURL(entry.url)
       return prev.filter((im) => im.id !== id)
     })
   }
@@ -657,23 +728,27 @@ interface WizardProps {
   brandsLoading: boolean
   initialContactName: string
   initialEmail: string
-  onPublished: (listing: Listing) => void
+  mode?: 'create' | 'edit'
+  initialListing?: Listing | null
+  onSaved: (listing: Listing, mode: 'create' | 'edit') => void
 }
 
-function Wizard({ apiBrands, brandsLoading, initialContactName, initialEmail, onPublished }: WizardProps) {
-  const [form, setForm] = useState<FormData>(() => ({
-    title: '', brand: '', model: '', year: '', price: '', mileage: '',
-    fuel: '', transmission: '', bodyType: '', color: '', condition: '',
-    doors: '', seats: '', engineSize: '', horsepower: '', vin: '',
-    description: '',
-    contactName: initialContactName,
-    contactPhone: '',
-    contactEmail: initialEmail,
-    contactCity: '',
-    negotiable: false,
-    showPhone: true,
-  }))
-  const [images, setImages] = useState<ImageEntry[]>([])
+function Wizard({
+  apiBrands,
+  brandsLoading,
+  initialContactName,
+  initialEmail,
+  mode = 'create',
+  initialListing,
+  onSaved,
+}: WizardProps) {
+  const isEdit = mode === 'edit' && !!initialListing
+  const [form, setForm] = useState<FormData>(() =>
+    initialListing
+      ? listingToForm(initialListing, initialEmail)
+      : blankForm(initialContactName, initialEmail),
+  )
+  const [images, setImages] = useState<ImageEntry[]>(() => imagesFromListing(initialListing))
   const [features, setFeatures] = useState<Set<string>>(new Set())
   const [section, setSection] = useState(0)
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -682,6 +757,21 @@ function Wizard({ apiBrands, brandsLoading, initialContactName, initialEmail, on
   const [submitted, setSubmitted] = useState(false)
   const [toast, setToast] = useState<string | null>(null)
   const [localDraft, setLocalDraft] = useState<DraftState | null>(null)
+
+  useEffect(() => {
+    setForm(
+      initialListing
+        ? listingToForm(initialListing, initialEmail)
+        : blankForm(initialContactName, initialEmail),
+    )
+    setImages(imagesFromListing(initialListing))
+    setFeatures(new Set())
+    setSection(0)
+    setErrors({})
+    setServerError('')
+    setSubmitted(false)
+    setLocalDraft(null)
+  }, [initialListing, initialContactName, initialEmail])
 
   const set = (k: keyof FormData, v: string | boolean) => {
     setForm((f) => ({ ...f, [k]: v }))
@@ -698,6 +788,7 @@ function Wizard({ apiBrands, brandsLoading, initialContactName, initialEmail, on
 
   // read draft on mount
   useEffect(() => {
+    if (isEdit) return
     try {
       const raw = localStorage.getItem(DRAFT_KEY)
       if (raw) {
@@ -705,10 +796,11 @@ function Wizard({ apiBrands, brandsLoading, initialContactName, initialEmail, on
         if (d && d.savedAt) setLocalDraft(d)
       }
     } catch { /* ignore */ }
-  }, [])
+  }, [isEdit])
 
   // auto-save draft on every form/features change
   useEffect(() => {
+    if (isEdit) return
     if (isDefaultForm(form) && features.size === 0) return
     const draft: DraftState = {
       form,
@@ -717,7 +809,7 @@ function Wizard({ apiBrands, brandsLoading, initialContactName, initialEmail, on
       savedAt: Date.now(),
     }
     try { localStorage.setItem(DRAFT_KEY, JSON.stringify(draft)) } catch { /* ignore */ }
-  }, [form, features, section])
+  }, [form, features, section, isEdit])
 
   const applyDraft = () => {
     if (!localDraft) return
@@ -782,11 +874,14 @@ function Wizard({ apiBrands, brandsLoading, initialContactName, initialEmail, on
 
     setSubmitting(true)
     try {
-      const base64Images = await Promise.all(
-        images.map((img, i) => fileToBase64(img.file).then((url) => ({ url, isCover: i === 0 })))
+      const imagePayload = await Promise.all(
+        images.map(async (img, i) => ({
+          url: img.file ? await fileToBase64(img.file) : img.url,
+          isCover: i === 0,
+        }))
       )
 
-      const created = await announcementApi.create({
+      const payload = {
         title: form.title || `${form.year} ${form.brand} ${form.model}`.trim(),
         negotiable: form.negotiable,
         showPhone: form.showPhone,
@@ -806,32 +901,81 @@ function Wizard({ apiBrands, brandsLoading, initialContactName, initialEmail, on
         horsepower: form.horsepower ? parseInt(form.horsepower) : undefined,
         vin: form.vin || undefined,
         brandId: brand.id,
-        images: base64Images,
-      })
-
-      const newListing: Listing = {
-        id: String(created.id),
-        title: created.title,
-        brand: created.brand.name,
-        model: created.model,
-        year: created.year,
-        price: Number(created.price),
-        mileage: created.mileage,
-        fuel: created.fuelType,
-        transmission: created.transmission,
-        condition: created.condition,
-        status: 'pending',
-        images: created.images.map((i) => i.url),
-        views: 0,
-        inquiries: 0,
-        createdAt: created.publishedAt.slice(0, 10),
+        images: imagePayload,
       }
 
-      localStorage.removeItem(DRAFT_KEY)
-      setSubmitted(true)
-      setTimeout(() => onPublished(newListing), 2500)
+      if (isEdit && initialListing) {
+        await announcementApi.update(parseInt(initialListing.id, 10), payload)
+        const updatedListing: Listing = {
+          ...initialListing,
+          title: payload.title,
+          brandId: brand.id,
+          brand: brand.name,
+          model: form.model,
+          year: parseInt(form.year) || CURRENT_YEAR,
+          price: parseFloat(form.price) || 0,
+          mileage: parseInt(form.mileage) || 0,
+          fuel: payload.fuelType,
+          transmission: payload.transmission,
+          condition: payload.condition,
+          bodyType: payload.bodyType,
+          color: payload.color,
+          doors: form.doors || undefined,
+          seats: payload.seats,
+          engineSize: payload.engineSize,
+          horsepower: payload.horsepower,
+          vin: payload.vin,
+          description: payload.description,
+          contactName: form.contactName,
+          contactPhone: form.contactPhone,
+          contactCity: form.contactCity,
+          negotiable: payload.negotiable,
+          showPhone: payload.showPhone,
+          images: imagePayload.map((img) => img.url),
+        }
+        setSubmitted(true)
+        setTimeout(() => onSaved(updatedListing, 'edit'), 1200)
+      } else {
+        const created = await announcementApi.create(payload)
+
+        const newListing: Listing = {
+          id: String(created.id),
+          title: created.title,
+          brandId: created.brand.id,
+          brand: created.brand.name,
+          model: created.model,
+          year: created.year,
+          price: Number(created.price),
+          mileage: created.mileage,
+          fuel: created.fuelType,
+          transmission: created.transmission,
+          condition: created.condition,
+          bodyType: created.bodyType,
+          color: created.color,
+          doors: created.doors,
+          seats: created.seats,
+          engineSize: created.engineSize,
+          horsepower: created.horsepower,
+          vin: created.vin,
+          description: created.description,
+          contactName: created.ownerName,
+          contactPhone: created.ownerPhone,
+          contactCity: created.ownerCity || '',
+          negotiable: created.negotiable,
+          showPhone: created.showPhone,
+          status: 'pending',
+          images: created.images.map((i) => i.url),
+          views: 0,
+          inquiries: 0,
+          createdAt: created.publishedAt.slice(0, 10),
+        }
+
+        localStorage.removeItem(DRAFT_KEY)
+        setSubmitted(true)
+        setTimeout(() => onSaved(newListing, 'create'), 2500)
+      }
     } catch (err: unknown) {
-      setServerError(err instanceof Error ? err.message : 'Failed to create listing.')
+      setServerError(err instanceof Error ? err.message : `Failed to ${isEdit ? 'update' : 'create'} listing.`)
     } finally {
       setSubmitting(false)
     }
@@ -842,8 +986,12 @@ function Wizard({ apiBrands, brandsLoading, initialContactName, initialEmail, on
       <div className="am-ml-form-card">
         <div className="am-ml-success" role="status">
           <div className="am-ml-success-mark"><CheckIcon size={28} /></div>
-          <h2>Listing submitted!</h2>
-          <p>Your listing is under review and will go live within a few hours.</p>
+          <h2>{isEdit ? 'Listing updated!' : 'Listing submitted!'}</h2>
+          <p>
+            {isEdit
+              ? 'Your changes were saved and the listing has been updated.'
+              : 'Your listing is under review and will go live within a few hours.'}
+          </p>
         </div>
       </div>
     )
@@ -855,7 +1003,13 @@ function Wizard({ apiBrands, brandsLoading, initialContactName, initialEmail, on
 
   return (
     <div className="am-ml-wizard">
-      {localDraft && (
+      {isEdit && initialListing && (
+        <div className="am-ml-draft-strip">
+          <span>Editing <b>{initialListing.title}</b>.</span>
+        </div>
+      )}
+
+      {!isEdit && localDraft && (
         <div className="am-ml-draft-strip">
           <span>You have an unsaved draft from <b>{timeAgo(localDraft.savedAt)}</b>.</span>
           <div className="am-ml-draft-actions">
@@ -894,7 +1048,9 @@ function Wizard({ apiBrands, brandsLoading, initialContactName, initialEmail, on
 
       <div className="am-ml-form-card">
         <div className="am-ml-section-head">
-          <h2 className="am-ml-section-title">{sec.title}</h2>
+          <h2 className="am-ml-section-title">
+            {isEdit ? sec.title.replace('Upload', 'Edit').replace('Information', 'Info') : sec.title}
+          </h2>
           <p className="am-ml-section-body">{sec.body}</p>
         </div>
 
@@ -1250,7 +1406,9 @@ function Wizard({ apiBrands, brandsLoading, initialContactName, initialEmail, on
             </div>
 
             <div className="am-ml-review">
-              <div className="am-ml-review-title">Review before publishing</div>
+              <div className="am-ml-review-title">
+                {isEdit ? 'Review before saving' : 'Review before publishing'}
+              </div>
               <dl>
                 <dt>Title</dt>
                 <dd>{form.title || `${form.brand} ${form.model} ${form.year}`.trim() || '—'}</dd>
@@ -1301,7 +1459,9 @@ function Wizard({ apiBrands, brandsLoading, initialContactName, initialEmail, on
                 onClick={handleSubmit}
                 disabled={submitting}
               >
-                {submitting ? 'Publishing…' : 'Publish listing'}
+                {submitting
+                  ? (isEdit ? 'Saving…' : 'Publishing…')
+                  : (isEdit ? 'Save changes' : 'Publish listing')}
               </button>
             )
           }
@@ -1322,6 +1482,7 @@ function AmMyListings() {
   const [searchParams, setSearchParams] = useSearchParams()
 
   const tab = ((searchParams.get('tab') ?? 'listings') as Tab)
+  const editId = searchParams.get('edit')
 
   const switchTab = (t: Tab) => setSearchParams({ tab: t }, { replace: true })
 
@@ -1330,6 +1491,17 @@ function AmMyListings() {
   const [apiBrands, setApiBrands] = useState<BrandDto[]>([])
   const [brandsLoading, setBrandsLoading] = useState(true)
   const [pageError, setPageError] = useState('')
+  const [editingListing, setEditingListing] = useState<Listing | null>(null)
+
+  const openCreate = () => {
+    setEditingListing(null)
+    setSearchParams({ tab: 'new' }, { replace: true })
+  }
+
+  const openListings = () => {
+    setEditingListing(null)
+    setSearchParams({ tab: 'listings' }, { replace: true })
+  }
 
   useEffect(() => {
     brandApi.getAll()
@@ -1348,6 +1520,7 @@ function AmMyListings() {
           .map((a) => ({
             id: String(a.id),
             title: a.title || `${a.brand.name} ${a.model} ${a.year}`,
+            brandId: a.brand.id,
             brand: a.brand.name,
             model: a.model,
             year: a.year,
@@ -1356,6 +1529,19 @@ function AmMyListings() {
             fuel: a.fuelType,
             transmission: a.transmission,
             condition: a.condition,
+            bodyType: a.bodyType,
+            color: a.color,
+            doors: a.doors,
+            seats: a.seats,
+            engineSize: a.engineSize,
+            horsepower: a.horsepower,
+            vin: a.vin,
+            description: a.description,
+            contactName: a.ownerName,
+            contactPhone: a.ownerPhone,
+            contactCity: a.ownerCity || '',
+            negotiable: a.negotiable,
+            showPhone: a.showPhone,
             status: (API_STATUS_MAP[a.status] ?? 'pending') as ListingStatus,
             images: a.images.map((i) => i.url),
             views: a.views,
@@ -1367,6 +1553,12 @@ function AmMyListings() {
       .catch((err) => setPageError(getApiErrorMessage(err)))
       .finally(() => setListingsLoading(false))
   }, [user])
+
+  useEffect(() => {
+    if (tab !== 'new' || !editId || editingListing) return
+    const listing = listings.find((item) => item.id === editId)
+    if (listing) setEditingListing(listing)
+  }, [tab, editId, editingListing, listings])
 
   const handleToggle = async (l: Listing) => {
     if (l.status === 'pending') return
@@ -1394,7 +1586,10 @@ function AmMyListings() {
     }
   }
 
-  const handleEdit = (_l: Listing) => switchTab('new')
+  const handleEdit = (l: Listing) => {
+    setEditingListing(l)
+    setSearchParams({ tab: 'new', edit: l.id }, { replace: true })
+  }
 
   const handleOpen = (l: Listing) =>
     navigate('/car-details', {
@@ -1409,7 +1604,17 @@ function AmMyListings() {
           fuel: l.fuel.toLowerCase(),
           transmission: l.transmission.toLowerCase(),
           powerHp: undefined,
-          location: user?.city || 'Moldova',
+          location: l.contactCity || user?.city || 'Moldova',
+          description: l.description,
+          bodyType: reverseMap(BODY_TYPE_MAP, l.bodyType),
+          condition: reverseMap(CONDITION_MAP, l.condition),
+          color: reverseMap(COLOR_MAP, l.color),
+          doors: typeof l.doors === 'number' ? l.doors : Number(l.doors) || undefined,
+          seats: l.seats,
+          engineSize: l.engineSize,
+          vin: l.vin,
+          negotiable: l.negotiable,
+          showPhone: l.showPhone,
           imageUrl: l.images[0] ?? null,
           images: l.images,
           isNew: l.status === 'active',
@@ -1417,8 +1622,13 @@ function AmMyListings() {
       },
     })
 
-  const handlePublished = (newListing: Listing) => {
-    setListings((prev) => [newListing, ...prev])
+  const handleSaved = (listing: Listing, mode: 'create' | 'edit') => {
+    setListings((prev) =>
+      mode === 'edit'
+        ? prev.map((item) => (item.id === listing.id ? listing : item))
+        : [listing, ...prev],
+    )
+    setEditingListing(null)
     switchTab('listings')
   }
 
@@ -1435,7 +1645,7 @@ function AmMyListings() {
           <button
             className="am-btn am-btn--primary am-btn--lg"
             type="button"
-            onClick={() => switchTab(tab === 'new' ? 'listings' : 'new')}
+            onClick={() => (tab === 'new' ? openListings() : openCreate())}
           >
             {tab === 'new'
               ? 'Back to listings'
@@ -1449,7 +1659,7 @@ function AmMyListings() {
             className="am-ml-tab"
             role="tab"
             aria-selected={tab === 'listings'}
-            onClick={() => switchTab('listings')}
+            onClick={openListings}
           >
             Your listings
             {listings.length > 0 && (
@@ -1460,9 +1670,9 @@ function AmMyListings() {
             className="am-ml-tab"
             role="tab"
             aria-selected={tab === 'new'}
-            onClick={() => switchTab('new')}
+            onClick={openCreate}
           >
-            New listing
+            {editingListing ? 'Edit listing' : 'New listing'}
           </button>
         </div>
 
@@ -1476,7 +1686,7 @@ function AmMyListings() {
               onToggle={handleToggle}
               onDelete={handleDelete}
               onOpen={handleOpen}
-              onPostNew={() => switchTab('new')}
+              onPostNew={openCreate}
             />
           ) : (
             <Wizard
@@ -1484,7 +1694,9 @@ function AmMyListings() {
               brandsLoading={brandsLoading}
               initialContactName={user?.fullName ?? ''}
               initialEmail={user?.email ?? ''}
-              onPublished={handlePublished}
+              mode={editingListing ? 'edit' : 'create'}
+              initialListing={editingListing}
+              onSaved={handleSaved}
             />
           )}
         </div>

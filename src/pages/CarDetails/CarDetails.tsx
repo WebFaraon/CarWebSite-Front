@@ -30,6 +30,11 @@ function label(value?: string): string {
   return value ? value.charAt(0).toUpperCase() + value.slice(1) : 'N/A'
 }
 
+function present(value: string | number | undefined | null, suffix = ''): string | null {
+  if (value === undefined || value === null || value === '') return null
+  return `${value}${suffix}`
+}
+
 function buildCarDataFromOffer(offer: Offer) {
   const price = `${fmt.format(offer.price)} ${offer.currency}`
   const transmission = label(offer.transmission)
@@ -37,14 +42,31 @@ function buildCarDataFromOffer(offer: Offer) {
   const mileage = `${fmt.format(offer.km)} km`
   const power = offer.powerHp ? `${offer.powerHp} hp` : 'N/A'
 
+  const bodyType = offer.bodyType ?? 'N/A'
   const highlights: DetailItem[] = [
     { label: 'Mileage', value: mileage, icon: 'mileage' },
     { label: 'Power', value: power, icon: 'power' },
     { label: 'Fuel', value: fuel, icon: 'fuel' },
     { label: 'Transmission', value: transmission, icon: 'transmission' },
-    { label: 'Year', value: `${offer.year}`, icon: 'year' },
+    { label: 'Body type', value: bodyType, icon: 'body' },
     { label: 'Location', value: offer.location, icon: 'location' },
   ]
+
+  const technicalRows = [
+    { label: 'Condition', value: present(offer.condition) },
+    { label: 'Body type', value: present(offer.bodyType) },
+    { label: 'Year', value: present(offer.year) },
+    { label: 'Mileage', value: mileage },
+    { label: 'Fuel type', value: fuel },
+    { label: 'Transmission', value: transmission },
+    { label: 'Power', value: present(offer.powerHp, ' hp') },
+    { label: 'Engine size', value: present(offer.engineSize, ' L') },
+    { label: 'Color', value: present(offer.color) },
+    { label: 'Doors', value: present(offer.doors) },
+    { label: 'Seats', value: present(offer.seats) },
+    { label: 'VIN', value: present(offer.vin) },
+    { label: 'Location', value: offer.location },
+  ].filter((row): row is DetailRow => Boolean(row.value))
 
   return {
     title: offer.title,
@@ -56,20 +78,12 @@ function buildCarDataFromOffer(offer: Offer) {
         : [offer.imageUrl ?? '/template_images/audi-sq7.png'],
     description: offer.description,
     highlights,
-    technicalRows: [
-      { label: 'Condition', value: offer.isNew ? 'Active listing' : 'Verified listing' },
-      { label: 'Year', value: `${offer.year}` },
-      { label: 'Mileage', value: mileage },
-      { label: 'Fuel type', value: fuel },
-      { label: 'Transmission', value: transmission },
-      { label: 'Power', value: power },
-      { label: 'Location', value: offer.location },
-      { label: 'Price', value: price },
-    ] satisfies DetailRow[],
+    technicalRows,
     features: [
       offer.isNew ? 'Active listing' : 'Verified listing',
       `${transmission} transmission`,
       `${fuel} fuel type`,
+      `${bodyType} body type`,
       `${power} output`,
       `Available in ${offer.location}`,
       offer.discountPct
@@ -80,20 +94,26 @@ function buildCarDataFromOffer(offer: Offer) {
 }
 
 function buildCarDataFromFeaturedCar(featuredCar: FeaturedCar) {
+  const images =
+    featuredCar.images && featuredCar.images.length > 0
+      ? featuredCar.images
+      : [featuredCar.image]
+  const location = featuredCar.location ?? featuredCar.consumption
+
   const highlights: DetailItem[] = [
     { label: 'Mileage', value: featuredCar.mileage, icon: 'mileage' },
     { label: 'Power', value: featuredCar.engine, icon: 'power' },
     { label: 'Fuel', value: featuredCar.fuel, icon: 'fuel' },
     { label: 'Transmission', value: featuredCar.transmission, icon: 'transmission' },
-    { label: 'Year', value: `${featuredCar.year}`, icon: 'year' },
-    { label: 'Body', value: featuredCar.body, icon: 'location' },
+    { label: 'Body type', value: featuredCar.body, icon: 'body' },
+    { label: 'Location', value: location, icon: 'location' },
   ]
 
   return {
     title: `${featuredCar.name} ${featuredCar.model}`,
     price: featuredCar.price,
-    location: featuredCar.body,
-    images: [featuredCar.image, featuredCar.image, featuredCar.image],
+    location,
+    images,
     description:
       featuredCar.description ??
       `${featuredCar.name} ${featuredCar.model} from ${featuredCar.year} with ${featuredCar.mileage}, ${featuredCar.transmission} transmission and ${featuredCar.fuel} fuel type.`,
@@ -103,10 +123,9 @@ function buildCarDataFromFeaturedCar(featuredCar: FeaturedCar) {
       { label: 'Mileage', value: featuredCar.mileage },
       { label: 'Fuel type', value: featuredCar.fuel },
       { label: 'Transmission', value: featuredCar.transmission },
-      { label: 'Body', value: featuredCar.body },
+      { label: 'Body type', value: featuredCar.body },
       { label: 'Power', value: featuredCar.engine },
-      { label: 'Consumption', value: featuredCar.consumption },
-      { label: 'Price', value: featuredCar.price },
+      { label: 'Location', value: location },
     ] satisfies DetailRow[],
     features: featuredCar.features,
   }
@@ -150,6 +169,14 @@ function SpecIcon({ icon }: { icon: string }) {
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z" />
         <path d="M12 10.5h.01" />
+      </svg>
+    )
+  }
+
+  if (icon === 'body') {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M3 13h18l-2-5a3 3 0 0 0-2.8-2H7.8A3 3 0 0 0 5 8l-2 5Zm2 0v5m14-5v5M7 18h.01M17 18h.01" />
       </svg>
     )
   }

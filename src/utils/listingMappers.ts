@@ -8,6 +8,10 @@ function label(value?: string): string {
   return value ? value.charAt(0).toUpperCase() + value.slice(1) : 'N/A'
 }
 
+function display(value?: string): string {
+  return value || 'N/A'
+}
+
 export function featuredCarFromOffer(offer: Offer): FeaturedCar {
   const [name = offer.title, ...modelParts] = offer.title.split(' ')
   const favoriteId = toCatalogFavoriteId(offer.id) ?? Number(offer.id)
@@ -20,15 +24,18 @@ export function featuredCarFromOffer(offer: Offer): FeaturedCar {
     mileage: `${new Intl.NumberFormat('de-DE').format(offer.km)} km`,
     price: `${new Intl.NumberFormat('de-DE').format(offer.price)} ${offer.currency}`,
     image: offer.imageUrl || FALLBACK_IMAGE,
+    images: offer.images.length > 0 ? offer.images : [offer.imageUrl || FALLBACK_IMAGE],
     fuel: label(offer.fuel),
     transmission: label(offer.transmission),
-    body: offer.location,
+    body: display(offer.bodyType),
     engine: offer.powerHp ? `${offer.powerHp} hp` : 'N/A',
     consumption: offer.location,
+    location: offer.location,
     description: offer.description,
     features: [
       offer.isNew ? 'Active listing' : 'Verified listing',
       `${label(offer.transmission)} transmission`,
+      `${display(offer.bodyType)} body type`,
       `Available in ${offer.location}`,
     ],
   }

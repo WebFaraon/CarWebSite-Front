@@ -203,6 +203,7 @@ export interface AnnouncementUpdateData {
   horsepower?: number
   vin?: string
   brandId?: number
+  images?: { url: string; isCover: boolean }[]
 }
 
 
