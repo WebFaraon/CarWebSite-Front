@@ -1,6 +1,8 @@
 export type FeatureIcon = 'verified' | 'secure' | 'selection' | 'support'
 export type SocialPlatform = 'facebook' | 'instagram' | 'x' | 'linkedin'
 
+import type { Offer } from '../../pages/Catalog/catalog.types'
+
 export interface FeaturedCar {
   id: number
   name: string
@@ -17,7 +19,8 @@ export interface FeaturedCar {
   consumption: string
   location?: string
   description?: string
-  features: string[]
+  features?: string[]
+  offer?: Offer
 }
 
 export interface FeatureItem {

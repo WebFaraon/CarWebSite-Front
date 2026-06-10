@@ -136,6 +136,7 @@ export interface AnnouncementDto {
   engineSize?: string
   horsepower?: number
   vin?: string
+  features?: string[]
   images: CarImageDto[]
 }
 
@@ -159,6 +160,7 @@ export interface AnnouncementCreateData {
   horsepower?: number
   vin?: string
   brandId: number
+  features?: string[]
   images: { url: string; isCover: boolean }[]
 }
 
@@ -203,6 +205,7 @@ export interface AnnouncementUpdateData {
   horsepower?: number
   vin?: string
   brandId?: number
+  features?: string[]
   images?: { url: string; isCover: boolean }[]
 }
 

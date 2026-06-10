@@ -11,9 +11,7 @@ function CarCard({ car, isFavorite, onToggleFavorite }: CarCardProps) {
   const navigate = useNavigate()
   const goToDetails = () => {
     navigate('/car-details', {
-      state: {
-        featuredCar: car,
-      },
+      state: car.offer ? { offer: car.offer } : { featuredCar: car },
     })
   }
 

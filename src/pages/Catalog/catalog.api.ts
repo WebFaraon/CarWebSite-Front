@@ -65,6 +65,7 @@ function mapAnnouncementToOffer(a: AnnouncementDto): Offer {
     seats: a.seats,
     engineSize: a.engineSize,
     vin: a.vin,
+    features: a.features ?? [],
     negotiable: a.negotiable,
     showPhone: a.showPhone,
     imageUrl: coverImage,

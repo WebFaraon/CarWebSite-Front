@@ -41,6 +41,7 @@ interface Listing {
   contactCity: string
   negotiable: boolean
   showPhone: boolean
+  features: string[]
   status: ListingStatus
   images: string[]
   views: number
@@ -749,7 +750,9 @@ function Wizard({
       : blankForm(initialContactName, initialEmail),
   )
   const [images, setImages] = useState<ImageEntry[]>(() => imagesFromListing(initialListing))
-  const [features, setFeatures] = useState<Set<string>>(new Set())
+  const [features, setFeatures] = useState<Set<string>>(
+    () => new Set(initialListing?.features ?? []),
+  )
   const [section, setSection] = useState(0)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [serverError, setServerError] = useState('')
@@ -765,7 +768,7 @@ function Wizard({
         : blankForm(initialContactName, initialEmail),
     )
     setImages(imagesFromListing(initialListing))
-    setFeatures(new Set())
+    setFeatures(new Set(initialListing?.features ?? []))
     setSection(0)
     setErrors({})
     setServerError('')
@@ -901,6 +904,7 @@ function Wizard({
         horsepower: form.horsepower ? parseInt(form.horsepower) : undefined,
         vin: form.vin || undefined,
         brandId: brand.id,
+        features: Array.from(features),
         images: imagePayload,
       }
 
@@ -931,6 +935,7 @@ function Wizard({
           contactCity: form.contactCity,
           negotiable: payload.negotiable,
           showPhone: payload.showPhone,
+          features: payload.features,
           images: imagePayload.map((img) => img.url),
         }
         setSubmitted(true)
@@ -963,6 +968,7 @@ function Wizard({
           contactCity: created.ownerCity || '',
           negotiable: created.negotiable,
           showPhone: created.showPhone,
+          features: created.features ?? payload.features,
           status: 'pending',
           images: created.images.map((i) => i.url),
           views: 0,
@@ -1542,6 +1548,7 @@ function AmMyListings() {
             contactCity: a.ownerCity || '',
             negotiable: a.negotiable,
             showPhone: a.showPhone,
+            features: a.features ?? [],
             status: (API_STATUS_MAP[a.status] ?? 'pending') as ListingStatus,
             images: a.images.map((i) => i.url),
             views: a.views,
@@ -1615,6 +1622,7 @@ function AmMyListings() {
           vin: l.vin,
           negotiable: l.negotiable,
           showPhone: l.showPhone,
+          features: l.features,
           imageUrl: l.images[0] ?? null,
           images: l.images,
           isNew: l.status === 'active',

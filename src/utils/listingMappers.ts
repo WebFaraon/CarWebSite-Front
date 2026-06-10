@@ -32,11 +32,7 @@ export function featuredCarFromOffer(offer: Offer): FeaturedCar {
     consumption: offer.location,
     location: offer.location,
     description: offer.description,
-    features: [
-      offer.isNew ? 'Active listing' : 'Verified listing',
-      `${label(offer.transmission)} transmission`,
-      `${display(offer.bodyType)} body type`,
-      `Available in ${offer.location}`,
-    ],
+    features: offer.features ?? [],
+    offer,
   }
 }

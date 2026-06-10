@@ -12,7 +12,9 @@ function AmCarCard({ car, isFav, onToggleFav }: AmCarCardProps) {
   const navigate = useNavigate()
 
   const goToDetails = () => {
-    navigate('/car-details', { state: { featuredCar: car } })
+    navigate('/car-details', {
+      state: car.offer ? { offer: car.offer } : { featuredCar: car },
+    })
   }
 
   const handleKey = (e: React.KeyboardEvent) => {

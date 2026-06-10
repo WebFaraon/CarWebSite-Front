@@ -20,6 +20,7 @@ export type Offer = {
   seats?: number;
   engineSize?: string;
   vin?: string;
+  features?: string[];
   negotiable?: boolean;
   showPhone?: boolean;
   imageUrl: string | null;

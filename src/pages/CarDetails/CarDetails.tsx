@@ -79,17 +79,7 @@ function buildCarDataFromOffer(offer: Offer) {
     description: offer.description,
     highlights,
     technicalRows,
-    features: [
-      offer.isNew ? 'Active listing' : 'Verified listing',
-      `${transmission} transmission`,
-      `${fuel} fuel type`,
-      `${bodyType} body type`,
-      `${power} output`,
-      `Available in ${offer.location}`,
-      offer.discountPct
-        ? `${offer.discountPct}% promotional discount`
-        : 'Standard market pricing',
-    ],
+    features: offer.features ?? [],
   }
 }
 
@@ -127,7 +117,7 @@ function buildCarDataFromFeaturedCar(featuredCar: FeaturedCar) {
       { label: 'Power', value: featuredCar.engine },
       { label: 'Location', value: location },
     ] satisfies DetailRow[],
-    features: featuredCar.features,
+    features: featuredCar.features ?? [],
   }
 }
 
@@ -334,18 +324,22 @@ function CarDetails() {
 
             <section className="am-detail-card">
               <h2>Equipment</h2>
-              <ul className="am-detail-feature-grid">
-                {carData.features.map((feature) => (
-                  <li key={feature}>
-                    <span className="am-detail-check" aria-hidden="true">
-                      <svg viewBox="0 0 24 24">
-                        <path d="m5 12 5 5 9-10" />
-                      </svg>
-                    </span>
-                    {feature}
-                  </li>
-                ))}
-              </ul>
+              {carData.features.length > 0 ? (
+                <ul className="am-detail-feature-grid">
+                  {carData.features.map((feature) => (
+                    <li key={feature}>
+                      <span className="am-detail-check" aria-hidden="true">
+                        <svg viewBox="0 0 24 24">
+                          <path d="m5 12 5 5 9-10" />
+                        </svg>
+                      </span>
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="am-detail-empty-text">No equipment was selected for this listing.</p>
+              )}
             </section>
 
             <section className="am-detail-card">
@@ -365,26 +359,12 @@ function CarDetails() {
               <div className="am-detail-aside-price">{carData.price}</div>
               <div className="am-detail-price-note">Listing price from the seller</div>
 
-              <button
-                type="button"
-                className="am-btn am-btn--accent am-btn--lg am-detail-contact"
-                onClick={() => navigate('/contact-us')}
-              >
-                Contact seller
-              </button>
-
               <div className="am-detail-side-actions">
                 <button type="button" className="am-detail-side-btn">
                   <svg viewBox="0 0 24 24" aria-hidden="true">
                     <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78Z" />
                   </svg>
                   Save
-                </button>
-                <button type="button" className="am-detail-side-btn">
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M16 6l-4-4-4 4M12 2v14" />
-                  </svg>
-                  Share
                 </button>
               </div>
             </article>
