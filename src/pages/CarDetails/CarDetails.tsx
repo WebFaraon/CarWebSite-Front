@@ -73,9 +73,11 @@ function buildCarDataFromOffer(offer: Offer) {
     price,
     location: offer.location,
     images:
-      offer.images.length > 0
-        ? offer.images
-        : [offer.imageUrl ?? '/template_images/audi-sq7.png'],
+    offer.images.length > 0
+    ? offer.images
+    : offer.imageUrl
+      ? [offer.imageUrl]
+      : [],
     description: offer.description,
     highlights,
     technicalRows,
@@ -246,13 +248,32 @@ function CarDetails() {
         <div className="am-detail-grid">
           <div className="am-detail-main">
             <article className="am-detail-gallery">
-              <div className="am-detail-photo-stage">
+             <div className="am-detail-photo-stage">
+              {carData.images.length > 0 ? (
                 <img
                   src={carData.images[activeImageIndex]}
                   alt={`${carData.title} view ${activeImageIndex + 1}`}
                   className="am-detail-photo"
                 />
-                <div className="am-detail-count">
+              ) : (
+                <div className="am-detail-photo am-detail-photo--placeholder" aria-label="No photo available">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                  >
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                    <circle cx="8.5" cy="8.5" r="1.5" />
+                    <polyline points="21 15 16 10 5 21" />
+                  </svg>
+                  <span>No photo</span>
+                </div>
+              )}
+              <div className="am-detail-count">
                   {activeImageIndex + 1} / {totalImages}
                 </div>
                 {totalImages > 1 && (
