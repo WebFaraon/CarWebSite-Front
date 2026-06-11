@@ -403,6 +403,11 @@
   color: #16a34a;
 }
 
+.badge-amber {
+  background: #fef3c7;
+  color: #92400e;
+}
+
 .badge-orange {
   background: color-mix(in oklab, var(--am-accent) 14%, var(--am-surface));
   color: var(--am-accent);
