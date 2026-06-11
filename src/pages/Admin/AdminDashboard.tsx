@@ -7,7 +7,7 @@ import type { AnnouncementDto } from '../../services/api'
 import '../Home/Home.css'
 import './AdminDashboard.css'
 
-type ListingStatus = 'active' | 'inactive'
+type ListingStatus = 'active' | 'hidden' | 'pending'
 type Section = 'overview' | 'listings'
 type OverviewSort = 'date_desc' | 'date_asc' | 'price_asc' | 'price_desc' | 'km_asc'
 
@@ -74,7 +74,7 @@ function mapAnnouncement(a: AnnouncementDto): Listing {
     fuel: a.fuelType,
     location: a.ownerCity || 'Moldova',
     imageUrl,
-    status: a.status === 'Active' ? 'active' : 'inactive',
+    status: a.status === 'Active' ? 'active' : a.status === 'Pending' ? 'pending' : 'hidden',
     seller: a.ownerName || 'Unknown seller',
     postedAt: a.publishedAt ? a.publishedAt.slice(0, 10) : '',
   }
@@ -174,7 +174,7 @@ function sortListings(listings: Listing[], sort: OverviewSort): Listing[] {
 }
 
 function StatusBadge({ status }: { status: ListingStatus }) {
-  const map: Record<ListingStatus, string> = { active: 'badge-green', inactive: 'badge-gray' }
+  const map: Record<ListingStatus, string> = { active: 'badge-green', hidden: 'badge-gray', pending: 'badge-amber' }
   return <span className={`badge ${map[status]}`}>{status}</span>
 }
 
@@ -228,13 +228,13 @@ function ListingsTable({
             {onStatus && (
               <td>
                 <div className="action-btns">
-                  {l.status === 'inactive' ? (
-                    <button className="icon-btn approve" title="Set Active" onClick={() => onStatus(l, 'active')}>
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M20 6L9 17l-5-5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                  {l.status === 'active' ? (
+                    <button className="icon-btn reject" title="Set Hidden" onClick={() => onStatus(l, 'hidden')}>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M18 6L6 18M6 6l12 12" strokeLinecap="round"/></svg>
                     </button>
                   ) : (
-                    <button className="icon-btn reject" title="Set Hidden" onClick={() => onStatus(l, 'inactive')}>
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M18 6L6 18M6 6l12 12" strokeLinecap="round"/></svg>
+                    <button className="icon-btn approve" title="Set Active" onClick={() => onStatus(l, 'active')}>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M20 6L9 17l-5-5" strokeLinecap="round" strokeLinejoin="round"/></svg>
                     </button>
                   )}
                   {onDelete && (
@@ -254,7 +254,7 @@ function ListingsTable({
 
 function OverviewSection({ listings }: { listings: Listing[] }) {
   const [sort, setSort] = useState<OverviewSort>('date_desc')
-  const inactiveCount = listings.filter((l) => l.status === 'inactive').length
+  const inactiveCount = listings.filter((l) => l.status !== 'active').length
   const sortedListings = sortListings(listings, sort).slice(0, 8)
 
   return (
@@ -264,16 +264,17 @@ function OverviewSection({ listings }: { listings: Listing[] }) {
           label="Listings"
           segments={[
             { label: 'Active', value: listings.filter((l) => l.status === 'active').length, color: '#2563eb' },
-            { label: 'Hidden', value: inactiveCount, color: '#cbd5e1' },
+            { label: 'Hidden', value: listings.filter((l) => l.status === 'hidden').length, color: '#cbd5e1' },
+            { label: 'Pending', value: listings.filter((l) => l.status === 'pending').length, color: '#d97706' },
           ]}
         />
         <DonutChart
-          label="Inventory"
-          segments={[
-            { label: 'Cars', value: listings.length, color: '#0d9488' },
-            { label: 'Hidden', value: inactiveCount, color: '#d97706' },
-          ]}
-        />
+        label="Inventory"
+        segments={[
+          { label: 'Visible', value: listings.length - inactiveCount, color: '#0d9488' },
+          { label: 'Hidden', value: inactiveCount, color: '#d97706' },
+        ]}
+      />
       </div>
 
       <h2 className="admin-section-title">Recent Listings</h2>
@@ -364,7 +365,7 @@ function AdminDashboard() {
     }
   }, [])
 
-  const pendingCount = listings.filter((l) => l.status === 'inactive').length
+  const pendingCount = listings.filter((l) => l.status === 'pending').length
 
   function getBadge(id: Section): number {
     if (id === 'listings') return pendingCount
@@ -375,7 +376,7 @@ function AdminDashboard() {
     try {
       setError('')
       await announcementApi.update(Number(listing.id), {
-        status: status === 'active' ? 'Active' : 'Hidden',
+      status: status === 'active' ? 'Active' : status === 'pending' ? 'Pending' : 'Hidden',
       })
       setListings((prev) =>
         prev.map((item) => (item.id === listing.id ? { ...item, status } : item)),
