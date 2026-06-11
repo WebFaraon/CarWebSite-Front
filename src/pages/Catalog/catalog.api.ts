@@ -76,5 +76,7 @@ function mapAnnouncementToOffer(a: AnnouncementDto): Offer {
 
 export async function fetchOffers(): Promise<Offer[]> {
   const announcements = await announcementApi.getAll()
-  return announcements.map(mapAnnouncementToOffer)
+  return announcements
+    .filter((a) => a.status === 'Active')
+    .map(mapAnnouncementToOffer)
 }

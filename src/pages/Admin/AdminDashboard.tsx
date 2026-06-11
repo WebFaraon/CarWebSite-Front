@@ -59,10 +59,10 @@ const OVERVIEW_SORT_OPTIONS: { value: OverviewSort; label: string }[] = [
 ]
 
 function mapAnnouncement(a: AnnouncementDto): Listing {
-  const imageUrl =
-    a.images.find((image) => image.isCover)?.url ??
-    a.images[0]?.url ??
-    '/template_images/audi-sq7.png'
+ const imageUrl =
+  a.images.find((image) => image.isCover)?.url ??
+  a.images[0]?.url ??
+  ''
 
   return {
     id: String(a.id),
