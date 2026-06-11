@@ -13,7 +13,7 @@ interface AmHeroProps {
 function HeroVisual({ car }: { car?: FeaturedCar }) {
   return (
     <div className="am-hero-visual" aria-hidden="true">
-      {car && (
+      {car && car.image && (
         <>
           <img
             className="am-hero-visual-bg"

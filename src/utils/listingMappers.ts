@@ -2,7 +2,6 @@ import type { FeaturedCar } from '../components/home/types'
 import { toCatalogFavoriteId } from '../pages/Catalog/catalog.api'
 import type { Offer } from '../pages/Catalog/catalog.types'
 
-const FALLBACK_IMAGE = '/template_images/audi-sq7.png'
 
 function label(value?: string): string {
   return value ? value.charAt(0).toUpperCase() + value.slice(1) : 'N/A'
@@ -23,8 +22,8 @@ export function featuredCarFromOffer(offer: Offer): FeaturedCar {
     year: offer.year,
     mileage: `${new Intl.NumberFormat('de-DE').format(offer.km)} km`,
     price: `${new Intl.NumberFormat('de-DE').format(offer.price)} ${offer.currency}`,
-    image: offer.imageUrl || FALLBACK_IMAGE,
-    images: offer.images.length > 0 ? offer.images : [offer.imageUrl || FALLBACK_IMAGE],
+    image: offer.imageUrl || '',
+    images: offer.images.length > 0 ? offer.images : (offer.imageUrl ? [offer.imageUrl] : []),
     fuel: label(offer.fuel),
     transmission: label(offer.transmission),
     body: display(offer.bodyType),
