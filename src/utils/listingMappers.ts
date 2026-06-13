@@ -1,5 +1,4 @@
 import type { FeaturedCar } from '../components/home/types'
-import { toCatalogFavoriteId } from '../pages/Catalog/catalog.api'
 import type { Offer } from '../pages/Catalog/catalog.types'
 
 
@@ -13,10 +12,9 @@ function display(value?: string): string {
 
 export function featuredCarFromOffer(offer: Offer): FeaturedCar {
   const [name = offer.title, ...modelParts] = offer.title.split(' ')
-  const favoriteId = toCatalogFavoriteId(offer.id) ?? Number(offer.id)
 
   return {
-    id: favoriteId,
+    id: Number(offer.id),
     name,
     model: modelParts.join(' ') || offer.title,
     year: offer.year,

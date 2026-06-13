@@ -14,6 +14,7 @@ import AdminDashboard from './pages/Admin/AdminDashboard.tsx'
 import { ThemeProvider } from './context/ThemeContext.tsx'
 import { AuthProvider } from './context/AuthContext.tsx'
 import { AdminAuthProvider, useAdminAuth } from './context/AdminAuthContext.tsx'
+import { FavoritesProvider } from './context/FavoritesContext.tsx'
 import PrivateRoute from './components/PrivateRoute.tsx'
 
 function AdminRoute({ children }: { children: React.ReactNode }) {
@@ -49,9 +50,11 @@ function App() {
     <AuthProvider>
       <AdminAuthProvider>
         <ThemeProvider>
-          <BrowserRouter>
-            <AppRoutes />
-          </BrowserRouter>
+          <FavoritesProvider>
+            <BrowserRouter>
+              <AppRoutes />
+            </BrowserRouter>
+          </FavoritesProvider>
         </ThemeProvider>
       </AdminAuthProvider>
     </AuthProvider>
