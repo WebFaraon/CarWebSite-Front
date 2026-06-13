@@ -4,8 +4,8 @@ import AmNavbar from '../../components/home/am/AmNavbar'
 import AmFooter from '../../components/home/am/AmFooter'
 import { useTheme } from '../../context/ThemeContext'
 import useCatalog from './hooks/useCatalog'
-import { toCatalogFavoriteId } from './catalog.api'
-import { getFavoriteIds, setFavoriteIds } from '../../utils/favoritesStorage'
+import { useFavorites } from '../../context/FavoritesContext'
+import { useAuth } from '../../context/AuthContext'
 import type { Filters, Fuel, Offer, SortKey, Transmission } from './catalog.types'
 import '../Home/Home.css'
 import './AmOffers.css'
@@ -434,7 +434,9 @@ function AmOffers() {
     pageSize,
   } = cat
 
-  const [favoriteIds, setFavoriteIdsState] = useState<number[]>(() => getFavoriteIds())
+  const { isFavorite, add, remove } = useFavorites()
+  const { isLoggedIn } = useAuth()
+  const navigate = useNavigate()  
   const [view, setView] = useState<'grid' | 'list'>('grid')
   const [sheet, setSheet] = useState(false)
   const [stuck, setStuck] = useState(false)
@@ -468,11 +470,7 @@ function AmOffers() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters, sort, page])
 
-  // Persist favorites to localStorage
-  useEffect(() => {
-    setFavoriteIds(favoriteIds)
-  }, [favoriteIds])
-
+  
   // Sticky toolbar detection via window scroll
   useEffect(() => {
     const onScroll = () => {
@@ -502,13 +500,18 @@ function AmOffers() {
     }
   }, [sheet])
 
-  const toggleFavorite = (offerId: string) => {
-    const favId = toCatalogFavoriteId(offerId)
-    if (favId == null) return
-    setFavoriteIdsState((prev) =>
-      prev.includes(favId) ? prev.filter((x) => x !== favId) : [...prev, favId],
-    )
+ const toggleFavorite = (offerId: string) => {
+  if (!isLoggedIn) {
+    navigate('/login')
+    return
   }
+  const carId = Number(offerId)
+  if (isFavorite(carId)) {
+    remove(carId)
+  } else {
+    add(carId)
+  }
+}
 
   const empty = !isLoading && totalCount === 0
   const active = !isDefault(filters)
@@ -550,10 +553,9 @@ function AmOffers() {
     return out
   }, [page, totalPages])
 
-  const isFav = (offerId: string): boolean => {
-    const favId = toCatalogFavoriteId(offerId)
-    return favId != null && favoriteIds.includes(favId)
-  }
+   const isFav = (offerId: string): boolean => {
+  return isFavorite(Number(offerId))
+}
 
   return (
     <div className="am" data-theme={theme}>

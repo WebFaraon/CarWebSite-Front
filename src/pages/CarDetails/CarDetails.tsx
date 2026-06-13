@@ -4,6 +4,8 @@ import AmFooter from '../../components/home/am/AmFooter'
 import AmNavbar from '../../components/home/am/AmNavbar'
 import type { FeaturedCar } from '../../components/home/types'
 import { useTheme } from '../../context/ThemeContext'
+import { useFavorites } from '../../context/FavoritesContext'
+import { useAuth } from '../../context/AuthContext'
 import type { Offer } from '../Catalog/catalog.types'
 import '../Home/Home.css'
 import './CarDetails.css'
@@ -73,11 +75,11 @@ function buildCarDataFromOffer(offer: Offer) {
     price,
     location: offer.location,
     images:
-    offer.images.length > 0
-    ? offer.images
-    : offer.imageUrl
-      ? [offer.imageUrl]
-      : [],
+      offer.images.length > 0
+        ? offer.images
+        : offer.imageUrl
+          ? [offer.imageUrl]
+          : [],
     description: offer.description,
     highlights,
     technicalRows,
@@ -195,6 +197,14 @@ function CarDetails() {
   )
   const [activeImageIndex, setActiveImageIndex] = useState(0)
   const navigate = useNavigate()
+  const { isFavorite, add, remove } = useFavorites()
+  const { isLoggedIn } = useAuth()
+  // Resolve carId: Offer.id is string, FeaturedCar.id is number
+  const carId: number | null = state?.offer
+    ? Number(state.offer.id)
+    : state?.featuredCar
+      ? state.featuredCar.id
+      : null
   const totalImages = carData?.images.length ?? 0
 
   const showNextImage = () => {
@@ -207,6 +217,19 @@ function CarDetails() {
     setActiveImageIndex((currentIndex) =>
       currentIndex === 0 ? totalImages - 1 : currentIndex - 1,
     )
+  }
+
+  const handleToggleFavorite = () => {
+    if (!isLoggedIn) {
+      navigate('/login')
+      return
+    }
+    if (carId == null) return
+    if (isFavorite(carId)) {
+      remove(carId)
+    } else {
+      add(carId)
+    }
   }
 
   if (!carData) {
@@ -248,32 +271,32 @@ function CarDetails() {
         <div className="am-detail-grid">
           <div className="am-detail-main">
             <article className="am-detail-gallery">
-             <div className="am-detail-photo-stage">
-              {carData.images.length > 0 ? (
-                <img
-                  src={carData.images[activeImageIndex]}
-                  alt={`${carData.title} view ${activeImageIndex + 1}`}
-                  className="am-detail-photo"
-                />
-              ) : (
-                <div className="am-detail-photo am-detail-photo--placeholder" aria-label="No photo available">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    aria-hidden="true"
-                  >
-                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-                    <circle cx="8.5" cy="8.5" r="1.5" />
-                    <polyline points="21 15 16 10 5 21" />
-                  </svg>
-                  <span>No photo</span>
-                </div>
-              )}
-              <div className="am-detail-count">
+              <div className="am-detail-photo-stage">
+                {carData.images.length > 0 ? (
+                  <img
+                    src={carData.images[activeImageIndex]}
+                    alt={`${carData.title} view ${activeImageIndex + 1}`}
+                    className="am-detail-photo"
+                  />
+                ) : (
+                  <div className="am-detail-photo am-detail-photo--placeholder" aria-label="No photo available">
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      aria-hidden="true"
+                    >
+                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                      <circle cx="8.5" cy="8.5" r="1.5" />
+                      <polyline points="21 15 16 10 5 21" />
+                    </svg>
+                    <span>No photo</span>
+                  </div>
+                )}
+                <div className="am-detail-count">
                   {activeImageIndex + 1} / {totalImages}
                 </div>
                 {totalImages > 1 && (
@@ -381,11 +404,16 @@ function CarDetails() {
               <div className="am-detail-price-note">Listing price from the seller</div>
 
               <div className="am-detail-side-actions">
-                <button type="button" className="am-detail-side-btn">
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                <button
+                  type="button"
+                  className="am-detail-side-btn"
+                  onClick={handleToggleFavorite}
+                  aria-pressed={carId != null && isFavorite(carId)}
+                >
+                  <svg viewBox="0 0 24 24" aria-hidden="true" fill={carId != null && isFavorite(carId) ? 'currentColor' : 'none'}>
                     <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78Z" />
                   </svg>
-                  Save
+                  {carId != null && isFavorite(carId) ? 'Saved' : 'Save'}
                 </button>
               </div>
             </article>

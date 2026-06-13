@@ -414,6 +414,23 @@
   stroke-width: 1.8;
 }
 
+.am-detail-side-btn[aria-pressed='true'] {
+  color: #e11d48;
+  border-color: #e11d48;
+  background: #fef2f2;
+}
+
+.am-detail-side-btn[aria-pressed='true']:hover {
+  background: #fee2e2;
+  border-color: #e11d48;
+  color: #be123c;
+}
+
+.am-detail-side-btn[aria-pressed='true'] svg {
+  fill: currentColor;
+  stroke: currentColor;
+}
+
 .am-detail-empty {
   max-width: 680px;
   margin: 0 auto;

@@ -5,8 +5,8 @@ import AmNavbar from '../../components/home/am/AmNavbar'
 import AmFooter from '../../components/home/am/AmFooter'
 import { useTheme } from '../../context/ThemeContext'
 import { getApiErrorMessage } from '../../services/api'
-import { getFavoriteIds, setFavoriteIds } from '../../utils/favoritesStorage'
-import { fetchOffers, fromCatalogFavoriteId, isCatalogFavoriteId } from '../Catalog/catalog.api'
+import { useFavorites } from '../../context/FavoritesContext'
+import { fetchOffers } from '../Catalog/catalog.api'
 import type { Offer } from '../Catalog/catalog.types'
 import '../Home/Home.css'
 import './Favorites.css'
@@ -126,15 +126,11 @@ function toFavoriteVehicleFromOffer(offer: Offer, favoriteId: number): FavoriteV
 function Favorites() {
   const { theme } = useTheme()
   const navigate = useNavigate()
-  const [favoriteIds, setFavoriteIdsState] = useState<number[]>(() => getFavoriteIds())
+  const { favoriteIds, remove } = useFavorites()
   const [compareIds, setCompareIds] = useState<number[]>([])
   const [catalogOffers, setCatalogOffers] = useState<Offer[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-
-  useEffect(() => {
-    setFavoriteIds(favoriteIds)
-  }, [favoriteIds])
 
   useEffect(() => {
     let alive = true
@@ -159,38 +155,25 @@ function Favorites() {
     }
   }, [])
 
+  // Drop compare selections that are no longer in favorites
   useEffect(() => {
-    const handleStorage = () => {
-      const nextFavoriteIds = getFavoriteIds()
-      setFavoriteIdsState(nextFavoriteIds)
-      setCompareIds((prev) => prev.filter((id) => nextFavoriteIds.includes(id)))
-    }
+    setCompareIds((prev) => prev.filter((id) => favoriteIds.includes(id)))
+  }, [favoriteIds])
 
-    window.addEventListener('storage', handleStorage)
-    return () => window.removeEventListener('storage', handleStorage)
-  }, [])
 
   const favoriteCars = useMemo(() => {
-    const catalogMap = new Map(catalogOffers.map((offer) => [offer.id, offer]))
+  const catalogMap = new Map(catalogOffers.map((offer) => [offer.id, offer]))
 
-    return favoriteIds.flatMap((favoriteId) => {
-      const offerId = isCatalogFavoriteId(favoriteId) ? fromCatalogFavoriteId(favoriteId) : null
-      const offer = offerId ? catalogMap.get(offerId) : undefined
-      return offer ? [toFavoriteVehicleFromOffer(offer, favoriteId)] : []
-    })
-  }, [catalogOffers, favoriteIds])
+  return favoriteIds.flatMap((carId) => {
+    const offer = catalogMap.get(String(carId))
+    return offer ? [toFavoriteVehicleFromOffer(offer, carId)] : []
+  })
+}, [catalogOffers, favoriteIds])
 
-  const toggleFavorite = (favoriteId: number) => {
-    setFavoriteIdsState((prev) => {
-      const nextFavoriteIds = prev.includes(favoriteId)
-        ? prev.filter((id) => id !== favoriteId)
-        : [...prev, favoriteId]
 
-      setCompareIds((current) => current.filter((id) => nextFavoriteIds.includes(id)))
-
-      return nextFavoriteIds
-    })
-  }
+ const toggleFavorite = (carId: number) => {
+  remove(carId)
+}
 
   const toggleCompare = (favoriteId: number) => {
     setCompareIds((prev) => {

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import AmCarCard from '../../components/home/am/AmCarCard'
 import AmFooter from '../../components/home/am/AmFooter'
 import AmHero from '../../components/home/am/AmHero'
@@ -11,7 +11,8 @@ import AmSearch, {
 import { ArrowRightIcon } from '../../components/home/am/AmIcons'
 import { useTheme } from '../../context/ThemeContext'
 import { getApiErrorMessage } from '../../services/api'
-import { getFavoriteIds, setFavoriteIds as storeFavoriteIds } from '../../utils/favoritesStorage'
+import { useFavorites } from '../../context/FavoritesContext'
+import { useAuth } from '../../context/AuthContext'
 import { featuredCarFromOffer } from '../../utils/listingMappers'
 import type { FeaturedCar } from '../../components/home/types'
 import { fetchOffers } from '../Catalog/catalog.api'
@@ -81,7 +82,9 @@ function Home() {
   const [query, setQuery] = useState('')
   const [submittedQuery, setSubmittedQuery] = useState('')
   const [filters, setFilters] = useState<Filters>({})
-  const [favIds, setFavIds] = useState<number[]>(() => getFavoriteIds())
+  const { favoriteIds: favIds, isFavorite, add, remove } = useFavorites()
+  const { isLoggedIn } = useAuth()
+  const navigate = useNavigate()
   const [cars, setCars] = useState<FeaturedCar[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -108,15 +111,18 @@ function Home() {
     }
   }, [])
 
-  useEffect(() => {
-    storeFavoriteIds(favIds)
-  }, [favIds])
-
+ 
   const toggleFav = (id: number) => {
-    setFavIds((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
-    )
+  if (!isLoggedIn) {
+    navigate('/login')
+    return
   }
+  if (isFavorite(id)) {
+    remove(id)
+  } else {
+    add(id)
+  }
+}
 
   const filterCount = useMemo(() => countFilters(filters), [filters])
   const showResults = submittedQuery !== '' || filterCount > 0
