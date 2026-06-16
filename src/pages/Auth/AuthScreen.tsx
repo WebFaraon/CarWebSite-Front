@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect,  useState } from 'react'
 import type { ReactNode } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useTheme } from '../../context/ThemeContext'
@@ -6,6 +6,7 @@ import { useAuth } from '../../context/AuthContext'
 import { userApi } from '../../services/api'
 import '../Home/Home.css'
 import './AuthScreen.css'
+
 
 type Mode = 'signin' | 'signup'
 
@@ -109,7 +110,7 @@ function AuthField({
 
 function AuthScreen({ mode }: AuthScreenProps) {
   const { theme } = useTheme()
-  const { login } = useAuth()
+  const { login, isLoggedIn, isAdmin } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -121,6 +122,16 @@ function AuthScreen({ mode }: AuthScreenProps) {
   const [pw2, setPw2] = useState('')
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [submitting, setSubmitting] = useState(false)
+
+  // Redirect authenticated users away from sign-in/sign-up pages.
+  // Uses { replace: true} so the back button doesn't return to this route,
+  // which would re-trigger the effect and create the infinite redirect loop.
+  useEffect(() =>{
+    if(isLoggedIn) {
+      navigate(isAdmin ? '/admin' : '/' , { replace: true})
+    }
+  }, [isLoggedIn, isAdmin, navigate])
+
 
   const signupReady = !!(name.trim() && email && pw && pw2)
   const from = (location.state as { from?: string | { pathname?: string; search?: string; hash?: string } } | null)?.from
@@ -183,6 +194,13 @@ function AuthScreen({ mode }: AuthScreenProps) {
       setSubmitting(false)
     }
   }
+
+  // Block render before effect runs to avoid a brief flash of the auth form
+  // when a logged-in user visits the route. Must stay below all hooks (Rules of Hooks).
+  if(isLoggedIn){
+    return null;
+  }
+
 
   return (
     <div className="am" data-theme={theme}>
