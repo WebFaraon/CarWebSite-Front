@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState, useCallback } from 'rea
 import type { ReactNode } from 'react'
 import { favoriteApi, getApiErrorMessage } from '../services/api'
 import { useAuth } from './AuthContext'
+import './FavoritesContext.css'
 
 interface FavoriteRecord {
  id: number       // FavoriteData primary key, used for DELETE
@@ -44,7 +45,9 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
         setRecords(arr)
       })
       .catch((err) => {
-        if (alive) setError(getApiErrorMessage(err))
+         // Skip the global banner since pages handle initial fetch errors via their own UI.
+        // The banner is strictly reserved for direct user interactions (e.g., adding/removing a favorite).
+        if (alive) console.error('Failed to load favorites:', err)
       })
       .finally(() => {
         if (alive) setLoading(false)
@@ -54,6 +57,13 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
       alive = false
     }
   }, [isLoggedIn])
+
+  // Auto-dismiss error banner
+  useEffect(() => {
+    if(!error) return
+    const timer = setTimeout(() => setError(''), 5000)
+    return () => clearTimeout(timer)
+  } , [error])
 
   const add = useCallback(async (carId: number) => {
     try {
@@ -90,6 +100,19 @@ export function FavoritesProvider({ children }: { children: ReactNode }) {
       value={{ favoriteIds, loading, error, add, remove, isFavorite }}
     >
       {children}
+      {error && (
+        <div className='am-favorites-error' role='alert'>
+          {error}
+          <button
+          type="button"
+          className='am-favorites-error-close'
+          onClick={() => setError('')}
+          aria-label='Dismiss error'
+        >
+           ×
+        </button>
+        </div>
+      )}
     </FavoritesContext.Provider>
   )
 }
