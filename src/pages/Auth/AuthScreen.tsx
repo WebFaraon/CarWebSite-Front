@@ -120,6 +120,8 @@ function AuthScreen({ mode }: AuthScreenProps) {
   const [email, setEmail] = useState('')
   const [pw, setPw] = useState('')
   const [pw2, setPw2] = useState('')
+  const [phone, setPhone] = useState('')
+  const [city, setCity] = useState('')
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [submitting, setSubmitting] = useState(false)
 
@@ -174,7 +176,9 @@ function AuthScreen({ mode }: AuthScreenProps) {
     setSubmitting(true)
     try {
       if (isSignup) {
-        await userApi.register({ fullName: name, email, password: pw })
+        await userApi.register({ fullName: name, email, password: pw,
+          phoneNumber: phone.trim() || undefined, city: city.trim() || undefined
+         })
         navigate('/login')
       } else {
         const user = await login(email, pw)
@@ -198,7 +202,7 @@ function AuthScreen({ mode }: AuthScreenProps) {
   // Block render before effect runs to avoid a brief flash of the auth form
   // when a logged-in user visits the route. Must stay below all hooks (Rules of Hooks).
   if(isLoggedIn){
-    return null;
+    return null
   }
 
 
@@ -304,6 +308,29 @@ function AuthScreen({ mode }: AuthScreenProps) {
                   onChange={setPw2}
                   error={errors.pw2}
                   autoComplete="new-password"
+                />
+              )}
+
+              {isSignup && (
+              <AuthField
+                label="Phone number (optional)"
+                type="tel"
+                placeholder="+373 60 123 456"
+                value={phone}
+                onChange={setPhone}
+                error = {errors.phone}
+                autoComplete="tel"
+              />
+              )}
+
+              {isSignup && (
+                <AuthField
+                label ="City (optional)"
+                placeholder="Chisinau"
+                value= {city}
+                onChange={setCity}
+                error = {errors.city}
+                autoComplete= "address-level2"
                 />
               )}
 
