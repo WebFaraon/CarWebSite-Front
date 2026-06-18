@@ -59,6 +59,7 @@ interface AuthFieldProps {
   autoComplete?: string
   toggle?: boolean
   showRight?: ReactNode
+  required?: boolean
 }
 
 function AuthField({
@@ -71,6 +72,7 @@ function AuthField({
   autoComplete,
   toggle = false,
   showRight,
+  required = false,
 }: AuthFieldProps) {
   const [show, setShow] = useState(false)
   const isPw = type === 'password'
@@ -79,7 +81,10 @@ function AuthField({
   return (
     <div className="am-auth-field">
       <div className="am-auth-field-top">
-        <label className="am-auth-label">{label}</label>
+        <label className="am-auth-label">
+          {label}
+          {required && <span className="am-auth-required">*</span>}
+          </label>
         {showRight}
       </div>
       <div className="am-auth-input-wrap">
@@ -166,6 +171,22 @@ function AuthScreen({ mode }: AuthScreenProps) {
     if (isSignup && pw.length < 8) e.pw = 'Password must be at least 8 characters.'
     if (!isSignup && pw.length < 1) e.pw = 'Enter your password.'
     if (isSignup && pw2 !== pw) e.pw2 = "Passwords don't match."
+
+    //Optional fields (opt-in validation)
+    if(isSignup && phone.trim()){
+      const phoneFormat = /^(\+373\s?|0\s?)[67]\d\s?\d{3}\s?\d{3}$/
+      if(!phoneFormat.test(phone.trim())) {
+          e.phone = 'Use valid format: +373 60 123 456 or 060 123 456.'
+      }
+    }
+    if (isSignup && city.trim()) {
+      const cityTrimmed = city.trim()
+      const cityFormat = /^\p{L}[\p{L}\s.\-']*\p{L}$/u
+      const letterCount = (cityTrimmed.match(/\p{L}/gu) || []).length
+        if (!cityFormat.test(cityTrimmed) || letterCount < 3 || cityTrimmed.length > 50) {
+          e.city = 'Invalid location.'
+      }
+    }
     setErrors(e)
     return Object.keys(e).length === 0
   }
@@ -260,11 +281,12 @@ function AuthScreen({ mode }: AuthScreenProps) {
               {isSignup && (
                 <AuthField
                   label="Full name"
-                  placeholder="John Car"
+                  placeholder="Bruce Wayne"
                   value={name}
                   onChange={setName}
                   error={errors.name}
                   autoComplete="name"
+                  required
                 />
               )}
 
@@ -276,6 +298,7 @@ function AuthScreen({ mode }: AuthScreenProps) {
                 onChange={setEmail}
                 error={errors.email}
                 autoComplete="email"
+                required
               />
 
               <AuthField
@@ -283,12 +306,13 @@ function AuthScreen({ mode }: AuthScreenProps) {
                 type="password"
                 toggle
                 placeholder={
-                  isSignup ? 'Create a password' : 'Enter your password'
+                  isSignup ? 'At least 8 characters' : 'Enter your password'
                 }
                 value={pw}
                 onChange={setPw}
                 error={errors.pw}
                 autoComplete={isSignup ? 'new-password' : 'current-password'}
+                required
                 showRight={
                   !isSignup && (
                     <Link to="/forgot-password" className="am-auth-forgot">
@@ -303,11 +327,12 @@ function AuthScreen({ mode }: AuthScreenProps) {
                   label="Confirm password"
                   type="password"
                   toggle
-                  placeholder="Repeat your password"
+                  placeholder="Re-enter password"
                   value={pw2}
                   onChange={setPw2}
                   error={errors.pw2}
                   autoComplete="new-password"
+                  required
                 />
               )}
 
