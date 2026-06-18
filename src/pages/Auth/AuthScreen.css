@@ -107,6 +107,7 @@
   line-height: 1.05;
   color: var(--am-text);
 }
+
 .am-auth-switch {
   font-size: var(--fs-14);
   color: var(--am-muted);
@@ -142,6 +143,12 @@
   color: var(--am-text-2);
   letter-spacing: -0.005em;
 }
+
+.am-auth-required {
+  color: #ef4444;
+  margin-left: 4px;
+}
+
 .am-auth-forgot {
   font-size: var(--fs-12);
   color: var(--am-muted);

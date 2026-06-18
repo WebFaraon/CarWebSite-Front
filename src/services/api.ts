@@ -176,6 +176,7 @@ export const userApi = {
     email: string
     password: string
     phoneNumber?: string
+    city?: string
   }) =>
     request<{ isSuccess: boolean; message: string }>('/api/Session/register', {
       method: 'POST',
