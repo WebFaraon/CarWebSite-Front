@@ -1355,7 +1355,7 @@ function Wizard({
                 <input
                   id="f-cn"
                   className="am-ml-input"
-                  placeholder="Your name or business name"
+                  placeholder="Bruce Wayne"
                   aria-invalid={!!errors.contactName}
                   aria-describedby={errors.contactName ? 'f-cn-err' : undefined}
                   value={form.contactName}
@@ -1367,7 +1367,7 @@ function Wizard({
                 <input
                   id="f-city"
                   className="am-ml-input"
-                  placeholder="e.g. Bucharest, Cluj-Napoca"
+                  placeholder="Chisinau"
                   aria-invalid={!!errors.contactCity}
                   aria-describedby={errors.contactCity ? 'f-city-err' : undefined}
                   value={form.contactCity}
@@ -1380,7 +1380,7 @@ function Wizard({
                   id="f-phone"
                   type="tel"
                   className="am-ml-input"
-                  placeholder="e.g. +40 712 345 678"
+                  placeholder="+373 60 123 456"
                   value={form.contactPhone}
                   onChange={(e) => set('contactPhone', e.target.value)}
                 />
@@ -1391,7 +1391,7 @@ function Wizard({
                   id="f-email"
                   type="email"
                   className="am-ml-input"
-                  placeholder="your@email.com"
+                  placeholder="you@example.com"
                   aria-invalid={!!errors.contactEmail}
                   aria-describedby={errors.contactEmail ? 'f-email-err' : undefined}
                   value={form.contactEmail}
