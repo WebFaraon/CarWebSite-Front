@@ -211,7 +211,11 @@
   outline: 2px solid var(--am-focus);
   outline-offset: 1px;
 }
-
+.am-auth-hint {
+  font-size: var(--fs-12);
+  color: var(--am-muted);
+  margin-top: 4px;
+}
 .am-auth-err {
   font-size: var(--fs-12);
   color: oklch(0.58 0.17 25);
