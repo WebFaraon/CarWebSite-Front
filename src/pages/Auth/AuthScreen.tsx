@@ -4,6 +4,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useTheme } from '../../context/ThemeContext'
 import { useAuth } from '../../context/AuthContext'
 import { userApi } from '../../services/api'
+import { isValidFullName, isValidEmail, isValidPhoneNumber, isValidCity, isStrongPassword } from '../../utils/validators'
 import '../Home/Home.css'
 import './AuthScreen.css'
 
@@ -59,6 +60,7 @@ interface AuthFieldProps {
   autoComplete?: string
   toggle?: boolean
   showRight?: ReactNode
+  hint?: string
   required?: boolean
 }
 
@@ -72,6 +74,7 @@ function AuthField({
   autoComplete,
   toggle = false,
   showRight,
+  hint,
   required = false,
 }: AuthFieldProps) {
   const [show, setShow] = useState(false)
@@ -108,6 +111,7 @@ function AuthField({
           </button>
         )}
       </div>
+      {hint && <div className='am-auth-hint'>{hint}</div>}
       {error && <div className="am-auth-err">{error}</div>}
     </div>
   )
@@ -164,29 +168,17 @@ function AuthScreen({ mode }: AuthScreenProps) {
 
   const validate = () => {
     const e: Record<string, string> = {}
-    if (isSignup && name.trim().length < 2) e.name = 'Please enter your name.'
-    if (isSignup && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
-      e.email = 'Enter a valid email address.'
-    if (!isSignup && !email.trim()) e.email = 'Enter your email or username.'
-    if (isSignup && pw.length < 8) e.pw = 'Password must be at least 8 characters.'
+    if (isSignup && !isValidFullName(name)) e.name = 'Please enter your name.'
+    if(!email.trim()) e.email = 'Enter your email.'
+    else if (!isValidEmail(email)) e.email = 'Enter a valid email address.'
+    if (isSignup && !isStrongPassword(pw)) e.pw = 'Min 8 characters, with an uppercase letter, a number and a special character.'
     if (!isSignup && pw.length < 1) e.pw = 'Enter your password.'
     if (isSignup && pw2 !== pw) e.pw2 = "Passwords don't match."
 
     //Optional fields (opt-in validation)
-    if(isSignup && phone.trim()){
-      const phoneFormat = /^(\+373\s?|0\s?)[67]\d\s?\d{3}\s?\d{3}$/
-      if(!phoneFormat.test(phone.trim())) {
-          e.phone = 'Use valid format: +373 60 123 456 or 060 123 456.'
-      }
-    }
-    if (isSignup && city.trim()) {
-      const cityTrimmed = city.trim()
-      const cityFormat = /^\p{L}[\p{L}\s.\-']*\p{L}$/u
-      const letterCount = (cityTrimmed.match(/\p{L}/gu) || []).length
-        if (!cityFormat.test(cityTrimmed) || letterCount < 3 || cityTrimmed.length > 50) {
-          e.city = 'Invalid location.'
-      }
-    }
+    if(isSignup && !isValidPhoneNumber(phone))
+      e.phone = 'Use valid format: +373 60 123 456 or 060 123 456.'
+    if (isSignup && !isValidCity(city)) e.city = 'Invalid location.' 
     setErrors(e)
     return Object.keys(e).length === 0
   }
@@ -291,7 +283,7 @@ function AuthScreen({ mode }: AuthScreenProps) {
               )}
 
               <AuthField
-                label={isSignup ? 'Email address' : 'Email or username'}
+                label={isSignup ? 'Email address' : 'Email'}
                 type={isSignup ? 'email' : 'text'}
                 placeholder={isSignup ? 'you@example.com' : 'JohnCar@example.com'}
                 value={email}
@@ -306,8 +298,9 @@ function AuthScreen({ mode }: AuthScreenProps) {
                 type="password"
                 toggle
                 placeholder={
-                  isSignup ? 'At least 8 characters' : 'Enter your password'
+                  isSignup ? 'Create a password' : 'Enter your password'
                 }
+                hint={isSignup && !errors.pw ? 'Use 8+ characters with an uppercase letter, a number and a symbol.' : undefined}
                 value={pw}
                 onChange={setPw}
                 error={errors.pw}
