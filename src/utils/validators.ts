@@ -5,12 +5,12 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const PASSWORD_SPECIAL_REGEX = /[!@#$%^&*(),.?"':{}|<>_\-+=\[\]\\/`~;]/
 
 // Optional fields (returns true if empty)
-export function isValidPhoneNumber(phone: string): boolean {
+export function isValidPhoneNumber(phone?: string | null): boolean {
   if (!phone || !phone.trim()) return true
   return PHONE_REGEX.test(phone.trim())
 }
 
-export function isValidCity(city: string): boolean {
+export function isValidCity(city?: string | null): boolean {
     if(!city ||!city.trim()) return true
     const t = city.trim()
     if(t.length > 50) return false
@@ -20,18 +20,18 @@ export function isValidCity(city: string): boolean {
 }
 
 // Required fields
-export function isValidEmail(email: string): boolean {
+export function isValidEmail(email?: string | null): boolean {
     if(!email) return false;
   return EMAIL_REGEX.test(email.trim())
 }
 
-export function isValidFullName(fullName: string): boolean {
+export function isValidFullName(fullName?: string | null): boolean {
     if(!fullName) return false
   const t = fullName.trim()
   return t.length >= 2 && t.length <= 70
 }
 
-export function isStrongPassword(pw: string): boolean {
+export function isStrongPassword(pw?: string | null): boolean {
   if (!pw || pw.length < 8) return false
   const hasUpper = /[A-Z]/.test(pw)
   const hasDigit = /[0-9]/.test(pw)
