@@ -77,6 +77,13 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
 
   return body as T
 }
+// User returned by login (use UserDto for /me).
+export interface AuthUserDto {
+  id: number
+  fullName: string
+  email: string
+  role: string
+}
 
 export interface UserDto {
   id: number
@@ -91,7 +98,14 @@ export interface UserDto {
 export interface LoginResponse {
     accessToken: string
     refreshToken: string
-    user: UserDto
+    user: AuthUserDto
+}
+
+export interface ProfileResponse {
+  isSuccess: boolean
+  message?: string
+  errorCode?: string
+  user?: UserDto
 }
 
 export interface BrandDto {
@@ -117,6 +131,7 @@ export interface AnnouncementDto {
   publishedAt: string
   userId: number
   ownerName: string
+  ownerEmail: string
   ownerPhone?: string
   ownerCity?: string
   carId: number
@@ -180,6 +195,12 @@ export const userApi = {
   }) =>
     request<{ isSuccess: boolean; message: string }>('/api/Session/register', {
       method: 'POST',
+      body: JSON.stringify(data),
+    }),
+      getProfile: () => request<ProfileResponse>('/api/User/me'),
+      updateProfile: (data: { fullName?: string; phoneNumber?: string; city?: string }) =>
+      request<ProfileResponse>('/api/User/me', {
+      method: 'PATCH',
       body: JSON.stringify(data),
     }),
 }

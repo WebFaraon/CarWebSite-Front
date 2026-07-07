@@ -1,0 +1,116 @@
+/* Complete Profile Modal — uses the .am design tokens (defined in Home.css) */
+
+.cpm-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgb(0 0 0 / 0.45);
+  display: grid;
+  place-items: center;
+  padding: var(--sp-5);
+  z-index: 1000;
+}
+
+.cpm-dialog {
+  width: 100%;
+  max-width: 460px;
+  background: var(--am-surface);
+  border: 1px solid var(--am-border);
+  border-radius: var(--r-5);
+  box-shadow: var(--am-shadow-2);
+  padding: var(--sp-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.cpm-title {
+  font-size: var(--fs-21);
+  font-weight: 600;
+  color: var(--am-text);
+  margin: 0;
+}
+
+.cpm-subtitle {
+  font-size: var(--fs-14);
+  color: var(--am-muted);
+  margin: 0;
+}
+
+.cpm-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cpm-label {
+  font-size: var(--fs-13);
+  font-weight: 500;
+  color: var(--am-text-2);
+}
+
+.cpm-input {
+  height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--am-border-strong);
+  border-radius: var(--r-4);
+  background: var(--am-bg);
+  color: var(--am-text);
+  font-size: var(--fs-15);
+  outline: none;
+}
+.cpm-input:focus {
+  border-color: var(--am-text);
+  box-shadow: 0 0 0 3px var(--am-focus);
+}
+.cpm-input[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.cpm-err {
+  font-size: var(--fs-12);
+  color: oklch(0.58 0.17 25);
+}
+.cpm-err--form {
+  padding: var(--sp-2) var(--sp-3);
+  border: 1px solid oklch(0.58 0.17 25 / 0.35);
+  border-radius: var(--r-3);
+}
+
+.cpm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--sp-3);
+  margin-top: var(--sp-2);
+}
+
+.cpm-btn {
+  height: 42px;
+  padding: 0 var(--sp-4);
+  border-radius: var(--r-4);
+  font-size: var(--fs-14);
+  font-weight: 600;
+}
+.cpm-btn--ghost {
+  background: var(--am-surface);
+  border: 1px solid var(--am-border);
+  color: var(--am-text-2);
+}
+.cpm-btn--ghost:hover {
+  background: var(--am-surface-2);
+}
+.cpm-btn--primary {
+  background: var(--am-accent);
+  color: var(--am-accent-fg);
+}
+.cpm-btn--primary:hover {
+  background: var(--am-accent-2);
+}
+.cpm-btn[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.am[data-theme='dark'] .cpm-err {
+  color: oklch(0.72 0.15 28);
+}
