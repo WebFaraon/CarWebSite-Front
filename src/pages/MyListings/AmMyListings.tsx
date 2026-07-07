@@ -6,6 +6,7 @@ import { useTheme } from '../../context/ThemeContext'
 import { useAuth } from '../../context/AuthContext'
 import { announcementApi, brandApi, getApiErrorMessage } from '../../services/api'
 import type { BrandDto } from '../../services/api'
+import CompleteProfileModal from '../../components/CompleteProfileModal/CompleteProfileModal'
 import '../Home/Home.css'
 import './AmMyListings.css'
 
@@ -67,10 +68,6 @@ interface FormData {
   horsepower: string
   vin: string
   description: string
-  contactName: string
-  contactPhone: string
-  contactEmail: string
-  contactCity: string
   negotiable: boolean
   showPhone: boolean
 }
@@ -124,22 +121,17 @@ const reverseMap = (map: Record<string, string>, value?: string | number | null)
   return found?.[0] ?? raw
 }
 
-const blankForm = (initialContactName: string, initialEmail: string): FormData => ({
+const blankForm = (): FormData => ({
   title: '', brand: '', model: '', year: '', price: '', mileage: '',
   fuel: '', transmission: '', bodyType: '', color: '', condition: '',
   doors: '', seats: '', engineSize: '', horsepower: '', vin: '',
   description: '',
-  contactName: initialContactName,
-  contactPhone: '',
-  contactEmail: initialEmail,
-  contactCity: '',
   negotiable: false,
   showPhone: true,
 })
 
 const listingToForm = (
   listing: Listing,
-  initialEmail: string,
 ): FormData => ({
   title: listing.title,
   brand: listing.brand,
@@ -158,10 +150,6 @@ const listingToForm = (
   horsepower: listing.horsepower ? String(listing.horsepower) : '',
   vin: listing.vin ?? '',
   description: listing.description,
-  contactName: listing.contactName,
-  contactPhone: listing.contactPhone ?? '',
-  contactEmail: initialEmail,
-  contactCity: listing.contactCity,
   negotiable: listing.negotiable,
   showPhone: listing.showPhone,
 })
@@ -199,14 +187,14 @@ const FEATURES = [
   'Third Row Seating', 'Tow Package', 'All-Wheel Drive', '4x4 / Off-Road Package',
 ]
 
-const STEP_LABELS = ['Photos', 'Basic Info', 'Vehicle Details', 'Description & Features', 'Contact & Review']
+const STEP_LABELS = ['Photos', 'Basic Info', 'Vehicle Details', 'Description & Features', 'Review']
 
 const SECTIONS = [
   { title: 'Upload Photos', body: 'Listings with good photos get up to 5× more inquiries. Add up to 10 images — the first one becomes the cover.' },
   { title: 'Basic Information', body: 'Fill in the key details that buyers search for first.' },
   { title: 'Vehicle Details', body: 'More detail builds trust. Fill in as many fields as you can.' },
   { title: 'Description & Features', body: 'Describe the car honestly and highlight what makes it stand out.' },
-  { title: 'Contact Information', body: 'Buyers will use this to reach you. Keep it accurate and up to date.' },
+  { title: 'Review & Publish', body: 'Check the details below — your contact info comes from your profile.' },
 ]
 
 const DRAFT_KEY = 'ml-draft'
@@ -727,8 +715,6 @@ function ListingsTab({ listings, loading, onEdit, onToggle, onDelete, onOpen, on
 interface WizardProps {
   apiBrands: BrandDto[]
   brandsLoading: boolean
-  initialContactName: string
-  initialEmail: string
   mode?: 'create' | 'edit'
   initialListing?: Listing | null
   onSaved: (listing: Listing, mode: 'create' | 'edit') => void
@@ -737,22 +723,20 @@ interface WizardProps {
 function Wizard({
   apiBrands,
   brandsLoading,
-  initialContactName,
-  initialEmail,
   mode = 'create',
   initialListing,
   onSaved,
 }: WizardProps) {
   const isEdit = mode === 'edit' && !!initialListing
   const [form, setForm] = useState<FormData>(() =>
-    initialListing
-      ? listingToForm(initialListing, initialEmail)
-      : blankForm(initialContactName, initialEmail),
+    initialListing ? listingToForm(initialListing) : blankForm(),
   )
   const [images, setImages] = useState<ImageEntry[]>(() => imagesFromListing(initialListing))
   const [features, setFeatures] = useState<Set<string>>(
     () => new Set(initialListing?.features ?? []),
   )
+  const { refreshUser, user } = useAuth() 
+  const [showProfileModal, setShowProfileModal]= useState(false)
   const [section, setSection] = useState(0)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [serverError, setServerError] = useState('')
@@ -764,8 +748,8 @@ function Wizard({
   useEffect(() => {
     setForm(
       initialListing
-        ? listingToForm(initialListing, initialEmail)
-        : blankForm(initialContactName, initialEmail),
+        ? listingToForm(initialListing)
+        : blankForm(),
     )
     setImages(imagesFromListing(initialListing))
     setFeatures(new Set(initialListing?.features ?? []))
@@ -774,7 +758,7 @@ function Wizard({
     setServerError('')
     setSubmitted(false)
     setLocalDraft(null)
-  }, [initialListing, initialContactName, initialEmail])
+  }, [initialListing])
 
   const set = (k: keyof FormData, v: string | boolean) => {
     setForm((f) => ({ ...f, [k]: v }))
@@ -848,11 +832,6 @@ function Wizard({
     if (s === 3) {
       if (form.description.trim().length < 30) e.description = 'Description must be at least 30 characters.'
     }
-    if (s === 4) {
-      if (!form.contactName.trim()) e.contactName = 'Enter your name.'
-      if (!form.contactCity.trim()) e.contactCity = 'Enter your city.'
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.contactEmail)) e.contactEmail = 'Enter a valid email.'
-    }
     setErrors(e)
     return Object.keys(e).length === 0
   }
@@ -864,6 +843,12 @@ function Wizard({
   const handleSubmit = async () => {
     if (!validateSection(4)) return
     setServerError('')
+
+  const fresh = await refreshUser()
+    if (!fresh?.phoneNumber || !fresh?.city) {
+      setShowProfileModal(true)
+      return
+    }
 
     const brand = apiBrands.find((b) => b.name.toLowerCase() === form.brand.toLowerCase())
     if (!brand) {
@@ -930,9 +915,6 @@ function Wizard({
           horsepower: payload.horsepower,
           vin: payload.vin,
           description: payload.description,
-          contactName: form.contactName,
-          contactPhone: form.contactPhone,
-          contactCity: form.contactCity,
           negotiable: payload.negotiable,
           showPhone: payload.showPhone,
           features: payload.features,
@@ -1347,58 +1329,10 @@ function Wizard({
           </div>
         )}
 
-        {/* section 4 — contact + review */}
+        {/* section 4 — review */}
         {section === 4 && (
           <>
             <div className="am-ml-form-grid">
-              <MlField label="Full name" req htmlFor="f-cn" error={errors.contactName}>
-                <input
-                  id="f-cn"
-                  className="am-ml-input"
-                  placeholder="Bruce Wayne"
-                  aria-invalid={!!errors.contactName}
-                  aria-describedby={errors.contactName ? 'f-cn-err' : undefined}
-                  value={form.contactName}
-                  onChange={(e) => set('contactName', e.target.value)}
-                />
-              </MlField>
-
-              <MlField label="City / Location" req htmlFor="f-city" error={errors.contactCity}>
-                <input
-                  id="f-city"
-                  className="am-ml-input"
-                  placeholder="Chisinau"
-                  aria-invalid={!!errors.contactCity}
-                  aria-describedby={errors.contactCity ? 'f-city-err' : undefined}
-                  value={form.contactCity}
-                  onChange={(e) => set('contactCity', e.target.value)}
-                />
-              </MlField>
-
-              <MlField label="Phone number" htmlFor="f-phone">
-                <input
-                  id="f-phone"
-                  type="tel"
-                  className="am-ml-input"
-                  placeholder="+373 60 123 456"
-                  value={form.contactPhone}
-                  onChange={(e) => set('contactPhone', e.target.value)}
-                />
-              </MlField>
-
-              <MlField label="Email address" req htmlFor="f-email" error={errors.contactEmail}>
-                <input
-                  id="f-email"
-                  type="email"
-                  className="am-ml-input"
-                  placeholder="you@example.com"
-                  aria-invalid={!!errors.contactEmail}
-                  aria-describedby={errors.contactEmail ? 'f-email-err' : undefined}
-                  value={form.contactEmail}
-                  onChange={(e) => set('contactEmail', e.target.value)}
-                />
-              </MlField>
-
               <div className="am-ml-field am-ml-field--full">
                 <label className="am-ml-check">
                   <input
@@ -1410,7 +1344,19 @@ function Wizard({
                 </label>
               </div>
             </div>
-
+          <div className="am-ml-review">
+              <div className="am-ml-review-title">Listed as</div>
+              <dl>
+                <dt>Name</dt>
+                <dd>{user?.fullName || '—'}</dd>
+                <dt>Email</dt>
+                <dd>{user?.email || '—'}</dd>
+                <dt>Phone</dt>
+                <dd>{user?.phoneNumber || '—'}</dd>
+                <dt>City</dt>
+                <dd>{user?.city || '—'}</dd>
+              </dl>
+            </div>
             <div className="am-ml-review">
               <div className="am-ml-review-title">
                 {isEdit ? 'Review before saving' : 'Review before publishing'}
@@ -1475,6 +1421,14 @@ function Wizard({
       </div>
 
       {toast && <div className="am-ml-toast">{toast}</div>}
+      <CompleteProfileModal
+        isOpen={showProfileModal}
+        onClose={() => setShowProfileModal(false)}
+        onSave={async () => {
+          setShowProfileModal(false)
+          await handleSubmit()
+        }}
+      />
     </div>
   )
 }
@@ -1700,8 +1654,6 @@ function AmMyListings() {
             <Wizard
               apiBrands={apiBrands}
               brandsLoading={brandsLoading}
-              initialContactName={user?.fullName ?? ''}
-              initialEmail={user?.email ?? ''}
               mode={editingListing ? 'edit' : 'create'}
               initialListing={editingListing}
               onSaved={handleSaved}
