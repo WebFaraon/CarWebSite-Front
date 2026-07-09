@@ -199,6 +199,7 @@ function CarDetails() {
   const navigate = useNavigate()
   const { isFavorite, add, remove } = useFavorites()
   const { isLoggedIn } = useAuth()
+  const offer =state?.offer
   // Resolve carId: Offer.id is string, FeaturedCar.id is number
   const carId: number | null = state?.offer
     ? Number(state.offer.id)
@@ -402,6 +403,34 @@ function CarDetails() {
               </div>
               <div className="am-detail-aside-price">{carData.price}</div>
               <div className="am-detail-price-note">Listing price from the seller</div>
+              
+              {offer?.sellerName && (
+                <div className="am-detail-seller">
+                  <div className="am-detail-seller-title">Seller</div>
+                  <dl className="am-detail-seller-list">
+                    <div>
+                      <dt>Name</dt>
+                      <dd>{offer.sellerName}</dd>
+                    </div>
+                    <div>
+                      <dt>Location</dt>
+                      <dd>{offer.location || '—'}</dd>
+                    </div>
+                    {offer.showPhone && offer.sellerPhone && (
+                      <div>
+                        <dt>Phone</dt>
+                        <dd><a href={`tel:${offer.sellerPhone}`}>{offer.sellerPhone}</a></dd>
+                      </div>
+                    )}
+                    {offer.sellerEmail && (
+                      <div>
+                        <dt>Email</dt>
+                        <dd><a href={`mailto:${offer.sellerEmail}`}>{offer.sellerEmail}</a></dd>
+                      </div>
+                    )}
+                  </dl>
+                </div>
+              )}
 
               <div className="am-detail-side-actions">
                 <button
