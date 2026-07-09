@@ -39,6 +39,7 @@ interface Listing {
   description: string
   contactName: string
   contactPhone?: string
+  contactEmail?: string
   contactCity: string
   negotiable: boolean
   showPhone: boolean
@@ -947,6 +948,7 @@ function Wizard({
           description: created.description,
           contactName: created.ownerName,
           contactPhone: created.ownerPhone,
+          contactEmail: created.ownerEmail,
           contactCity: created.ownerCity || '',
           negotiable: created.negotiable,
           showPhone: created.showPhone,
@@ -1499,6 +1501,7 @@ function AmMyListings() {
             description: a.description,
             contactName: a.ownerName,
             contactPhone: a.ownerPhone,
+            contactEmail: a.ownerEmail,
             contactCity: a.ownerCity || '',
             negotiable: a.negotiable,
             showPhone: a.showPhone,
@@ -1565,7 +1568,7 @@ function AmMyListings() {
           fuel: l.fuel.toLowerCase(),
           transmission: l.transmission.toLowerCase(),
           powerHp: undefined,
-          location: l.contactCity || user?.city || 'Moldova',
+          location: l.contactCity || user?.city || '',
           description: l.description,
           bodyType: reverseMap(BODY_TYPE_MAP, l.bodyType),
           condition: reverseMap(CONDITION_MAP, l.condition),
@@ -1576,6 +1579,9 @@ function AmMyListings() {
           vin: l.vin,
           negotiable: l.negotiable,
           showPhone: l.showPhone,
+          sellerName: l.contactName,
+          sellerPhone: l.contactPhone,
+          sellerEmail: l.contactEmail,
           features: l.features,
           imageUrl: l.images[0] ?? null,
           images: l.images,

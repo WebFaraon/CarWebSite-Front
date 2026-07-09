@@ -23,6 +23,9 @@ export type Offer = {
   features?: string[];
   negotiable?: boolean;
   showPhone?: boolean;
+  sellerName?: string;
+  sellerPhone?: string;
+  sellerEmail?: string;
   imageUrl: string | null;
   images: string[];
   isNew?: boolean;
