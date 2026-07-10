@@ -412,10 +412,6 @@ function CarDetails() {
                       <dt>Name</dt>
                       <dd>{offer.sellerName}</dd>
                     </div>
-                    <div>
-                      <dt>Location</dt>
-                      <dd>{offer.location || '—'}</dd>
-                    </div>
                     {offer.showPhone && offer.sellerPhone && (
                       <div>
                         <dt>Phone</dt>
