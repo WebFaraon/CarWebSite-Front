@@ -11,12 +11,11 @@ function display(value?: string): string {
 }
 
 export function featuredCarFromOffer(offer: Offer): FeaturedCar {
-  const [name = offer.title, ...modelParts] = offer.title.split(' ')
 
   return {
     id: Number(offer.id),
-    name,
-    model: modelParts.join(' ') || offer.title,
+    name: offer.title,
+    model: '',
     year: offer.year,
     mileage: `${new Intl.NumberFormat('de-DE').format(offer.km)} km`,
     price: `${new Intl.NumberFormat('de-DE').format(offer.price)} ${offer.currency}`,

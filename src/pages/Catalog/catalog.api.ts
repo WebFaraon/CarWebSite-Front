@@ -48,7 +48,7 @@ function mapAnnouncementToOffer(a: AnnouncementDto): Offer {
 
   return {
     id: String(a.id),
-    title: a.title || `${a.brand.name} ${a.model} ${a.year}`,
+    title: a.title || `${a.brand.name} ${a.model}`,
     price: Number(a.price),
     currency: 'EUR',
     year: a.year,
