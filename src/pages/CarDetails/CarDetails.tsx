@@ -67,7 +67,6 @@ function buildCarDataFromOffer(offer: Offer) {
     { label: 'Doors', value: present(offer.doors) },
     { label: 'Seats', value: present(offer.seats) },
     { label: 'VIN', value: present(offer.vin) },
-    { label: 'Location', value: offer.location },
   ].filter((row): row is DetailRow => Boolean(row.value))
 
   return {
@@ -119,7 +118,6 @@ function buildCarDataFromFeaturedCar(featuredCar: FeaturedCar) {
       { label: 'Transmission', value: featuredCar.transmission },
       { label: 'Body type', value: featuredCar.body },
       { label: 'Power', value: featuredCar.engine },
-      { label: 'Location', value: location },
     ] satisfies DetailRow[],
     features: featuredCar.features ?? [],
   }
