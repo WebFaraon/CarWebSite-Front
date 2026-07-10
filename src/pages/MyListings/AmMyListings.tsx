@@ -871,7 +871,7 @@ function Wizard({
       )
 
       const payload = {
-        title: form.title || `${form.year} ${form.brand} ${form.model}`.trim(),
+        title: form.title || `${form.brand} ${form.model}`.trim(),
         negotiable: form.negotiable,
         showPhone: form.showPhone,
         model: form.model,
@@ -1063,7 +1063,7 @@ function Wizard({
           <div className="am-ml-form-grid">
             <MlField
               full label="Listing title" htmlFor="f-title"
-              hint="Leave blank to auto-generate from brand + model + year."
+              hint="Leave blank to auto-generate from brand + model."
             >
               <input
                 id="f-title"
@@ -1365,7 +1365,7 @@ function Wizard({
               </div>
               <dl>
                 <dt>Title</dt>
-                <dd>{form.title || `${form.brand} ${form.model} ${form.year}`.trim() || '—'}</dd>
+                <dd>{form.title || `${form.brand} ${form.model}`.trim() || '—'}</dd>
                 <dt>Price</dt>
                 <dd>{form.price ? `€${fmtNum(Number(form.price))}${form.negotiable ? ' (negotiable)' : ''}` : '—'}</dd>
                 <dt>Mileage</dt>
