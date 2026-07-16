@@ -766,10 +766,10 @@ function Wizard({
     setErrors((e) => { if (!e[k]) return e; const n = { ...e }; delete n[k]; return n })
   }
 
-  const showToast = (msg: string) => {
-    setToast(msg)
-    setTimeout(() => setToast(null), 2400)
-  }
+const showToast = ( msg: string, duration = 2400) => {
+  setToast(msg)
+  setTimeout(() => setToast(null), duration)
+}
 
   const toggleFeature = (f: string) =>
     setFeatures((s) => { const n = new Set(s); n.has(f) ? n.delete(f) : n.add(f); return n })
@@ -804,6 +804,9 @@ function Wizard({
     setForm((f) => ({ ...f, ...localDraft.form }))
     setFeatures(new Set(localDraft.features))
     setSection(localDraft.section)
+    if (images.length === 0) {
+      showToast('Photos are not saved in drafts — please re-add at least one.', 5000)
+    }
     setLocalDraft(null)
   }
 
@@ -842,7 +845,9 @@ function Wizard({
   const jumpTo = (i: number) => { if (i <= section) setSection(i) }
 
   const handleSubmit = async () => {
-    if (!validateSection(4)) return
+    for(let s =0; s <= 4; s++){
+      if(!validateSection(s)) { setSection(s); return }
+    }
     setServerError('')
 
   const fresh = await refreshUser()
