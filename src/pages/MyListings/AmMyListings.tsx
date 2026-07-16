@@ -842,7 +842,9 @@ function Wizard({
   const jumpTo = (i: number) => { if (i <= section) setSection(i) }
 
   const handleSubmit = async () => {
-    if (!validateSection(4)) return
+    for(let s =0; s <= 4; s++){
+      if(!validateSection(s)) { setSection(s); return }
+    }
     setServerError('')
 
   const fresh = await refreshUser()
