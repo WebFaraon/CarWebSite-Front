@@ -6,6 +6,7 @@ import { useTheme } from '../../context/ThemeContext'
 import { useAuth } from '../../context/AuthContext'
 import { announcementApi, brandApi, getApiErrorMessage } from '../../services/api'
 import type { BrandDto } from '../../services/api'
+import type { SessionUser } from '../../context/AuthContext'
 import CompleteProfileModal from '../../components/CompleteProfileModal/CompleteProfileModal'
 import '../Home/Home.css'
 import './AmMyListings.css'
@@ -844,13 +845,13 @@ const showToast = ( msg: string, duration = 2400) => {
   const back = () => setSection((s) => Math.max(0, s - 1))
   const jumpTo = (i: number) => { if (i <= section) setSection(i) }
 
-  const handleSubmit = async () => {
-    for(let s =0; s <= 4; s++){
-      if(!validateSection(s)) { setSection(s); return }
+  const handleSubmit = async (prefetchedUser?: SessionUser) => {
+    for (let s =0; s <= 4; s++){
+      if (!validateSection(s)) { setSection(s); return }
     }
     setServerError('')
 
-  const fresh = await refreshUser()
+  const fresh = prefetchedUser ?? await refreshUser()
     if (!fresh?.phoneNumber || !fresh?.city) {
       setShowProfileModal(true)
       return
@@ -1415,7 +1416,7 @@ const showToast = ( msg: string, duration = 2400) => {
               <button
                 className="am-btn am-btn--primary am-btn--lg"
                 type="button"
-                onClick={handleSubmit}
+                onClick={() => handleSubmit()}
                 disabled={submitting}
               >
                 {submitting
@@ -1431,9 +1432,10 @@ const showToast = ( msg: string, duration = 2400) => {
       <CompleteProfileModal
         isOpen={showProfileModal}
         onClose={() => setShowProfileModal(false)}
-        onSave={async () => {
+        onSave={async (updated) => {
           setShowProfileModal(false)
-          await handleSubmit()
+          await refreshUser(updated)
+          await handleSubmit(updated)
         }}
       />
     </div>

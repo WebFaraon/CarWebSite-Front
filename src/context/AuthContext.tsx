@@ -16,7 +16,7 @@ interface AuthContextValue {
   user: SessionUser | null;
   login: (email: string, password: string) => Promise<SessionUser>;
   logout: () => void;
-  refreshUser: () => Promise<SessionUser | null>;
+  refreshUser: (fresh?: SessionUser) => Promise<SessionUser | null>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -49,7 +49,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return res.user;
   }
 
-  async function refreshUser(): Promise<SessionUser | null> {
+  async function refreshUser(fresh?: SessionUser): Promise<SessionUser | null> {
+    if (fresh) {
+      localStorage.setItem("user",JSON.stringify(fresh));
+      setUser(fresh);
+      return fresh;
+    }
     try {
       const res = await userApi.getProfile();
       if (!res.isSuccess || !res.user) return user;
