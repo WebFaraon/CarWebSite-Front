@@ -54,7 +54,39 @@ function getToken(): string | null {
   return localStorage.getItem('token')
 }
 
-async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
+// Callback invoked when the session is unrecoverable (e.g., refresh token expired/invalid).
+// AuthContext registers its logout handler here to keep api.ts decoupled from the UI layer.
+let onAuthFailure: (() => void) | null = null
+
+export function setAuthFailureHandler(handler: (() => void) | null): void {
+  onAuthFailure = handler
+}
+
+// Exchanges the stored refresh token for a new access token.
+// Uses raw fetch (instead of request) to prevent recursive 401 refresh loops.
+async function refreshAccessToken(): Promise<boolean> {
+  const refreshToken = localStorage.getItem('refreshToken')
+  if (!refreshToken) return false
+
+  try {
+    const res = await fetch(`${API_URL}/api/Session/refresh`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ refreshToken }),
+    })
+    if (!res.ok) return false
+
+    const data = (await res.json()) as RefreshResponse
+    if (!data.isSuccess || !data.accessToken) return false
+
+    localStorage.setItem('token', data.accessToken)
+    return true
+  } catch {
+    return false
+  }
+}
+
+async function sendRequest(path: string, options: RequestInit): Promise<Response> {
   const token = getToken()
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
@@ -63,20 +95,33 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   if (token) {
     headers['Authorization'] = `Bearer ${token}`
   }
-  let res: Response
+
   try {
-    res = await fetch(`${API_URL}${path}`, { ...options, headers })
+    return await fetch(`${API_URL}${path}`, { ...options, headers })
   } catch (error) {
     throw new ApiError(getApiErrorMessage(error), 0, error)
   }
+}
 
+async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
+  let res = await sendRequest(path, options)
+
+  // Access token expired: attempt a single refresh and replay the request.
+  // If refresh fails, report an unrecoverable auth failure.
+  if (res.status === 401 && getToken()) {
+    if (await refreshAccessToken()) {
+      res = await sendRequest(path, options)
+    } else {
+      onAuthFailure?.()
+    }
+  }
   const body = await parseResponseBody(res)
   if (!res.ok) {
     throw new ApiError(readMessage(body, res.statusText), res.status, body)
   }
-
   return body as T
 }
+
 // User returned by login (use UserDto for /me).
 export interface AuthUserDto {
   id: number
@@ -99,6 +144,15 @@ export interface LoginResponse {
     accessToken: string
     refreshToken: string
     user: AuthUserDto
+}
+
+export interface RefreshResponse {
+  isSuccess: boolean
+  message?: string
+  errorCode?: string
+  accessToken?: string
+  refreshToken?: string
+  user?: AuthUserDto
 }
 
 export interface ProfileResponse {
