@@ -1,6 +1,6 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import type { ReactNode } from "react";
-import { userApi } from "../services/api";
+import { setAuthFailureHandler, userApi } from "../services/api";
 import type { AuthUserDto } from "../services/api";
 
 // Login user: profile fields filled after GET /me.
@@ -75,6 +75,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
     setIsLoggedIn(false);
   }
+  // Registers the logout trigger for unrecoverable 401 errors from api.ts.
+  // When isLoggedIn becomes false, PrivateRoute/AdminRoute handle the redirect.
+  useEffect(() => {
+    setAuthFailureHandler(logout);
+    return () => setAuthFailureHandler(null);
+  }, []);
 
   return (
     <AuthContext.Provider
